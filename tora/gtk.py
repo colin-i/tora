@@ -3,6 +3,11 @@ class GtkOrientation(IntEnum):
 	GTK_ORIENTATION_HORIZONTAL=0
 	GTK_ORIENTATION_VERTICAL=1
 
+#define G_TYPE_FUNDAMENTAL_SHIFT (2)
+#define G_TYPE_MAKE_FUNDAMENTAL(x) ((GType) ((x) << G_TYPE_FUNDAMENTAL_SHIFT))
+#define G_TYPE_STRING G_TYPE_MAKE_FUNDAMENTAL (16)
+G_TYPE_STRING=0x40
+
 import os
 import ctypes
 
@@ -27,10 +32,23 @@ k.gtk_box_new.restype=ptr
 k.gtk_box_new.argtypes = [int,int]
 k.gtk_button_new_with_label.restype=ptr
 k.gtk_button_new_with_label.argtypes = [ptr]
+#C
+k.gtk_cell_renderer_text_new.restype=ptr
 #E
 k.gtk_entry_new.restype=ptr
+#L
+k.gtk_list_store_new.restype=ptr
+k.gtk_list_store_new.argtypes = [int,int,int]
 #S
 k.gtk_scrolled_window_new.restype=ptr
+k.gtk_scrolled_window_set_child.argtypes = [ptr,ptr]
+#T
+k.gtk_tree_view_append_column.argtypes = [ptr,ptr]
+k.gtk_tree_view_column_new_with_attributes.restype=ptr
+k.gtk_tree_view_column_new_with_attributes.argtypes = [ptr,ptr,ptr,int,ptr]
+k.gtk_tree_view_new.restype=ptr
+k.gtk_tree_view_set_headers_visible.argtypes = [ptr,int]
+k.gtk_tree_view_set_model.argtypes = [ptr,ptr]
 #W
 k.gtk_widget_show.argtypes=[ptr]
 k.gtk_window_set_child.argtypes = [ptr,ptr]
