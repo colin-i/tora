@@ -8,10 +8,7 @@ k=gtk.k
 
 import layout
 
-import ctypes
-CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p,ctypes.c_void_p)
-
-@CALLBACK
+@gtk.CALLBACK
 def activate(app):
 	window = k.gtk_application_window_new (app)
 	k.gtk_window_set_title (window, b"Torrent")
