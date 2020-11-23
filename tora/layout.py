@@ -1,6 +1,8 @@
 import gtk
 k=gtk.k
 
+import addtor
+
 from enum import IntEnum
 class COLUMNS(IntEnum):
       NAME=0
@@ -12,6 +14,7 @@ list=k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 def add(entr):
 	b=k.gtk_entry_get_buffer(entr)
 	t=k.gtk_entry_buffer_get_text(b)
+	t=addtor.add(t)
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
