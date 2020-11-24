@@ -5,8 +5,9 @@ import addtor
 
 from enum import IntEnum
 class COLUMNS(IntEnum):
-      NAME=0
-      N=1
+	NAME=0
+	PATH=1
+	N=2
 
 list=k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 
@@ -18,7 +19,7 @@ def add(entr):
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
-	k.gtk_list_store_set(list, ip, COLUMNS.NAME, t, -1);
+	k.gtk_list_store_set(list, ip, COLUMNS.NAME, t, COLUMNS.PATH, t, -1);
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
@@ -39,6 +40,11 @@ def layout(window):
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes("", renderer, b"text", COLUMNS.NAME, None)
 	k.gtk_tree_view_append_column(tree, column)
+	#
+	renderer = k.gtk_cell_renderer_text_new()
+	column = k.gtk_tree_view_column_new_with_attributes("", renderer, b"text", COLUMNS.PATH, None)
+	k.gtk_tree_view_append_column(tree, column)
+	#
 	k.gtk_tree_view_set_headers_visible(tree,False)
 	k.gtk_scrolled_window_set_child (scroll,tree)
 	#
