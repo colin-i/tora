@@ -15,11 +15,11 @@ list=k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 def add(entr):
 	b=k.gtk_entry_get_buffer(entr)
 	t=k.gtk_entry_buffer_get_text(b)
-	t=addtor.add(t)
+	tex=addtor.add(t)
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
-	k.gtk_list_store_set(list, ip, COLUMNS.NAME, t, COLUMNS.PATH, t, -1);
+	k.gtk_list_store_set(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t, -1);
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
