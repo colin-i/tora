@@ -2,6 +2,7 @@ import gtk
 k=gtk.k
 
 import addtor
+import save
 
 from enum import IntEnum
 class COLUMNS(IntEnum):
@@ -19,7 +20,8 @@ def add(entr):
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
-	k.gtk_list_store_set(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t, -1);
+	k.gtk_list_store_set(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t, -1)
+	save.list(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
