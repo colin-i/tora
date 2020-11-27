@@ -1,8 +1,10 @@
-
-import bencode
+try:
+	import bencod
+except Exception:
+	from . import bencod
 
 def add(filename):
 	with open(filename,'rb') as f:
 		d=f.read()
-		cod=bencode.decode(d)
+		cod=bencod.decode(d)
 		return cod[0][b'info'][b'name']

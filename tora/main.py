@@ -4,10 +4,13 @@
 comment
 """
 
-import gtk
+try:
+	import gtk
+	import layout
+except Exception:
+	from . import gtk
+	from . import layout
 k=gtk.k
-
-import layout
 
 @gtk.CALLBACK
 def activate(app):

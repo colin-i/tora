@@ -1,8 +1,12 @@
-import gtk
+try:
+	import gtk
+	import addtor
+	import listtor
+except Exception:
+	from . import gtk
+	from . import addtor
+	from . import listtor
 k=gtk.k
-
-import addtor
-import save
 
 from enum import IntEnum
 class COLUMNS(IntEnum):
@@ -21,7 +25,7 @@ def add(entr):
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
 	k.gtk_list_store_set(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t, -1)
-	save.list(list)
+	listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
@@ -48,6 +52,7 @@ def layout(window):
 	k.gtk_tree_view_append_column(tree, column)
 	#
 	k.gtk_tree_view_set_headers_visible(tree,False)
+	listtor.read(list)
 	k.gtk_scrolled_window_set_child (scroll,tree)
 	#
 	k.g_signal_connect_data (b, b"clicked", add, e, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
