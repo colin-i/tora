@@ -29,6 +29,7 @@ def add(entr):
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
+	k.gtk_widget_set_hexpand(e,True)
 	b=k.gtk_button_new_with_label(b"+")
 	#
 	k.gtk_box_append(bx,e)

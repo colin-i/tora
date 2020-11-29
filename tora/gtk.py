@@ -72,6 +72,7 @@ k.gtk_tree_view_new_with_model.restype=c_void_p
 k.gtk_tree_view_new_with_model.argtypes = [c_void_p]
 k.gtk_tree_view_set_headers_visible.argtypes = [c_void_p,c_int]
 #W
+k.gtk_widget_set_hexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_show.argtypes=[c_void_p]
 k.gtk_window_get_size.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_window_is_maximized.argtypes=[c_void_p]
