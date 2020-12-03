@@ -12,7 +12,7 @@ except Exception:
 	from . import layout
 k=gtk.k
 
-@gtk.CALLBACK3
+@gtk.CALLBACK3b
 def forfnc(model,path,iter):
 	name=gtk.c_char_p()#:gtk.c_char_p except UnboundLocalError
 	path=gtk.c_char_p()

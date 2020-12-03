@@ -2,10 +2,12 @@ try:
 	import gtk
 	import addtor
 	import listtor
+	import conmenu
 except Exception:
 	from . import gtk
 	from . import addtor
 	from . import listtor
+	from . import conmenu
 k=gtk.k
 
 from enum import IntEnum
@@ -37,6 +39,7 @@ def layout(window):
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
 	scroll = k.gtk_scrolled_window_new ()
+	k.gtk_widget_set_vexpand(scroll,True)
 	#
 	s=k.gtk_tree_model_sort_new_with_model(list)
 	k.g_object_unref(list)
@@ -59,4 +62,7 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", add, e, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(box,bx)
 	k.gtk_box_append(box,scroll)
+	#
+	conmenu.ini(box,tree)
+	#
 	k.gtk_window_set_child(window,box)

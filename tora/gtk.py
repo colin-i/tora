@@ -16,8 +16,10 @@ G_TYPE_STRING=0x40
 import os
 from ctypes import *
 
+CALLBACK0b = CFUNCTYPE(c_bool)
+CALLBACK0 = CFUNCTYPE(c_void_p)
 CALLBACK = CFUNCTYPE(c_void_p,c_void_p)
-CALLBACK3 = CFUNCTYPE(c_bool,c_void_p,c_void_p,c_void_p)
+CALLBACK3b = CFUNCTYPE(c_bool,c_void_p,c_void_p,c_void_p)
 
 class GtkTreeIter(Structure):
     _fields_=[("stamp",c_int),("user_data",c_void_p),("user2_data",c_void_p),("user_data3",c_void_p)]
@@ -33,6 +35,7 @@ k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
 k.g_object_unref.argtypes = [c_void_p]
 k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
+k.g_timeout_add.argtypes=[c_int,c_void_p]
 #A
 k.gtk_application_new.restype=c_void_p
 k.gtk_application_new.argtypes=[c_void_p,c_int]
@@ -41,7 +44,6 @@ k.gtk_application_window_new.argtypes = [c_void_p]
 #B
 k.gtk_box_append.argtypes = [c_void_p,c_void_p]
 k.gtk_box_new.restype=c_void_p
-k.gtk_box_new.argtypes = [c_int,c_int]
 k.gtk_button_new_with_label.restype=c_void_p
 k.gtk_button_new_with_label.argtypes = [c_void_p]
 #C
@@ -54,7 +56,6 @@ k.gtk_entry_get_buffer.argtypes = [c_void_p]
 k.gtk_entry_new.restype=c_void_p
 #L
 k.gtk_list_store_new.restype=c_void_p
-k.gtk_list_store_new.argtypes = [c_int,c_int,c_int]
 k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 #S
 k.gtk_scrolled_window_new.restype=c_void_p
@@ -70,9 +71,12 @@ k.gtk_tree_view_column_new_with_attributes.restype=c_void_p
 k.gtk_tree_view_column_new_with_attributes.argtypes = [c_void_p,c_void_p,c_void_p,c_int,c_void_p]
 k.gtk_tree_view_new_with_model.restype=c_void_p
 k.gtk_tree_view_new_with_model.argtypes = [c_void_p]
+k.gtk_tree_view_set_activate_on_single_click.argtypes = [c_void_p,c_int]
 k.gtk_tree_view_set_headers_visible.argtypes = [c_void_p,c_int]
 #W
+k.gtk_widget_hide.argtypes=[c_void_p]
 k.gtk_widget_set_hexpand.argtypes=[c_void_p,c_int]
+k.gtk_widget_set_vexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_show.argtypes=[c_void_p]
 k.gtk_window_get_size.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_window_is_maximized.argtypes=[c_void_p]
