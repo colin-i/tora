@@ -32,9 +32,13 @@ def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
 	k.gtk_widget_set_hexpand(e,True)
-	b=k.gtk_button_new_with_label(b"+")
 	#
 	k.gtk_box_append(bx,e)
+	b=k.gtk_button_new_with_label(b"+")
+	k.gtk_box_append(bx,b)
+	k.g_signal_connect_data (b, b"clicked", add, e, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	#
+	b=k.gtk_button_new_with_label(chr(0x2699).encode())
 	k.gtk_box_append(bx,b)
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
@@ -59,7 +63,6 @@ def layout(window):
 	listtor.read(list)
 	k.gtk_scrolled_window_set_child (scroll,tree)
 	#
-	k.g_signal_connect_data (b, b"clicked", add, e, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(box,bx)
 	k.gtk_box_append(box,scroll)
 	#
