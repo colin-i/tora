@@ -3,11 +3,13 @@ try:
 	import addtor
 	import listtor
 	import conmenu
+	import sets
 except Exception:
 	from . import gtk
 	from . import addtor
 	from . import listtor
 	from . import conmenu
+	from . import sets
 k=gtk.k
 
 from enum import IntEnum
@@ -39,6 +41,7 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", add, e, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	#
 	b=k.gtk_button_new_with_label(chr(0x2699).encode())
+	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)

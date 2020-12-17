@@ -13,7 +13,7 @@ def write_opt(window):
 	dict={}
 	width=gtk.c_int()
 	height=gtk.c_int()
-	k.gtk_window_get_size (window, gtk.byref(width), gtk.byref(height))
+	k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
 	dict['max']=k.gtk_window_is_maximized(window)
 	dict['width']=width.value
 	dict['height']=height.value

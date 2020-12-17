@@ -3,5 +3,5 @@
 Not ready
 
 ```
-pip3 install --user .
+make
 ```

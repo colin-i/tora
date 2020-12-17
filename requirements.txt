@@ -1,0 +1,1 @@
+python-libtorrent==1.1.11
