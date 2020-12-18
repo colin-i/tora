@@ -5,6 +5,8 @@ except Exception:
 	from . import gtk
 k=gtk.k
 
+fold_bf=k.gtk_entry_buffer_new(None,-1)
+
 @gtk.CALLBACK
 def sets(window):
 	dialog = k.gtk_dialog_new_with_buttons (b"Settings",window,
@@ -19,7 +21,8 @@ def sets(window):
 	box=k.gtk_dialog_get_content_area(dialog)
 	t=k.gtk_label_new (b"Download Folder")
 	k.gtk_box_append(box, t)
-	e=k.gtk_entry_new()
+	global fold_bf
+	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_widget_set_hexpand(e,True)
 	k.gtk_box_append(box, e)
 	#

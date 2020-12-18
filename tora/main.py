@@ -8,10 +8,12 @@ try:
 	import gtk
 	import layout
 	import confs
+	import sets
 except Exception:
 	from . import gtk
 	from . import layout
 	from . import confs
+	from . import sets
 k=gtk.k
 
 @gtk.CALLBACK
@@ -28,6 +30,7 @@ def main():
 	actv=b"activate"
 	k.g_signal_connect_data (a, actv, activate, None, None, 0)
 	r=k.g_application_run (a,0,None)
+	k.g_object_unref(sets.fold_bf)
 	k.g_object_unref(a)
 	exit(r)
 
