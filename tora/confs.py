@@ -4,8 +4,10 @@ import json
 
 try:
 	import gtk
+	import sets
 except Exception:
 	from . import gtk
+	from . import sets
 k=gtk.k
 
 @gtk.CALLBACK
@@ -17,6 +19,7 @@ def write_opt(window):
 	dict['max']=k.gtk_window_is_maximized(window)
 	dict['width']=width.value
 	dict['height']=height.value
+	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode("utf-8")
 	with open(configs_filename, "w") as write_file:
 	    json.dump(dict, write_file)
 
@@ -28,5 +31,7 @@ def read_opt(window):
 			k.gtk_window_maximize(window)
 		else:
 			k.gtk_window_set_default_size(window,dict['width'],dict['height'])
+		a=dict['download_folder'].encode()
+		k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
 	except Exception:
 		pass

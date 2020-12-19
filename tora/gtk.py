@@ -62,6 +62,7 @@ k.gtk_dialog_new_with_buttons.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int
 k.gtk_entry_buffer_get_text.restype=c_char_p
 k.gtk_entry_buffer_get_text.argtypes = [c_void_p]
 k.gtk_entry_buffer_new.restype=c_void_p
+k.gtk_entry_buffer_set_text.argtypes = [c_void_p,c_void_p,c_int]
 k.gtk_entry_get_buffer.restype=c_void_p
 k.gtk_entry_get_buffer.argtypes = [c_void_p]
 k.gtk_entry_new.restype=c_void_p
