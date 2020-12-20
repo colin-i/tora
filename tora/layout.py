@@ -25,13 +25,15 @@ def columns(tree,w):
 	column = k.gtk_tree_view_column_new_with_attributes(b"Name", renderer, b"text", COLUMNS.NAME, None)
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
-	k.gtk_tree_view_column_set_fixed_width(column,w)
+	if(w>0):
+		k.gtk_tree_view_column_set_fixed_width(column,w)
 	#
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(b"Path", renderer, b"text", COLUMNS.PATH, None)
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
-	#k.gtk_tree_view_column_set_fixed_width(column,w)
+	if(w>0):
+		k.gtk_tree_view_column_set_fixed_width(column,w)
 colsdef=lambda:k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
 
