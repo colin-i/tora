@@ -4,14 +4,12 @@ try:
 	import listtor
 	import conmenu
 	import sets
-	import confs
 except Exception:
 	from . import gtk
 	from . import addtor
 	from . import listtor
 	from . import conmenu
 	from . import sets
-	from . import confs
 k=gtk.k
 
 from enum import IntEnum
@@ -20,20 +18,18 @@ class COLUMNS(IntEnum):
 	PATH=1
 	N=2
 
-def columns(tree):
-	a=int(confs.width/2)
-	#
+def columns(tree,w):
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(b"Name", renderer, b"text", COLUMNS.NAME, None)
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
-	k.gtk_tree_view_column_set_fixed_width(column,a)
+	k.gtk_tree_view_column_set_fixed_width(column,w)
 	#
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(b"Path", renderer, b"text", COLUMNS.PATH, None)
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
-	#k.gtk_tree_view_column_set_fixed_width(column,a)
+	#k.gtk_tree_view_column_set_fixed_width(column,w)
 colsdef=lambda:k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
 
@@ -61,12 +57,18 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
+	width=gtk.c_int()
+	dummy=gtk.c_int()#gtk_window_remembered_size is forcing *height=priv->height
+	k.gtk_window_get_default_size(window,gtk.byref(width),gtk.byref(dummy))
+	a=width.value
+	width=int(a/2)
+	#
 	s=k.gtk_tree_model_sort_new_with_model(list)
 	k.g_object_unref(list)
 	k.gtk_tree_sortable_set_sort_column_id(s,COLUMNS.NAME,gtk.GtkSortType.GTK_SORT_ASCENDING)
 	treeV=k.gtk_tree_view_new_with_model(s)
 	k.g_object_unref(s)
-	columns(treeV)
+	columns(treeV,width)
 	listtor.read(list)
 	#
 	scroll = k.gtk_scrolled_window_new ()
@@ -76,7 +78,7 @@ def layout(window):
 	overall=colsdef()
 	tree=k.gtk_tree_view_new_with_model(overall)
 	k.g_object_unref(overall)
-	columns(tree)
+	columns(tree,width)
 	k.gtk_tree_view_set_headers_visible(tree,False)
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)

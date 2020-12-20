@@ -38,7 +38,6 @@ def read(lst):
 			dat=json.load(f)
 		for x in dat:
 			k.gtk_list_store_append(lst,ip)
-			a=x['name'].encode()
-			k.gtk_list_store_set(lst, ip, layout.COLUMNS.NAME, a, layout.COLUMNS.PATH, x['path'].encode(), -1)
+			k.gtk_list_store_set(lst, ip, layout.COLUMNS.NAME, x['name'].encode(), layout.COLUMNS.PATH, x['path'].encode(), -1)
 	except Exception:
 		pass
