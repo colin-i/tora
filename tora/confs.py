@@ -10,6 +10,8 @@ except Exception:
 	from . import sets
 k=gtk.k
 
+width=0#segmentation at gtk_window_get_default_size height None
+
 @gtk.CALLBACK
 def write_opt(window):
 	dict={}
@@ -27,11 +29,13 @@ def read_opt(window):
 	try:
 		with open(configs_filename) as f:
 			dict=json.load(f)
-		if dict['max']:
-			k.gtk_window_maximize(window)
-		else:
-			k.gtk_window_set_default_size(window,dict['width'],dict['height'])
-		a=dict['download_folder'].encode()
-		k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
+			global width
+			width=dict['width']
+			if dict['max']:
+				k.gtk_window_maximize(window)
+			else:
+				k.gtk_window_set_default_size(window,width,dict['height'])
+			a=dict['download_folder'].encode()
+			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
 	except Exception:
 		pass

@@ -4,12 +4,14 @@ try:
 	import listtor
 	import conmenu
 	import sets
+	import confs
 except Exception:
 	from . import gtk
 	from . import addtor
 	from . import listtor
 	from . import conmenu
 	from . import sets
+	from . import confs
 k=gtk.k
 
 from enum import IntEnum
@@ -18,7 +20,22 @@ class COLUMNS(IntEnum):
 	PATH=1
 	N=2
 
-list=k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
+def columns(tree):
+	a=int(confs.width/2)
+	#
+	renderer = k.gtk_cell_renderer_text_new()
+	column = k.gtk_tree_view_column_new_with_attributes(b"Name", renderer, b"text", COLUMNS.NAME, None)
+	k.gtk_tree_view_append_column(tree, column)
+	k.gtk_tree_view_column_set_resizable(column,True)
+	k.gtk_tree_view_column_set_fixed_width(column,a)
+	#
+	renderer = k.gtk_cell_renderer_text_new()
+	column = k.gtk_tree_view_column_new_with_attributes(b"Path", renderer, b"text", COLUMNS.PATH, None)
+	k.gtk_tree_view_append_column(tree, column)
+	k.gtk_tree_view_column_set_resizable(column,True)
+	#k.gtk_tree_view_column_set_fixed_width(column,a)
+colsdef=lambda:k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
+list=colsdef()
 
 @gtk.CALLBACK
 def add(entr):
@@ -44,30 +61,28 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
-	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
-	scroll = k.gtk_scrolled_window_new ()
-	k.gtk_widget_set_vexpand(scroll,True)
-	#
 	s=k.gtk_tree_model_sort_new_with_model(list)
 	k.g_object_unref(list)
 	k.gtk_tree_sortable_set_sort_column_id(s,COLUMNS.NAME,gtk.GtkSortType.GTK_SORT_ASCENDING)
-	tree=k.gtk_tree_view_new_with_model(s)
+	treeV=k.gtk_tree_view_new_with_model(s)
 	k.g_object_unref(s)
-	#
-	renderer = k.gtk_cell_renderer_text_new()
-	column = k.gtk_tree_view_column_new_with_attributes("", renderer, b"text", COLUMNS.NAME, None)
-	k.gtk_tree_view_append_column(tree, column)
-	#
-	renderer = k.gtk_cell_renderer_text_new()
-	column = k.gtk_tree_view_column_new_with_attributes("", renderer, b"text", COLUMNS.PATH, None)
-	k.gtk_tree_view_append_column(tree, column)
-	#
-	k.gtk_tree_view_set_headers_visible(tree,False)
+	columns(treeV)
 	listtor.read(list)
-	k.gtk_scrolled_window_set_child (scroll,tree)
 	#
+	scroll = k.gtk_scrolled_window_new ()
+	k.gtk_widget_set_vexpand(scroll,True)
+	k.gtk_scrolled_window_set_child (scroll,treeV)
+	#
+	overall=colsdef()
+	tree=k.gtk_tree_view_new_with_model(overall)
+	k.g_object_unref(overall)
+	columns(tree)
+	k.gtk_tree_view_set_headers_visible(tree,False)
+	#
+	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
 	k.gtk_box_append(box,bx)
 	k.gtk_box_append(box,scroll)
+	k.gtk_box_append(box,tree)
 	#
 	conmenu.ini(box,tree)
 	#
