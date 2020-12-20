@@ -4,12 +4,14 @@ try:
 	import listtor
 	import conmenu
 	import sets
+	import confs
 except Exception:
 	from . import gtk
 	from . import addtor
 	from . import listtor
 	from . import conmenu
 	from . import sets
+	from . import confs
 k=gtk.k
 
 from enum import IntEnum
@@ -57,11 +59,7 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
-	width=gtk.c_int()
-	dummy=gtk.c_int()#gtk_window_remembered_size is forcing *height=priv->height
-	k.gtk_window_get_default_size(window,gtk.byref(width),gtk.byref(dummy))
-	a=width.value
-	width=int(a/2)
+	width=int(confs.width/2)#gtk_window_remembered_size is forcing *height=priv->height
 	#
 	s=k.gtk_tree_model_sort_new_with_model(list)
 	k.g_object_unref(list)
