@@ -1,7 +1,9 @@
 try:
 	import gtk
+	import meninfo
 except Exception:
 	from . import gtk
+	from . import meninfo
 k=gtk.k
 
 thnumber=0
@@ -26,6 +28,10 @@ def ini(parent,tree):
 	menu=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	uni=chr(0x2B07).encode()
 	b=k.gtk_button_new_with_label(uni)
+	k.gtk_box_append(menu,b)
+	uni=chr(0x24D8).encode()
+	b=k.gtk_button_new_with_label(uni)
+	k.g_signal_connect_data(b,b"clicked",meninfo.act,tree,None,0)
 	k.gtk_box_append(menu,b)
 	k.gtk_box_append(parent,menu)
 	k.gtk_widget_hide(menu)

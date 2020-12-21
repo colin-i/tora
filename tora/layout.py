@@ -34,6 +34,7 @@ def columns(tree,w):
 	k.gtk_tree_view_column_set_resizable(column,True)
 	if(w>0):
 		k.gtk_tree_view_column_set_fixed_width(column,w)
+
 colsdef=lambda:k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
 
@@ -86,6 +87,6 @@ def layout(window):
 	k.gtk_box_append(box,scroll)
 	k.gtk_box_append(box,tree)
 	#
-	conmenu.ini(box,tree)
+	conmenu.ini(box,treeV)
 	#
 	k.gtk_window_set_child(window,box)
