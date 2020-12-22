@@ -9,11 +9,13 @@ try:
 	import layout
 	import confs
 	import sets
+	import torrent
 except Exception:
 	from . import gtk
 	from . import layout
 	from . import confs
 	from . import sets
+	from . import torrent
 k=gtk.k
 
 @gtk.CALLBACK
@@ -32,6 +34,7 @@ def main():
 	r=k.g_application_run (a,0,None)
 	k.g_object_unref(sets.fold_bf)
 	k.g_object_unref(a)
+	torrent.close()
 	exit(r)
 
 if __name__ == "__main__":

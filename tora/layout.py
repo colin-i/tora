@@ -5,6 +5,7 @@ try:
 	import conmenu
 	import sets
 	import confs
+	import stats
 except Exception:
 	from . import gtk
 	from . import addtor
@@ -12,6 +13,7 @@ except Exception:
 	from . import conmenu
 	from . import sets
 	from . import confs
+	from . import stats
 k=gtk.k
 
 from enum import IntEnum
@@ -46,7 +48,7 @@ def add(entr):
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
-	k.gtk_list_store_set(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t, -1)
+	gtk.gtk_list_store_set2(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t)
 	listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
@@ -86,7 +88,7 @@ def layout(window):
 	k.gtk_box_append(box,bx)
 	k.gtk_box_append(box,scroll)
 	k.gtk_box_append(box,tree)
-	#
+	stats.ini(box)
 	conmenu.ini(box,treeV)
 	#
 	k.gtk_window_set_child(window,box)

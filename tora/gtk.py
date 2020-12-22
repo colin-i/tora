@@ -15,10 +15,10 @@ class GtkSortType(IntEnum):
 class GtkWrapMode(IntEnum):
 	GTK_WRAP_WORD_CHAR=3
 
-#define G_TYPE_FUNDAMENTAL_SHIFT (2)
-#define G_TYPE_MAKE_FUNDAMENTAL(x) ((GType) ((x) << G_TYPE_FUNDAMENTAL_SHIFT))
-#define G_TYPE_STRING G_TYPE_MAKE_FUNDAMENTAL (16)
-G_TYPE_STRING=0x40
+G_TYPE_FUNDAMENTAL_SHIFT = 2
+G_TYPE_MAKE_FUNDAMENTAL=lambda x: x << G_TYPE_FUNDAMENTAL_SHIFT
+G_TYPE_STRING=G_TYPE_MAKE_FUNDAMENTAL (16)
+G_TYPE_INT=G_TYPE_MAKE_FUNDAMENTAL (6)
 
 import os
 from ctypes import *
@@ -30,14 +30,14 @@ CALLBACK2 = CFUNCTYPE(c_void_p,c_void_p,c_void_p)
 CALLBACK3b = CFUNCTYPE(c_bool,c_void_p,c_void_p,c_void_p)
 
 class GtkTreeIter(Structure):
-    _fields_=[("stamp",c_int),("user_data",c_void_p),("user2_data",c_void_p),("user_data3",c_void_p)]
+	_fields_=[("stamp",c_int),("user_data",c_void_p),("user2_data",c_void_p),("user_data3",c_void_p)]
 
 path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
 os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
 k = cdll.LoadLibrary("libgtk-4.so")#.0.9905.0")
 #restype default is C int
 #argtypes no default. c_void_p is python int. pointers must be announced
-#two different variadic must be treated with casts, or use valist versions
+#variadics are troubles
 
 def gtk_tree_model_get(a,b,i1,p1):
 	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,POINTER(c_char_p),c_int]
@@ -45,6 +45,12 @@ def gtk_tree_model_get(a,b,i1,p1):
 def gtk_tree_model_get2(a,b,i1,p1,i2,p2):
 	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,POINTER(c_char_p),c_int,POINTER(c_char_p),c_int]
 	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,-1)
+def gtk_list_store_set2(a,b,i1,p1,i2,p2):
+	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_list_store_set(a,b,i1,p1,i2,p2,-1)
+def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
+	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_int,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
 
 k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
@@ -63,6 +69,7 @@ k.gtk_box_new.restype=c_void_p
 k.gtk_button_new_with_label.restype=c_void_p
 k.gtk_button_new_with_label.argtypes = [c_void_p]
 #C
+k.gtk_cell_renderer_progress_new.restype=c_void_p
 k.gtk_cell_renderer_text_new.restype=c_void_p
 #D
 k.gtk_dialog_get_content_area.restype=c_void_p
@@ -83,8 +90,8 @@ k.gtk_entry_new_with_buffer.argtypes = [c_void_p]
 k.gtk_label_new.restype=c_void_p
 k.gtk_label_new.argtypes = [c_void_p]
 #LI
+k.gtk_list_store_append.argtypes = [c_void_p,c_void_p]
 k.gtk_list_store_new.restype=c_void_p
-k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 #S
 k.gtk_scrolled_window_new.restype=c_void_p
 k.gtk_scrolled_window_set_child.argtypes = [c_void_p,c_void_p]

@@ -9,7 +9,7 @@ except Exception:
 k=gtk.k
 
 def go(path,window):
-	with open(path.value.decode("utf-8"),'rb') as f:
+	with open(path,'rb') as f:
 		d=f.read()
 		a=bencod.decode(d)
 		dialog = k.gtk_dialog_new_with_buttons (b"Info",window,
