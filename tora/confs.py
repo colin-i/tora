@@ -10,7 +10,6 @@ except Exception:
 	from . import sets
 k=gtk.k
 
-@gtk.CALLBACK
 def write_opt(window):
 	dict={}
 	width=gtk.c_int()

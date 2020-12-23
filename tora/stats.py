@@ -45,10 +45,24 @@ state_str = ['queued'.encode(), 'checking'.encode(), 'downloading metadata'.enco
 
 def show(h):
 	s = h.status()
-	gtk.gtk_list_store_set5(list, ip,
-		COLUMNS.progress, int(s.progress * 100),
-		COLUMNS.download_rate, str(s.download_rate / 1000).encode(),
-		COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
-		COLUMNS.num_peers, str(s.num_peers).encode(),
-		COLUMNS.state, state_str[s.state])
-	return h.is_seed()
+	if h.is_seed():
+		val=gtk.c_int()
+		gtk.gtk_tree_model_get(list,ip,COLUMNS.progress,gtk.byref(val))
+		if val.value<100:
+			gtk.gtk_list_store_set5(list, ip,
+				COLUMNS.progress, 100,
+				COLUMNS.download_rate, str(0),
+				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
+				COLUMNS.num_peers, str(s.num_peers).encode(),
+				COLUMNS.state, state_str[s.state])
+		else:
+			gtk.gtk_list_store_set2(list, ip,
+				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
+				COLUMNS.num_peers, str(s.num_peers).encode())
+	else:
+		gtk.gtk_list_store_set5(list, ip,
+			COLUMNS.progress, int(s.progress * 100),
+			COLUMNS.download_rate, str(s.download_rate / 1000).encode(),
+			COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
+			COLUMNS.num_peers, str(s.num_peers).encode(),
+			COLUMNS.state, state_str[s.state])

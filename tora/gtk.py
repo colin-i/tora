@@ -24,7 +24,6 @@ import os
 from ctypes import *
 
 CALLBACK0b = CFUNCTYPE(c_bool)
-CALLBACK0 = CFUNCTYPE(c_void_p)
 CALLBACK = CFUNCTYPE(c_void_p,c_void_p)
 CALLBACK2 = CFUNCTYPE(c_void_p,c_void_p,c_void_p)
 CALLBACK3b = CFUNCTYPE(c_bool,c_void_p,c_void_p,c_void_p)
@@ -40,10 +39,10 @@ k = cdll.LoadLibrary("libgtk-4.so")#.0.9905.0")
 #variadics are troubles
 
 def gtk_tree_model_get(a,b,i1,p1):
-	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,POINTER(c_char_p),c_int]
+	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_tree_model_get(a,b,i1,p1,-1)
 def gtk_tree_model_get2(a,b,i1,p1,i2,p2):
-	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,POINTER(c_char_p),c_int,POINTER(c_char_p),c_int]
+	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,-1)
 def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
@@ -105,8 +104,15 @@ k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
 k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
 #TM
 k.gtk_tree_model_foreach.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_model_get_path.restype=c_void_p
+k.gtk_tree_model_get_path.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_sort_new_with_model.restype=c_void_p
 k.gtk_tree_model_sort_new_with_model.argtypes = [c_void_p]
+#TP
+k.gtk_tree_path_free.restype=c_void_p
+k.gtk_tree_path_free.argtypes = [c_void_p]
+k.gtk_tree_path_get_indices.restype=POINTER(c_int)
+k.gtk_tree_path_get_indices.argtypes = [c_void_p]
 #TS
 k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]

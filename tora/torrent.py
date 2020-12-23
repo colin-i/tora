@@ -15,23 +15,36 @@ k=gtk.k
 
 ses = lt.session()
 ses.listen_on(6881, 6891)
+han=[]
+timer=None
 
-def fresh():
-	if stats.show(h):
-		timer.cancel()
-
-@gtk.CALLBACK
-def download(tree):
-	treesel.text0(start,tree)
-
-def start(path):
-	info = lt.torrent_info(path)
-	p=k.gtk_entry_buffer_get_text(sets.fold_bf).decode("utf-8")
-	global h
-	h = ses.add_torrent({'ti': info, 'save_path': p})
+def timeon():
 	global timer
 	timer=threading.Timer(5.0, fresh)
 	timer.start()
 
+def fresh():
+	stats.show(h)
+	timeon()
+
+def pos(i):
+	if timer:
+		timer.cancel()
+	timeon()
+	global h
+	h=han[i]
+
+def sel(tree):
+	treesel.position(pos,tree)
+
+def open(path):
+	info = lt.torrent_info(path)
+	p=k.gtk_entry_buffer_get_text(sets.fold_bf).decode("utf-8")
+	global han
+	han.append(ses.add_torrent({'ti': info, 'save_path': p}))
+
 def close():
-	ses.remove_torrent(h)
+	for x in han:
+		ses.remove_torrent(x)
+	if timer:
+		timer.cancel()

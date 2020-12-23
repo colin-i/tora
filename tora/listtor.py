@@ -7,9 +7,11 @@ config_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'conf
 try:
 	import gtk
 	import layout
+	import torrent
 except Exception:
 	from . import gtk
 	from . import layout
+	from . import torrent
 k=gtk.k
 
 @gtk.CALLBACK3b
@@ -28,7 +30,7 @@ def write(lst):
 	arr=[]
 	k.gtk_tree_model_foreach(lst,forfnc)
 	with open(config_filename, "w") as write_file:
-	    json.dump(arr, write_file)
+		json.dump(arr, write_file)
 
 def read(lst):
 	i=gtk.GtkTreeIter()
@@ -38,6 +40,8 @@ def read(lst):
 			dat=json.load(f)
 		for x in dat:
 			k.gtk_list_store_append(lst,ip)
-			gtk.gtk_list_store_set2(lst, ip, layout.COLUMNS.NAME, x['name'].encode(), layout.COLUMNS.PATH, x['path'].encode())
+			p=x['path']
+			gtk.gtk_list_store_set2(lst, ip, layout.COLUMNS.NAME, x['name'].encode(), layout.COLUMNS.PATH, p.encode())
+			torrent.open(p)
 	except Exception:
 		pass

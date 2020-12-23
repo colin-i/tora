@@ -6,6 +6,7 @@ try:
 	import sets
 	import confs
 	import stats
+	import torrent
 except Exception:
 	from . import gtk
 	from . import addtor
@@ -14,6 +15,7 @@ except Exception:
 	from . import sets
 	from . import confs
 	from . import stats
+	from . import torrent
 k=gtk.k
 
 from enum import IntEnum
@@ -49,6 +51,7 @@ def add(entr):
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
 	gtk.gtk_list_store_set2(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t)
+	torrent.open(t.decode("utf-8"))
 	listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)

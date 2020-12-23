@@ -19,10 +19,15 @@ except Exception:
 k=gtk.k
 
 @gtk.CALLBACK
+def closing(window):
+	confs.write_opt(window)
+	torrent.close()
+	
+@gtk.CALLBACK
 def activate(app):
 	window = k.gtk_application_window_new (app)
 	k.gtk_window_set_title (window, b"Torrent")
-	k.g_signal_connect_data (window, b"close-request", confs.write_opt, None, None, 0)
+	k.g_signal_connect_data (window, b"close-request", closing, None, None, 0)
 	confs.read_opt(window)
 	layout.layout(window)
 	k.gtk_widget_show (window)
@@ -34,7 +39,6 @@ def main():
 	r=k.g_application_run (a,0,None)
 	k.g_object_unref(sets.fold_bf)
 	k.g_object_unref(a)
-	torrent.close()
 	exit(r)
 
 if __name__ == "__main__":
