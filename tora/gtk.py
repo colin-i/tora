@@ -33,7 +33,7 @@ class GtkTreeIter(Structure):
 
 path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
 os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
-k = cdll.LoadLibrary("libgtk-4.so")#.0.9905.0")
+k = cdll.LoadLibrary("libgtk-4.so")#.1")
 #restype default is C int
 #argtypes no default. c_void_p is python int. pointers must be announced
 #variadics are troubles
@@ -47,6 +47,9 @@ def gtk_tree_model_get2(a,b,i1,p1,i2,p2):
 def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,-1)
+def gtk_list_store_set3(a,b,i1,p1,i2,p2,i3,p3):
+	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,-1)
 def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_int,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
@@ -102,6 +105,10 @@ k.gtk_text_view_get_buffer.argtypes = [c_void_p]
 k.gtk_text_view_new.restype=c_void_p
 k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
 k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
+#TI
+k.gtk_tree_iter_copy.restype=c_void_p
+k.gtk_tree_iter_copy.argtypes = [c_void_p]
+k.gtk_tree_iter_free.argtypes = [c_void_p]
 #TM
 k.gtk_tree_model_foreach.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_get_path.restype=c_void_p

@@ -21,7 +21,6 @@ def sets(window):
 	box=k.gtk_dialog_get_content_area(dialog)
 	t=k.gtk_label_new (b"Download Folder")
 	k.gtk_box_append(box, t)
-	global fold_bf
 	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_widget_set_hexpand(e,True)
 	k.gtk_box_append(box, e)

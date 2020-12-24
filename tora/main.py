@@ -10,18 +10,21 @@ try:
 	import confs
 	import sets
 	import torrent
+	import overall
 except Exception:
 	from . import gtk
 	from . import layout
 	from . import confs
 	from . import sets
 	from . import torrent
+	from . import overall
 k=gtk.k
 
 @gtk.CALLBACK
 def closing(window):
 	confs.write_opt(window)
 	torrent.close()
+	overall.close()
 	
 @gtk.CALLBACK
 def activate(app):

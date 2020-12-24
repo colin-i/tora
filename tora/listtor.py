@@ -42,6 +42,6 @@ def read(lst):
 			k.gtk_list_store_append(lst,ip)
 			p=x['path']
 			gtk.gtk_list_store_set2(lst, ip, layout.COLUMNS.NAME, x['name'].encode(), layout.COLUMNS.PATH, p.encode())
-			torrent.open(p)
+			torrent.open(p,ip)
 	except Exception:
 		pass

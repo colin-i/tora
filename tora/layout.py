@@ -7,6 +7,7 @@ try:
 	import confs
 	import stats
 	import torrent
+	import overall
 except Exception:
 	from . import gtk
 	from . import addtor
@@ -16,30 +17,34 @@ except Exception:
 	from . import confs
 	from . import stats
 	from . import torrent
+	from . import overall
 k=gtk.k
 
 from enum import IntEnum
 class COLUMNS(IntEnum):
 	NAME=0
 	PATH=1
-	N=2
+	UP=2
+	DOWN=3
+	RATIO=4
+	N=5
 
-def columns(tree,w):
+def columns_add(tree,n,i,w):
 	renderer = k.gtk_cell_renderer_text_new()
-	column = k.gtk_tree_view_column_new_with_attributes(b"Name", renderer, b"text", COLUMNS.NAME, None)
+	column = k.gtk_tree_view_column_new_with_attributes(n, renderer, b"text", i, None)
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
 	if(w>0):
 		k.gtk_tree_view_column_set_fixed_width(column,w)
-	#
-	renderer = k.gtk_cell_renderer_text_new()
-	column = k.gtk_tree_view_column_new_with_attributes(b"Path", renderer, b"text", COLUMNS.PATH, None)
-	k.gtk_tree_view_append_column(tree, column)
-	k.gtk_tree_view_column_set_resizable(column,True)
-	if(w>0):
-		k.gtk_tree_view_column_set_fixed_width(column,w)
+def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
+	w=int(w/COLUMNS.N)
+	columns_add(tree,b"Name",COLUMNS.NAME,w)
+	columns_add(tree,b"Path",COLUMNS.PATH,w)
+	columns_add(tree,b"Uploaded",COLUMNS.UP,w)
+	columns_add(tree,b"Downloaded",COLUMNS.DOWN,w)
+	columns_add(tree,b"Ratio",COLUMNS.RATIO,w)
 
-colsdef=lambda:k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
+colsdef=lambda:k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
 
 @gtk.CALLBACK
@@ -51,7 +56,7 @@ def add(entr):
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip);
 	gtk.gtk_list_store_set2(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t)
-	torrent.open(t.decode("utf-8"))
+	torrent.open(t.decode("utf-8"),ip)
 	listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
@@ -67,24 +72,22 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
-	width=int(confs.width/2)#gtk_window_remembered_size is forcing *height=priv->height
-	#
 	s=k.gtk_tree_model_sort_new_with_model(list)
 	k.g_object_unref(list)
 	k.gtk_tree_sortable_set_sort_column_id(s,COLUMNS.NAME,gtk.GtkSortType.GTK_SORT_ASCENDING)
 	treeV=k.gtk_tree_view_new_with_model(s)
 	k.g_object_unref(s)
-	columns(treeV,width)
+	columns(treeV,confs.width)
 	listtor.read(list)
 	#
 	scroll = k.gtk_scrolled_window_new ()
 	k.gtk_widget_set_vexpand(scroll,True)
 	k.gtk_scrolled_window_set_child (scroll,treeV)
 	#
-	overall=colsdef()
-	tree=k.gtk_tree_view_new_with_model(overall)
-	k.g_object_unref(overall)
-	columns(tree,width)
+	lst=overall.ini(colsdef())
+	tree=k.gtk_tree_view_new_with_model(lst)
+	k.g_object_unref(lst)
+	columns(tree,confs.width)
 	k.gtk_tree_view_set_headers_visible(tree,False)
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
