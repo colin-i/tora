@@ -29,7 +29,7 @@ CALLBACK2 = CFUNCTYPE(c_void_p,c_void_p,c_void_p)
 CALLBACK3b = CFUNCTYPE(c_bool,c_void_p,c_void_p,c_void_p)
 
 class GtkTreeIter(Structure):
-	_fields_=[("stamp",c_int),("user_data",c_void_p),("user2_data",c_void_p),("user_data3",c_void_p)]
+	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
 
 path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
 os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
@@ -50,8 +50,11 @@ def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 def gtk_list_store_set3(a,b,i1,p1,i2,p2,i3,p3):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,-1)
+def gtk_list_store_set4(a,b,i1,v1,i2,p2,i3,p3,i4,p4):
+	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,-1)
 def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
-	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_int,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
 
 k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
@@ -120,6 +123,8 @@ k.gtk_tree_path_free.restype=c_void_p
 k.gtk_tree_path_free.argtypes = [c_void_p]
 k.gtk_tree_path_get_indices.restype=POINTER(c_int)
 k.gtk_tree_path_get_indices.argtypes = [c_void_p]
+k.gtk_tree_path_to_string.restype=c_void_p
+k.gtk_tree_path_to_string.argtypes = [c_void_p]
 #TS
 k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]

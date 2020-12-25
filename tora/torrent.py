@@ -15,13 +15,14 @@ k=gtk.k
 
 ses = lt.session()
 ses.listen_on(6881, 6891)
-han=[]
+torrents=[]
 timer=None
 
 class tor():
-	def __init__(self,h,it):
+	def __init__(self,h,it,u):
 		self.h=h
 		self.it=it
+		self.u=u
 
 def timeon():
 	global timer
@@ -37,19 +38,19 @@ def pos(i):
 		timer.cancel()
 	timeon()
 	global h
-	h=han[i].h
+	h=torrents[i].h
 
 def sel(tree):
 	treesel.position(pos,tree)
 
-def open(path,it):
+def open(path,it,u):
 	info = lt.torrent_info(path)
 	p=k.gtk_entry_buffer_get_text(sets.fold_bf).decode("utf-8")
-	t=tor(ses.add_torrent({'ti': info, 'save_path': p}),k.gtk_tree_iter_copy(it))
-	han.append(t)
+	t=tor(ses.add_torrent({'ti': info, 'save_path': p}),k.gtk_tree_iter_copy(it),u)
+	torrents.append(t)
 
 def close():
-	for x in han:
+	for x in torrents:
 		ses.remove_torrent(x.h)
 		k.gtk_tree_iter_free(x.it)
 	if timer:

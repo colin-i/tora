@@ -11,6 +11,7 @@ try:
 	import sets
 	import torrent
 	import overall
+	import listtor
 except Exception:
 	from . import gtk
 	from . import layout
@@ -18,10 +19,12 @@ except Exception:
 	from . import sets
 	from . import torrent
 	from . import overall
+	from . import listtor
 k=gtk.k
 
 @gtk.CALLBACK
 def closing(window):
+	listtor.write(layout.list)
 	confs.write_opt(window)
 	torrent.close()
 	overall.close()

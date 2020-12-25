@@ -33,10 +33,10 @@ def div_ratio(a,b):
 def fresh():
 	up=0
 	down=0
-	for tor in torrent.han:
+	for tor in torrent.torrents:
 		s=tor.h.status()
-		u=s.total_download
-		d=s.total_upload
+		u=tor.u+s.total_upload
+		d=s.total_download
 		gtk.gtk_list_store_set3(layout.list,tor.it,layout.COLUMNS.UP,st(u),layout.COLUMNS.DOWN,st(d),layout.COLUMNS.RATIO,div_ratio(u,d))
 		up+=u
 		down+=d
