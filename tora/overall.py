@@ -35,8 +35,8 @@ def fresh():
 	down=0
 	for tor in torrent.torrents:
 		s=tor.h.status()
-		u=tor.u+s.total_upload
-		d=s.total_download
+		u=tor.u+s.total_payload_upload#if pause this will be 0, all_time_upload
+		d=s.total_done
 		gtk.gtk_list_store_set3(layout.list,tor.it,layout.COLUMNS.UP,st(u),layout.COLUMNS.DOWN,st(d),layout.COLUMNS.RATIO,div_ratio(u,d))
 		up+=u
 		down+=d
