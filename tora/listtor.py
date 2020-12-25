@@ -37,8 +37,8 @@ def forfnc(model,path,iter):
 	name=gtk.c_char_p()#:gtk.c_char_p except UnboundLocalError
 	path=gtk.c_char_p()
 	gtk.gtk_tree_model_get2 (model, iter, layout.COLUMNS.NAME, gtk.byref(name), layout.COLUMNS.PATH, gtk.byref(path))
-	dict={'name':name.value.decode("utf-8"),'path':path.value.decode("utf-8"),
-		'upload':int(val.value.decode("utf-8"))}
+	dict={'name':name.value.decode(),'path':path.value.decode(),
+		'upload':int(val.value.decode())}
 	k.g_free(name)
 	k.g_free(path)
 	arr.append(dict)

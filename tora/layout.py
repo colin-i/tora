@@ -57,7 +57,7 @@ def add(entr):
 	k.gtk_list_store_append(list,ip);
 	gtk.gtk_list_store_set4(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
 		COLUMNS.UP,b"0",COLUMNS.DOWN,b"0")
-	torrent.open(t.decode("utf-8"),ip,0)
+	torrent.open(t.decode(),ip,0)
 	listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)

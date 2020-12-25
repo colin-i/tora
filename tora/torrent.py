@@ -45,7 +45,7 @@ def sel(tree):
 
 def open(path,it,u):
 	info = lt.torrent_info(path)
-	p=k.gtk_entry_buffer_get_text(sets.fold_bf).decode("utf-8")
+	p=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
 	t=tor(ses.add_torrent({'ti': info, 'save_path': p}),k.gtk_tree_iter_copy(it),u)
 	torrents.append(t)
 

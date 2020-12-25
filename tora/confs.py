@@ -18,7 +18,7 @@ def write_opt(window):
 	dict['max']=k.gtk_window_is_maximized(window)
 	dict['width']=width.value
 	dict['height']=height.value
-	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode("utf-8")
+	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
 	with open(configs_filename, "w") as write_file:
 	    json.dump(dict, write_file)
 
