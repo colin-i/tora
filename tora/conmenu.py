@@ -1,3 +1,5 @@
+import threading
+
 try:
 	import gtk
 	import meninfo
@@ -8,23 +10,22 @@ except Exception:
 	from . import torrent
 k=gtk.k
 
-thnumber=0
+timer=None
 
-@gtk.CALLBACK0b
 def menutime():
-	global thnumber
+	global timer
 	k.gtk_widget_hide(menu)
-	thnumber=0
-	return False
+	timer=None
 
 @gtk.CALLBACK
 def click(tree):
-	global thnumber
-	if ( thnumber != 0):
-		k.g_source_remove(thnumber)
-	thnumber=k.g_timeout_add(10000,menutime)#,NULL)
+	global timer
+	if timer:
+		timer.cancel()
 	k.gtk_widget_show(menu)
 	torrent.sel(tree)
+	timer=threading.Timer(10.0, menutime)
+	timer.start()
 
 def ini(parent,tree):
 	global menu
@@ -32,6 +33,9 @@ def ini(parent,tree):
 	uni=chr(0x24D8).encode()
 	b=k.gtk_button_new_with_label(uni)
 	k.g_signal_connect_data(b,b"clicked",meninfo.act,tree,None,0)
+	k.gtk_box_append(menu,b)
+	uni=chr(0x1F5D1).encode()
+	b=k.gtk_button_new_with_label(uni)
 	k.gtk_box_append(menu,b)
 	k.gtk_box_append(parent,menu)
 	k.gtk_widget_hide(menu)

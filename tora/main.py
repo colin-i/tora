@@ -28,7 +28,7 @@ def closing(window):
 	confs.write_opt(window)
 	torrent.close()
 	overall.close()
-	
+
 @gtk.CALLBACK
 def activate(app):
 	window = k.gtk_application_window_new (app)

@@ -23,9 +23,6 @@ def position(f,tree):
 	i=gtk.byref(it)
 	sl=k.gtk_tree_view_get_selection(tree)
 	k.gtk_tree_selection_get_selected(sl,gtk.byref(mod),i)
-	#
-	path=k.gtk_tree_model_get_path ( mod , i )
-	ind=k.gtk_tree_path_get_indices ( path )
-	ix=ind[0]
-	k.gtk_tree_path_free(path)
-	f(ix)
+	p=gtk.c_int()
+	gtk.gtk_tree_model_get(mod,i,layout.COLUMNS.INDEX,gtk.byref(p))
+	f(p.value)

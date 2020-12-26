@@ -23,10 +23,8 @@ G_TYPE_INT=G_TYPE_MAKE_FUNDAMENTAL (6)
 import os
 from ctypes import *
 
-CALLBACK0b = CFUNCTYPE(c_bool)
-CALLBACK = CFUNCTYPE(c_void_p,c_void_p)
-CALLBACK2 = CFUNCTYPE(c_void_p,c_void_p,c_void_p)
-CALLBACK3b = CFUNCTYPE(c_bool,c_void_p,c_void_p,c_void_p)
+CALLBACK = CFUNCTYPE(None,c_void_p)
+CALLBACK2 = CFUNCTYPE(None,c_void_p,c_void_p)
 
 class GtkTreeIter(Structure):
 	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
@@ -41,18 +39,15 @@ k = cdll.LoadLibrary("libgtk-4.so")#.1")
 def gtk_tree_model_get(a,b,i1,p1):
 	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_tree_model_get(a,b,i1,p1,-1)
-def gtk_tree_model_get2(a,b,i1,p1,i2,p2):
-	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
-	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,-1)
+def gtk_tree_model_get3(a,b,i1,p1,i2,p2,i3,p3):
+	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,i3,p3,-1)
 def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,-1)
 def gtk_list_store_set3(a,b,i1,p1,i2,p2,i3,p3):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,-1)
-def gtk_list_store_set4(a,b,i1,v1,i2,p2,i3,p3,i4,p4):
-	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
-	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,-1)
 def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
@@ -61,7 +56,6 @@ k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
 k.g_object_unref.argtypes = [c_void_p]
 k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
-k.g_timeout_add.argtypes=[c_int,c_void_p]
 #A
 k.gtk_application_new.restype=c_void_p
 k.gtk_application_new.argtypes=[c_void_p,c_int]
@@ -108,23 +102,11 @@ k.gtk_text_view_get_buffer.argtypes = [c_void_p]
 k.gtk_text_view_new.restype=c_void_p
 k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
 k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
-#TI
-k.gtk_tree_iter_copy.restype=c_void_p
-k.gtk_tree_iter_copy.argtypes = [c_void_p]
-k.gtk_tree_iter_free.argtypes = [c_void_p]
 #TM
-k.gtk_tree_model_foreach.argtypes = [c_void_p,c_void_p]
-k.gtk_tree_model_get_path.restype=c_void_p
-k.gtk_tree_model_get_path.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_model_iter_next.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_sort_new_with_model.restype=c_void_p
 k.gtk_tree_model_sort_new_with_model.argtypes = [c_void_p]
-#TP
-k.gtk_tree_path_free.restype=c_void_p
-k.gtk_tree_path_free.argtypes = [c_void_p]
-k.gtk_tree_path_get_indices.restype=POINTER(c_int)
-k.gtk_tree_path_get_indices.argtypes = [c_void_p]
-k.gtk_tree_path_to_string.restype=c_void_p
-k.gtk_tree_path_to_string.argtypes = [c_void_p]
 #TS
 k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]
