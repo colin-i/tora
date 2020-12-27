@@ -45,10 +45,10 @@ def read(lst):
 		for x in dat:
 			k.gtk_list_store_append(lst,ip)
 			p=x['path']
-			gtk.gtk_list_store_set5(lst, ip,
+			torrent.open(p,x['upload'])
+			gtk.gtk_list_store_set4(lst, ip,
 				layout.COLUMNS.NAME, x['name'].encode(),
 				layout.COLUMNS.PATH, p.encode(),
-				layout.COLUMNS.UP,b"0",layout.COLUMNS.DOWN,b"0",
-				layout.COLUMNS.INDEX,torrent.open(p,x['upload']))
+				layout.COLUMNS.UP,b"0",layout.COLUMNS.DOWN,b"0")
 	except Exception:
 		pass

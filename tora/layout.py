@@ -27,9 +27,7 @@ class COLUMNS(IntEnum):
 	UP=2
 	DOWN=3
 	RATIO=4
-	visible=5
-	INDEX=5
-	n=6
+	n=5
 
 def columns_add(tree,n,i,w):
 	renderer = k.gtk_cell_renderer_text_new()
@@ -39,14 +37,14 @@ def columns_add(tree,n,i,w):
 	if(w>0):
 		k.gtk_tree_view_column_set_fixed_width(column,w)
 def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
-	w=int(w/COLUMNS.visible)
+	w=int(w/COLUMNS.n)
 	columns_add(tree,b"Name",COLUMNS.NAME,w)
 	columns_add(tree,b"Path",COLUMNS.PATH,w)
 	columns_add(tree,b"Uploaded",COLUMNS.UP,w)
 	columns_add(tree,b"Downloaded",COLUMNS.DOWN,w)
 	columns_add(tree,b"Ratio",COLUMNS.RATIO,w)
 
-colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_INT)
+colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
 
 @gtk.CALLBACK
@@ -57,8 +55,9 @@ def add(entr):
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip)
-	gtk.gtk_list_store_set5(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
-		COLUMNS.UP,b"0",COLUMNS.DOWN,b"0",COLUMNS.INDEX,torrent.open(t.decode(),0))
+	torrent.open(t.decode(),0)
+	gtk.gtk_list_store_set4(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
+		COLUMNS.UP,b"0",COLUMNS.DOWN,b"0")
 	listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)

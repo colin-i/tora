@@ -35,10 +35,9 @@ def fresh():
 	ir=gtk.byref(i)
 	mod=layout.list
 	b=k.gtk_tree_model_get_iter_first(mod,ir)
+	j=0
 	while b:
-		p=gtk.c_int()
-		gtk.gtk_tree_model_get(mod,ir,layout.COLUMNS.INDEX,gtk.byref(p))
-		tor=torrent.torrents[p.value]
+		tor=torrent.torrents[j]
 		s=tor.h.status()
 		u=tor.u+s.total_payload_upload#if pause this will be 0, all_time_upload
 		d=s.total_done
@@ -46,6 +45,7 @@ def fresh():
 		up+=u
 		down+=d
 		b=k.gtk_tree_model_iter_next(mod,ir)
+		j+=1
 	gtk.gtk_list_store_set3(list,it,layout.COLUMNS.UP,st(up),layout.COLUMNS.DOWN,st(down),layout.COLUMNS.RATIO,div_ratio(up,down))
 	return True
 

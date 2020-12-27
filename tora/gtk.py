@@ -50,6 +50,9 @@ def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 def gtk_list_store_set3(a,b,i1,p1,i2,p2,i3,p3):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,-1)
+def gtk_list_store_set4(a,b,i1,p1,i2,p2,i3,p3,i4,p4):
+	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,i4,p4,-1)
 def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
@@ -109,10 +112,18 @@ k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
 k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
 #TM
 k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_model_get_path.restype=c_void_p
+k.gtk_tree_model_get_path.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_iter_next.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_sort_convert_iter_to_child_iter.argtypes = [c_void_p,c_void_p,c_void_p]
+k.gtk_tree_model_sort_convert_path_to_child_path.restype=c_void_p
+k.gtk_tree_model_sort_convert_path_to_child_path.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_sort_new_with_model.restype=c_void_p
 k.gtk_tree_model_sort_new_with_model.argtypes = [c_void_p]
+#TP
+k.gtk_tree_path_free.argtypes = [c_void_p]
+k.gtk_tree_path_get_indices.restype=POINTER(c_int)
+k.gtk_tree_path_get_indices.argtypes = [c_void_p]
 #TS
 k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]
