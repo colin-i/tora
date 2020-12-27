@@ -1,5 +1,4 @@
 import libtorrent as lt
-import threading
 
 try:
 	import gtk
@@ -16,7 +15,7 @@ k=gtk.k
 ses = lt.session()
 ses.listen_on(6881, 6891)
 torrents=[]
-timer=None
+timer=0
 appender=0
 
 class tor():
@@ -25,19 +24,16 @@ class tor():
 		self.ix=ix
 		self.u=u
 
-def timeon():
-	global timer
-	timer=threading.Timer(5.0, fresh)
-	timer.start()
-
+@gtk.CALLBACK0i
 def fresh():
 	stats.show(h)
-	timeon()
+	return True
 
 def pos(i):
-	if timer:
-		timer.cancel()
-	timeon()
+	global timer
+	if timer>0:
+		k.g_source_remove(timer)
+	timer=k.g_timeout_add(5000, fresh)
 	global h
 	h=torrents[i].h
 
@@ -57,5 +53,12 @@ def open(path,u):
 def close():
 	for x in torrents:
 		ses.remove_torrent(x.h)
-	if timer:
-		timer.cancel()
+	if timer>0:
+		k.g_source_remove(timer)
+
+def remsel(i):
+	global timer
+	k.g_source_remove(timer)
+	timer=0
+	ses.remove_torrent(h)
+	torrents.pop(i)

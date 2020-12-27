@@ -1,5 +1,3 @@
-import threading
-
 try:
 	import gtk
 	import layout
@@ -18,8 +16,7 @@ def ini(lst):
 	list=lst
 	k.gtk_list_store_append(list,it)
 	global timer
-	timer=threading.Timer(5.0, fresh)
-	timer.start()
+	timer=k.g_timeout_add(5000,fresh)
 	return list
 
 def st(a):
@@ -30,13 +27,14 @@ def div_ratio(a,b):
 	n=a/b
 	return st(n)
 
+@gtk.CALLBACK0i
 def fresh():
 	up=0
 	down=0
 	i=gtk.GtkTreeIter()
 	ir=gtk.byref(i)
 	mod=layout.list
-	b=k.gtk_tree_model_get_iter_first(mod,ir)#there s no for(;;)like c
+	b=k.gtk_tree_model_get_iter_first(mod,ir)
 	while b:
 		p=gtk.c_int()
 		gtk.gtk_tree_model_get(mod,ir,layout.COLUMNS.INDEX,gtk.byref(p))
@@ -49,6 +47,7 @@ def fresh():
 		down+=d
 		b=k.gtk_tree_model_iter_next(mod,ir)
 	gtk.gtk_list_store_set3(list,it,layout.COLUMNS.UP,st(up),layout.COLUMNS.DOWN,st(down),layout.COLUMNS.RATIO,div_ratio(up,down))
+	return True
 
 def close():
-	timer.cancel()
+	k.g_source_remove(timer)

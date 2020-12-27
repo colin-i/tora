@@ -21,7 +21,7 @@ def write(lst):
 	path=gtk.c_char_p()
 	i=gtk.GtkTreeIter()
 	it=gtk.byref(i)
-	b=k.gtk_tree_model_get_iter_first(lst,it)#foreach no,timeout no, return in test is working
+	b=k.gtk_tree_model_get_iter_first(lst,it)
 	while b:
 		gtk.gtk_tree_model_get3 (lst, it,
 			layout.COLUMNS.NAME,gtk.byref(name),

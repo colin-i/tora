@@ -36,6 +36,5 @@ def go(path,window):
 		#
 		k.gtk_widget_show (dialog)
 
-@gtk.CALLBACK2
 def act(button,tree):
 	treesel.text(go,tree,k.gtk_widget_get_root(button))

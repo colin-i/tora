@@ -22,12 +22,13 @@ except Exception:
 	from . import listtor
 k=gtk.k
 
-@gtk.CALLBACK
+@gtk.CALLBACKi
 def closing(window):
 	listtor.write(layout.list)
 	confs.write_opt(window)
 	torrent.close()
 	overall.close()
+	return False
 
 @gtk.CALLBACK
 def activate(app):

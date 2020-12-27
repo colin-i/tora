@@ -23,7 +23,9 @@ G_TYPE_INT=G_TYPE_MAKE_FUNDAMENTAL (6)
 import os
 from ctypes import *
 
+CALLBACK0i = CFUNCTYPE(c_int)
 CALLBACK = CFUNCTYPE(None,c_void_p)
+CALLBACKi = CFUNCTYPE(c_int,c_void_p)
 CALLBACK2 = CFUNCTYPE(None,c_void_p,c_void_p)
 
 class GtkTreeIter(Structure):
@@ -56,6 +58,8 @@ k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
 k.g_object_unref.argtypes = [c_void_p]
 k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
+k.g_source_remove.argtypes = [c_void_p]
+k.g_timeout_add.argtypes = [c_void_p,c_void_p]
 #A
 k.gtk_application_new.restype=c_void_p
 k.gtk_application_new.argtypes=[c_void_p,c_int]
@@ -91,6 +95,7 @@ k.gtk_label_new.argtypes = [c_void_p]
 #LI
 k.gtk_list_store_append.argtypes = [c_void_p,c_void_p]
 k.gtk_list_store_new.restype=c_void_p
+k.gtk_list_store_remove.argtypes = [c_void_p,c_void_p]
 #S
 k.gtk_scrolled_window_new.restype=c_void_p
 k.gtk_scrolled_window_set_child.argtypes = [c_void_p,c_void_p]
@@ -105,6 +110,7 @@ k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
 #TM
 k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_iter_next.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_model_sort_convert_iter_to_child_iter.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_model_sort_new_with_model.restype=c_void_p
 k.gtk_tree_model_sort_new_with_model.argtypes = [c_void_p]
 #TS
