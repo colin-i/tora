@@ -1,5 +1,7 @@
 
-from enum import IntEnum
+from enum import IntEnum,auto
+class GtkAlign(IntEnum):
+	GTK_ALIGN_START = auto()
 class GConnectFlags(IntEnum):
 	G_CONNECT_SWAPPED = 1 << 1
 class GtkDialogFlags(IntEnum):
@@ -92,6 +94,13 @@ k.gtk_entry_get_buffer.argtypes = [c_void_p]
 k.gtk_entry_new.restype=c_void_p
 k.gtk_entry_new_with_buffer.restype=c_void_p
 k.gtk_entry_new_with_buffer.argtypes = [c_void_p]
+#
+k.gtk_frame_new.restype=c_void_p
+k.gtk_frame_new.argtypes = [c_void_p]
+k.gtk_frame_set_child.argtypes = [c_void_p,c_void_p]
+#G
+k.gtk_grid_attach.argtypes = [c_void_p,c_void_p,c_int,c_int,c_int,c_int]
+k.gtk_grid_new.restype=c_void_p
 #LA
 k.gtk_label_new.restype=c_void_p
 k.gtk_label_new.argtypes = [c_void_p]
@@ -99,6 +108,8 @@ k.gtk_label_new.argtypes = [c_void_p]
 k.gtk_list_store_append.argtypes = [c_void_p,c_void_p]
 k.gtk_list_store_new.restype=c_void_p
 k.gtk_list_store_remove.argtypes = [c_void_p,c_void_p]
+#O
+k.gtk_orientable_set_orientation.argtypes = [c_void_p,c_void_p]
 #S
 k.gtk_scrolled_window_new.restype=c_void_p
 k.gtk_scrolled_window_set_child.argtypes = [c_void_p,c_void_p]
@@ -150,6 +161,7 @@ k.gtk_widget_show.argtypes=[c_void_p]
 k.gtk_window_get_default_size.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_window_is_maximized.argtypes=[c_void_p]
 k.gtk_window_maximize.argtypes=[c_void_p]
+k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]
 k.gtk_window_set_child.argtypes = [c_void_p,c_void_p]
 k.gtk_window_set_default_size.argtypes=[c_void_p,c_int,c_int]
 k.gtk_window_set_title.argtypes=[c_void_p,c_void_p]

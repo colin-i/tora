@@ -1,8 +1,10 @@
 
 try:
 	import gtk
+	import ratio
 except Exception:
 	from . import gtk
+	from . import ratio
 k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
@@ -19,10 +21,16 @@ def sets(window):
 	k.g_signal_connect_data (dialog,b"response",k.gtk_window_destroy,None,None,0)
 	#
 	box=k.gtk_dialog_get_content_area(dialog)
+	k.gtk_orientable_set_orientation(box,gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL)
+	#
 	t=k.gtk_label_new (b"Download Folder")
-	k.gtk_box_append(box, t)
 	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_widget_set_hexpand(e,True)
-	k.gtk_box_append(box, e)
+	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
+	k.gtk_box_append(bx, t)
+	k.gtk_box_append(bx, e)
+	#
+	k.gtk_box_append(box, bx)
+	k.gtk_box_append(box, ratio.ini())
 	#
 	k.gtk_widget_show (dialog)
