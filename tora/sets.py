@@ -9,6 +9,14 @@ k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
 
+def labent(t,e):
+	t=k.gtk_label_new (t)
+	k.gtk_widget_set_hexpand(e,True)
+	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
+	k.gtk_box_append(bx, t)
+	k.gtk_box_append(bx, e)
+	return bx
+
 @gtk.CALLBACK
 def sets(window):
 	dialog = k.gtk_dialog_new_with_buttons (b"Settings",window,
@@ -23,14 +31,9 @@ def sets(window):
 	box=k.gtk_dialog_get_content_area(dialog)
 	k.gtk_orientable_set_orientation(box,gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL)
 	#
-	t=k.gtk_label_new (b"Download Folder")
 	e=k.gtk_entry_new_with_buffer(fold_bf)
-	k.gtk_widget_set_hexpand(e,True)
-	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
-	k.gtk_box_append(bx, t)
-	k.gtk_box_append(bx, e)
-	#
-	k.gtk_box_append(box, bx)
+	k.gtk_box_append(box, labent(b"Download Folder",e))
 	k.gtk_box_append(box, ratio.ini())
+	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",k.gtk_entry_new()))
 	#
 	k.gtk_widget_show (dialog)
