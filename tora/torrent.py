@@ -55,4 +55,4 @@ def remsel(i):
 	k.g_source_remove(timer)
 	timer=0
 	ses.remove_torrent(h)
-	torrents.pop(i)
+	del torrents[i]
