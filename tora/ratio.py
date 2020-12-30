@@ -59,7 +59,7 @@ def setint(window):
 @gtk.CALLBACKi
 def fresh(window):
 	ratio=getratio()
-	n=int(k.gtk_entry_buffer_get_text(ratlim_bf))
+	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
 	if ratio>n:
 		if are_done():
 			k.g_application_quit(k.gtk_window_get_application(window))
