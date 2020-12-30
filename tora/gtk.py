@@ -29,6 +29,7 @@ CALLBACK0i = CFUNCTYPE(c_int)
 CALLBACK = CFUNCTYPE(None,c_void_p)
 CALLBACKi = CFUNCTYPE(c_int,c_void_p)
 CALLBACK2 = CFUNCTYPE(None,c_void_p,c_void_p)
+CALLBACK3 = CFUNCTYPE(None,c_void_p,c_int,c_void_p)
 
 class GtkTreeIter(Structure):
 	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
@@ -59,12 +60,13 @@ def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
 
+k.g_application_quit.argtypes = [c_void_p]
 k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
 k.g_object_unref.argtypes = [c_void_p]
 k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
 k.g_source_remove.argtypes = [c_void_p]
-k.g_timeout_add.argtypes = [c_void_p,c_void_p]
+k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
 #A
 k.gtk_application_new.restype=c_void_p
 k.gtk_application_new.argtypes=[c_void_p,c_int]
@@ -154,14 +156,17 @@ k.gtk_tree_view_set_headers_visible.argtypes = [c_void_p,c_int]
 k.gtk_widget_get_root.restype=c_void_p
 k.gtk_widget_get_root.argtypes=[c_void_p]
 k.gtk_widget_hide.argtypes=[c_void_p]
+k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]
 k.gtk_widget_set_hexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_set_vexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_show.argtypes=[c_void_p]
 #WIN
+k.gtk_window_destroy.argtypes=[c_void_p]
+k.gtk_window_get_application.restype=c_void_p
+k.gtk_window_get_application.argtypes=[c_void_p]
 k.gtk_window_get_default_size.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_window_is_maximized.argtypes=[c_void_p]
 k.gtk_window_maximize.argtypes=[c_void_p]
-k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]
 k.gtk_window_set_child.argtypes = [c_void_p,c_void_p]
 k.gtk_window_set_default_size.argtypes=[c_void_p,c_int,c_int]
 k.gtk_window_set_title.argtypes=[c_void_p,c_void_p]

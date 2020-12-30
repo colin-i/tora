@@ -14,7 +14,7 @@ def text(f,tree,data):
 	k.gtk_tree_selection_get_selected(sl,gtk.byref(mod),i)
 	item_text=gtk.c_char_p()
 	gtk.gtk_tree_model_get (mod, i, layout.COLUMNS.PATH, gtk.byref(item_text))
-	f(item_text.value.decode(),data)
+	f(item_text.value,data)
 	k.g_free(item_text)
 
 def position(f,tree):

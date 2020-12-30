@@ -31,7 +31,7 @@ def pos(i):
 	global timer
 	if timer>0:
 		k.g_source_remove(timer)
-	timer=k.g_timeout_add(5000, fresh)
+	timer=k.g_timeout_add(5000, fresh, None)
 	global h
 	h=torrents[i].h
 
@@ -40,8 +40,8 @@ def sel(tree):
 
 def open(path,u):
 	info = lt.torrent_info(path)
-	p=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
-	t=tor(ses.add_torrent({'ti': info, 'save_path': p}),u)
+	pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
+	t=tor(ses.add_torrent({'ti': info, 'save_path': pv}),u)
 	torrents.append(t)
 
 def close():

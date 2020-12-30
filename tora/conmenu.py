@@ -28,7 +28,7 @@ def click(tree):
 		k.g_source_remove(timer)
 	k.gtk_widget_show(menu)
 	torrent.sel(tree)
-	timer=k.g_timeout_add(10000,fire)
+	timer=k.g_timeout_add(10000,fire,None)
 
 def hide():
 	global timer

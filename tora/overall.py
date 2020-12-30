@@ -16,7 +16,7 @@ def ini(lst):
 	list=lst
 	k.gtk_list_store_append(list,it)
 	global timer
-	timer=k.g_timeout_add(5000,fresh)
+	timer=k.g_timeout_add(5000,fresh,None)
 	return list
 
 def st(a):

@@ -55,7 +55,7 @@ def add(entr):
 	i=gtk.GtkTreeIter()
 	ip=gtk.byref(i)
 	k.gtk_list_store_append(list,ip)
-	torrent.open(t.decode(),0)
+	torrent.open(t,0)
 	gtk.gtk_list_store_set4(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
 		COLUMNS.UP,b"0",COLUMNS.DOWN,b"0")
 	listtor.write(list)

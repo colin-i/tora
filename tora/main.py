@@ -12,6 +12,7 @@ try:
 	import torrent
 	import overall
 	import listtor
+	import ratio
 except Exception:
 	from . import gtk
 	from . import layout
@@ -20,6 +21,7 @@ except Exception:
 	from . import torrent
 	from . import overall
 	from . import listtor
+	from . import ratio
 k=gtk.k
 
 @gtk.CALLBACKi
@@ -28,6 +30,7 @@ def closing(window):
 	confs.write_opt(window)
 	torrent.close()
 	overall.close()
+	ratio.freeint()
 	return False
 
 @gtk.CALLBACK

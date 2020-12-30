@@ -28,7 +28,7 @@ def write(lst):
 			layout.COLUMNS.PATH, gtk.byref(path),
 			layout.COLUMNS.UP,gtk.byref(val))
 		d={'name':name.value.decode(),'path':path.value.decode(),
-			'upload':int(val.value.decode())}
+			'upload':int(val.value)}
 		k.g_free(name)
 		k.g_free(path)
 		arr.append(d)

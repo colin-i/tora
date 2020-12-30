@@ -1,3 +1,5 @@
+import libtorrent as lt
+
 try:
 	import gtk
 except Exception:
@@ -38,10 +40,16 @@ def ini(box):
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_box_append(box,tree)
 
-import libtorrent as lt
-state_str = ['queued'.encode(), 'checking'.encode(), 'downloading metadata'.encode(), \
-   'downloading'.encode(), 'finished'.encode(), 'seeding'.encode(), 'allocating'.encode(), 'checking fastresume'.encode()]
+sd='seeding'.encode()
+state_str = ['queued'.encode(), 'checking'.encode(), \
+	'downloading metadata'.encode(), \
+	'downloading'.encode(), 'finished'.encode(), sd, \
+	'allocating'.encode(), 'checking fastresume'.encode()]
 #queued and allocating are unused_enum_for_backwards_compatibility
+#status().state.__int__() vs keys
+
+def sed():
+	return state_str.index(sd)
 
 def show(h):
 	s = h.status()

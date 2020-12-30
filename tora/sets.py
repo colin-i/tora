@@ -17,6 +17,11 @@ def labent(t,e):
 	k.gtk_box_append(bx, e)
 	return bx
 
+@gtk.CALLBACK3
+def response(dialog,re,window):
+	ratio.setint(window)
+	k.gtk_window_destroy(dialog)
+
 @gtk.CALLBACK
 def sets(window):
 	dialog = k.gtk_dialog_new_with_buttons (b"Settings",window,
@@ -26,14 +31,14 @@ def sets(window):
 	height=gtk.c_int()
 	k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
 	k.gtk_window_set_default_size(dialog,width,height)
-	k.g_signal_connect_data (dialog,b"response",k.gtk_window_destroy,None,None,0)
+	k.g_signal_connect_data (dialog,b"response",response,window,None,0)
 	#
 	box=k.gtk_dialog_get_content_area(dialog)
 	k.gtk_orientable_set_orientation(box,gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL)
 	#
 	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_box_append(box, labent(b"Download Folder",e))
-	k.gtk_box_append(box, ratio.ini())
+	k.gtk_box_append(box, ratio.ini(window))
 	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",k.gtk_entry_new()))
 	#
 	k.gtk_widget_show (dialog)
