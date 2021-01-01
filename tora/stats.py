@@ -59,7 +59,7 @@ def show(h):
 		if val.value<100:
 			gtk.gtk_list_store_set5(list, ip,
 				COLUMNS.progress, 100,
-				COLUMNS.download_rate, str(0),
+				COLUMNS.download_rate, str(0).encode(),
 				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
 				COLUMNS.num_peers, str(s.num_peers).encode(),
 				COLUMNS.state, state_str[s.state])
