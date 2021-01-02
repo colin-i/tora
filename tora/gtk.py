@@ -69,6 +69,8 @@ k.g_object_unref.argtypes = [c_void_p]
 k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
 k.g_source_remove.argtypes = [c_void_p]
 k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
+#
+k.gdk_keyval_name.restype=c_char_p
 #A
 k.gtk_application_new.restype=c_void_p
 k.gtk_application_new.argtypes=[c_void_p,c_int]

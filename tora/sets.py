@@ -2,9 +2,11 @@
 try:
 	import gtk
 	import ratio
+	import next
 except Exception:
 	from . import gtk
 	from . import ratio
+	from . import next
 k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
@@ -39,6 +41,8 @@ def sets(window):
 	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_box_append(box, labent(b"Download Folder",e))
 	k.gtk_box_append(box, ratio.ini(window))
-	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",k.gtk_entry_new()))
+	e=k.gtk_entry_new()
+	next.sets(e)
+	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
 	#
 	k.gtk_widget_show (dialog)

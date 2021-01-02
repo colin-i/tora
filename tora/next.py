@@ -70,3 +70,14 @@ def is_unfinished(mod,it,it2,sl):
 		torrent.pos(ix)
 		return True
 	return False
+
+def sets(e):
+	#if (mask&gtk.GdkModifierType.GDK_CONTROL_MASK)!=0:
+	txt="Ctrl+"
+	#else:
+	#	txt=""
+	#if (mask&gtk.GdkModifierType.GDK_ALT_MASK)!=0:
+	#	txt+="Alt+"
+	txt+=k.gdk_keyval_name(key).decode()
+	bf=k.gtk_entry_get_buffer(e)
+	k.gtk_entry_buffer_set_text(bf,txt.encode(),-1)
