@@ -8,6 +8,7 @@ try:
 	import stats
 	import torrent
 	import overall
+	import next
 except Exception:
 	from . import gtk
 	from . import addtor
@@ -18,6 +19,7 @@ except Exception:
 	from . import stats
 	from . import torrent
 	from . import overall
+	from . import next
 k=gtk.k
 
 from enum import IntEnum
@@ -51,14 +53,16 @@ list=colsdef()
 def add(entr):
 	b=k.gtk_entry_get_buffer(entr)
 	t=k.gtk_entry_buffer_get_text(b)
-	tex=addtor.add(t)
-	i=gtk.GtkTreeIter()
-	ip=gtk.byref(i)
-	k.gtk_list_store_append(list,ip)
-	torrent.open(t,0)
-	gtk.gtk_list_store_set4(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
-		COLUMNS.UP,b"0",COLUMNS.DOWN,b"0")
-	listtor.write(list)
+	if torrent.open(t,0):
+		tex=addtor.add(t)
+		i=gtk.GtkTreeIter()
+		ip=gtk.byref(i)
+		if k.gtk_tree_model_iter_n_children(list,None)==0:
+			next.ini(treeV)
+		k.gtk_list_store_append(list,ip)
+		gtk.gtk_list_store_set5(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
+			COLUMNS.UP,b"0",COLUMNS.DOWN,b"0",layout.COLUMNS.RATIO,b"0")
+		listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	e=k.gtk_entry_new()
@@ -76,10 +80,13 @@ def layout(window):
 	s=k.gtk_tree_model_sort_new_with_model(list)
 	k.g_object_unref(list)
 	k.gtk_tree_sortable_set_sort_column_id(s,COLUMNS.NAME,gtk.GtkSortType.GTK_SORT_ASCENDING)
+	global treeV
 	treeV=k.gtk_tree_view_new_with_model(s)
 	k.g_object_unref(s)
 	columns(treeV,confs.width)
 	listtor.read(list)
+	if k.gtk_tree_model_iter_n_children(list,None)>0:
+		next.ini(treeV)
 	#
 	scroll = k.gtk_scrolled_window_new ()
 	k.gtk_widget_set_vexpand(scroll,True)

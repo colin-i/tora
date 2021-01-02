@@ -41,8 +41,13 @@ def sel(tree):
 def open(path,u):
 	info = lt.torrent_info(path)
 	pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
-	t=tor(ses.add_torrent({'ti': info, 'save_path': pv}),u)
+	th=ses.add_torrent({'ti': info, 'save_path': pv})
+	for x in torrents:
+		if x.h==th:
+			return False
+	t=tor(th,u)
 	torrents.append(t)
+	return True
 
 def close():
 	for x in torrents:

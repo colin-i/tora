@@ -42,13 +42,14 @@ def read(lst):
 	try:
 		with open(config_filename) as f:
 			dat=json.load(f)
-		for x in dat:
+	except Exception:
+		return
+	for x in dat:
+		p=x['path']
+		if torrent.open(p,x['upload']):
 			k.gtk_list_store_append(lst,ip)
-			p=x['path']
-			torrent.open(p,x['upload'])
-			gtk.gtk_list_store_set4(lst, ip,
+			gtk.gtk_list_store_set5(lst, ip,
 				layout.COLUMNS.NAME, x['name'].encode(),
 				layout.COLUMNS.PATH, p.encode(),
-				layout.COLUMNS.UP,b"0",layout.COLUMNS.DOWN,b"0")
-	except Exception:
-		pass
+				layout.COLUMNS.UP,b"0",layout.COLUMNS.DOWN,b"0",
+				layout.COLUMNS.RATIO,b"0")

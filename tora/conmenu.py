@@ -4,12 +4,14 @@ try:
 	import torrent
 	import treesel
 	import layout
+	import next
 except Exception:
 	from . import gtk
 	from . import meninfo
 	from . import torrent
 	from . import treesel
 	from . import layout
+	from . import next
 k=gtk.k
 
 timer=0
@@ -42,6 +44,8 @@ def remtor(i,iter):
 @gtk.CALLBACK
 def remclick(tree):
 	treesel.position__iter(remtor,tree)
+	if k.gtk_tree_model_iter_n_children(layout.list,None)==0:
+		next.unini(tree)
 	hide()
 
 @gtk.CALLBACK2

@@ -1,5 +1,8 @@
 
 from enum import IntEnum,auto
+class GdkModifierType(IntEnum):
+	GDK_CONTROL_MASK = 1 << 2
+#	GDK_ALT_MASK = 1 << 3
 class GtkAlign(IntEnum):
 	GTK_ALIGN_START = auto()
 class GConnectFlags(IntEnum):
@@ -21,6 +24,7 @@ G_TYPE_FUNDAMENTAL_SHIFT = 2
 G_TYPE_MAKE_FUNDAMENTAL=lambda x: x << G_TYPE_FUNDAMENTAL_SHIFT
 G_TYPE_STRING=G_TYPE_MAKE_FUNDAMENTAL (16)
 G_TYPE_INT=G_TYPE_MAKE_FUNDAMENTAL (6)
+GDK_KEY_n=0x06e
 
 import os
 from ctypes import *
@@ -30,6 +34,7 @@ CALLBACK = CFUNCTYPE(None,c_void_p)
 CALLBACKi = CFUNCTYPE(c_int,c_void_p)
 CALLBACK2 = CFUNCTYPE(None,c_void_p,c_void_p)
 CALLBACK3 = CFUNCTYPE(None,c_void_p,c_int,c_void_p)
+CALLBACK4i = CFUNCTYPE(c_int,c_void_p,c_int,c_int,c_int)
 
 class GtkTreeIter(Structure):
 	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
@@ -53,9 +58,6 @@ def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 def gtk_list_store_set3(a,b,i1,p1,i2,p2,i3,p3):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,-1)
-def gtk_list_store_set4(a,b,i1,p1,i2,p2,i3,p3,i4,p4):
-	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
-	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,i4,p4,-1)
 def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
@@ -86,7 +88,7 @@ k.gtk_dialog_get_content_area.restype=c_void_p
 k.gtk_dialog_get_content_area.argtypes = [c_void_p]
 k.gtk_dialog_new_with_buttons.restype=c_void_p
 k.gtk_dialog_new_with_buttons.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p]
-#E
+#EN
 k.gtk_entry_buffer_get_text.restype=c_char_p
 k.gtk_entry_buffer_get_text.argtypes = [c_void_p]
 k.gtk_entry_buffer_new.restype=c_void_p
@@ -96,7 +98,9 @@ k.gtk_entry_get_buffer.argtypes = [c_void_p]
 k.gtk_entry_new.restype=c_void_p
 k.gtk_entry_new_with_buffer.restype=c_void_p
 k.gtk_entry_new_with_buffer.argtypes = [c_void_p]
-#
+#EV
+k.gtk_event_controller_key_new.restype=c_void_p
+#F
 k.gtk_frame_new.restype=c_void_p
 k.gtk_frame_new.argtypes = [c_void_p]
 k.gtk_frame_set_child.argtypes = [c_void_p,c_void_p]
@@ -127,6 +131,7 @@ k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
 k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_get_path.restype=c_void_p
 k.gtk_tree_model_get_path.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_model_iter_n_children.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_iter_next.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_sort_convert_iter_to_child_iter.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_model_sort_convert_path_to_child_path.restype=c_void_p
@@ -139,6 +144,7 @@ k.gtk_tree_path_get_indices.restype=POINTER(c_int)
 k.gtk_tree_path_get_indices.argtypes = [c_void_p]
 #TS
 k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
+k.gtk_tree_selection_select_path.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]
 #TV
 k.gtk_tree_view_get_selection.restype=c_void_p
@@ -153,9 +159,11 @@ k.gtk_tree_view_new_with_model.argtypes = [c_void_p]
 k.gtk_tree_view_set_activate_on_single_click.argtypes = [c_void_p,c_int]
 k.gtk_tree_view_set_headers_visible.argtypes = [c_void_p,c_int]
 #WID
+k.gtk_widget_add_controller.argtypes = [c_void_p,c_void_p]
 k.gtk_widget_get_root.restype=c_void_p
 k.gtk_widget_get_root.argtypes=[c_void_p]
 k.gtk_widget_hide.argtypes=[c_void_p]
+k.gtk_widget_remove_controller.argtypes = [c_void_p,c_void_p]
 k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]
 k.gtk_widget_set_hexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_set_vexpand.argtypes=[c_void_p,c_int]
