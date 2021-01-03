@@ -2,7 +2,7 @@
 from enum import IntEnum,auto
 class GdkModifierType(IntEnum):
 	GDK_CONTROL_MASK = 1 << 2
-#	GDK_ALT_MASK = 1 << 3
+	GDK_ALT_MASK = 1 << 3
 class GtkAlign(IntEnum):
 	GTK_ALIGN_START = auto()
 class GConnectFlags(IntEnum):

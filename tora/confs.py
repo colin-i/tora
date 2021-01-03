@@ -6,10 +6,12 @@ try:
 	import gtk
 	import sets
 	import ratio
+	import next
 except Exception:
 	from . import gtk
 	from . import sets
 	from . import ratio
+	from . import next
 k=gtk.k
 
 def write_opt(window):
@@ -22,6 +24,7 @@ def write_opt(window):
 	dict['height']=height.value
 	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
 	ratio.store(dict)
+	next.store(dict)
 	with open(configs_filename, "w") as write_file:
 	    json.dump(dict, write_file)
 
@@ -39,6 +42,7 @@ def read_opt(window):
 			a=dict['download_folder'].encode()
 			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
 			ratio.restore(dict)
+			next.restore(dict)
 	except Exception:
 		width=0
 	ratio.newint(window)

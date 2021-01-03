@@ -72,12 +72,34 @@ def is_unfinished(mod,it,it2,sl):
 	return False
 
 def sets(e):
-	#if (mask&gtk.GdkModifierType.GDK_CONTROL_MASK)!=0:
-	txt="Ctrl+"
-	#else:
-	#	txt=""
-	#if (mask&gtk.GdkModifierType.GDK_ALT_MASK)!=0:
-	#	txt+="Alt+"
+	show(e)
+	control=k.gtk_event_controller_key_new()
+	k.g_signal_connect_data (control,b"key-pressed",reset,e,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k.gtk_widget_add_controller (e, control)
+
+def show(e):
+	if (mask&gtk.GdkModifierType.GDK_CONTROL_MASK)!=0:
+		txt="Ctrl+"
+	else:
+		txt=""
+	if (mask&gtk.GdkModifierType.GDK_ALT_MASK)!=0:
+		txt+="Alt+"
 	txt+=k.gdk_keyval_name(key).decode()
 	bf=k.gtk_entry_get_buffer(e)
 	k.gtk_entry_buffer_set_text(bf,txt.encode(),-1)
+
+@gtk.CALLBACK4i
+def reset(e, keyval, keycode, state):
+	global mask,key
+	mask=state&(gtk.GdkModifierType.GDK_CONTROL_MASK|gtk.GdkModifierType.GDK_ALT_MASK)
+	key=keyval
+	show(e)
+	return True
+
+def store(d):
+	d['next_mask']=mask
+	d['next_key']=key
+def restore(d):
+	global mask,key
+	mask=d['next_mask']
+	key=d['next_key']
