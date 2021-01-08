@@ -59,7 +59,7 @@ def fresh(window):
 	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
 	if ratio>n:
 		if are_done():
-			k.g_application_quit(k.gtk_window_get_application(window))
+			k.gtk_window_close(window)
 	return True
 
 def getratio():

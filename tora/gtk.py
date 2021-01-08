@@ -62,7 +62,6 @@ def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
 
-k.g_application_quit.argtypes = [c_void_p]
 k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
 k.g_object_unref.argtypes = [c_void_p]
@@ -171,9 +170,8 @@ k.gtk_widget_set_hexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_set_vexpand.argtypes=[c_void_p,c_int]
 k.gtk_widget_show.argtypes=[c_void_p]
 #WIN
+k.gtk_window_close.argtypes=[c_void_p]
 k.gtk_window_destroy.argtypes=[c_void_p]
-k.gtk_window_get_application.restype=c_void_p
-k.gtk_window_get_application.argtypes=[c_void_p]
 k.gtk_window_get_default_size.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_window_is_maximized.argtypes=[c_void_p]
 k.gtk_window_maximize.argtypes=[c_void_p]
