@@ -61,7 +61,7 @@ def add(entr):
 			next.ini(treeV)
 		k.gtk_list_store_append(list,ip)
 		gtk.gtk_list_store_set5(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
-			COLUMNS.UP,b"0",COLUMNS.DOWN,b"0",layout.COLUMNS.RATIO,b"0")
+			COLUMNS.UP,b"0",COLUMNS.DOWN,b"0",COLUMNS.RATIO,b"0")
 		listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
