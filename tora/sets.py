@@ -3,10 +3,12 @@ try:
 	import gtk
 	import ratio
 	import next
+	import log
 except Exception:
 	from . import gtk
 	from . import ratio
 	from . import next
+	from . import log
 k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
@@ -44,5 +46,6 @@ def sets(window):
 	e=k.gtk_entry_new()
 	next.sets(e)
 	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
+	k.gtk_box_append(box, labent(b"Log File",k.gtk_entry_new_with_buffer(log.log_bf)))
 	#
 	k.gtk_widget_show (dialog)

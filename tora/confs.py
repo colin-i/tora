@@ -7,11 +7,13 @@ try:
 	import sets
 	import ratio
 	import next
+	import log
 except Exception:
 	from . import gtk
 	from . import sets
 	from . import ratio
 	from . import next
+	from . import log
 k=gtk.k
 
 def write_opt(window):
@@ -27,8 +29,9 @@ def write_opt(window):
 	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
 	ratio.store(dict)
 	next.store(dict)
+	log.store(dict)
 	with open(configs_filename, "w") as write_file:
-	    json.dump(dict, write_file)
+		json.dump(dict, write_file)
 
 def read_opt(window):
 	global width#used at columns
@@ -48,6 +51,7 @@ def read_opt(window):
 			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
 			ratio.restore(dict)
 			next.restore(dict)
+			log.restore(dict)
 	except Exception:
 		width=0
 	ratio.newint(window)

@@ -4,12 +4,14 @@ try:
 	import layout
 	import stats
 	import torrent
+	import log
 except Exception:
 	from . import gtk
 	from . import overall
 	from . import layout
 	from . import stats
 	from . import torrent
+	from . import log
 k=gtk.k
 
 ratint_bf=k.gtk_entry_buffer_new(b"0",-1)
@@ -55,6 +57,7 @@ def setint(window):
 
 @gtk.CALLBACKi
 def fresh(window):
+	log.add()
 	ratio=getratio()
 	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
 	if ratio>n:
