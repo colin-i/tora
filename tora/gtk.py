@@ -3,6 +3,8 @@ from enum import IntEnum,auto
 class GdkModifierType(IntEnum):
 	GDK_CONTROL_MASK = 1 << 2
 	GDK_ALT_MASK = 1 << 3
+class GdkToplevelState(IntEnum):
+	GDK_TOPLEVEL_STATE_MINIMIZED = 1 << 0
 class GtkAlign(IntEnum):
 	GTK_ALIGN_START = auto()
 class GConnectFlags(IntEnum):
@@ -115,9 +117,12 @@ k.gtk_label_new.argtypes = [c_void_p]
 k.gtk_list_store_append.argtypes = [c_void_p,c_void_p]
 k.gtk_list_store_new.restype=c_void_p
 k.gtk_list_store_remove.argtypes = [c_void_p,c_void_p]
+#N
+k.gtk_native_get_surface.restype=c_void_p
+k.gtk_native_get_surface.argtypes = [c_void_p]
 #O
 k.gtk_orientable_set_orientation.argtypes = [c_void_p,c_void_p]
-#S
+#SC
 k.gtk_scrolled_window_new.restype=c_void_p
 k.gtk_scrolled_window_set_child.argtypes = [c_void_p,c_void_p]
 #TEB
@@ -128,6 +133,8 @@ k.gtk_text_view_get_buffer.argtypes = [c_void_p]
 k.gtk_text_view_new.restype=c_void_p
 k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
 k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
+#TL
+k.gdk_toplevel_get_state.argtypes = [c_void_p]
 #TM
 k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_get_path.restype=c_void_p
@@ -175,6 +182,7 @@ k.gtk_window_destroy.argtypes=[c_void_p]
 k.gtk_window_get_default_size.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_window_is_maximized.argtypes=[c_void_p]
 k.gtk_window_maximize.argtypes=[c_void_p]
+k.gtk_window_minimize.argtypes=[c_void_p]
 k.gtk_window_set_child.argtypes = [c_void_p,c_void_p]
 k.gtk_window_set_default_size.argtypes=[c_void_p,c_int,c_int]
 k.gtk_window_set_title.argtypes=[c_void_p,c_void_p]

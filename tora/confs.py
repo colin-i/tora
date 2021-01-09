@@ -22,6 +22,8 @@ def write_opt(window):
 	dict['max']=k.gtk_window_is_maximized(window)
 	dict['width']=width.value
 	dict['height']=height.value
+	dict['min']=k.gdk_toplevel_get_state(k.gtk_native_get_surface(window))&gtk.GdkToplevelState.GDK_TOPLEVEL_STATE_MINIMIZED
+	#
 	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
 	ratio.store(dict)
 	next.store(dict)
@@ -39,6 +41,9 @@ def read_opt(window):
 			else:
 				width=dict['width']
 				k.gtk_window_set_default_size(window,width,dict['height'])
+			if dict['min']:
+				k.gtk_window_minimize(window)
+			#
 			a=dict['download_folder'].encode()
 			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
 			ratio.restore(dict)
