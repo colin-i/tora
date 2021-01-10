@@ -46,7 +46,7 @@ def read(lst):
 		return
 	for x in dat:
 		p=x['path']
-		if torrent.open(p,x['upload']):
+		if torrent.open_tor(p,x['upload']):
 			k.gtk_list_store_append(lst,ip)
 			gtk.gtk_list_store_set5(lst, ip,
 				layout.COLUMNS.NAME, x['name'].encode(),

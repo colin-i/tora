@@ -4,7 +4,7 @@ Build with:
 ```
 make
 ```
-Using libtorrent (rasterbar version) with python bindings.\
+Using libtorrent (arvidn) with python bindings.\
 libgtk-4.so required.
 ###### Donations
 | Name     | Address                                    |

@@ -53,7 +53,7 @@ list=colsdef()
 def add(entr):
 	b=k.gtk_entry_get_buffer(entr)
 	t=k.gtk_entry_buffer_get_text(b)
-	if torrent.open(t,0):
+	if torrent.open_tor(t,0):
 		tex=addtor.add(t)
 		i=gtk.GtkTreeIter()
 		ip=gtk.byref(i)
