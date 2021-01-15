@@ -18,8 +18,8 @@ def store(d):
 
 def restore(d):
 	log=d['log_file'].encode()
-	global log_bf,f
 	if len(log)>0:
+		global log_bf,f
 		log_bf=k.gtk_entry_buffer_new(log,-1)
 		f=open(log,"w")
 
