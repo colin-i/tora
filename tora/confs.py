@@ -39,11 +39,15 @@ def read_opt(window):
 		with open(configs_filename) as f:
 			dict=json.load(f)
 			if dict['max']:
-				width=0
 				k.gtk_window_maximize(window)
+				disp=k.gdk_display_get_default()
+				mon=k.gdk_display_get_monitor_at_surface(disp,k.gtk_native_get_surface(window))
+				rct=gtk.GdkRectangle()
+				k.gdk_monitor_get_geometry(mon,gtk.byref(rct))
+				width=rct.width
 			else:
-				width=dict['width']
 				k.gtk_window_set_default_size(window,width,dict['height'])
+				width=dict['width']
 			if dict['min']:
 				k.gtk_window_minimize(window)
 			#

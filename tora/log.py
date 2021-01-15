@@ -7,6 +7,10 @@ except Exception:
 	import torrent
 k=gtk.k
 
+#in case config file is not yet created
+log_bf=k.gtk_entry_buffer_new(None,-1)
+f=None
+
 def store(d):
 	d['log_file']=k.gtk_entry_buffer_get_text(log_bf).decode()
 	if f:
@@ -18,9 +22,6 @@ def restore(d):
 	if len(log)>0:
 		log_bf=k.gtk_entry_buffer_new(log,-1)
 		f=open(log,"w")
-	else:
-		log_bf=k.gtk_entry_buffer_new(None,-1)
-		f=None
 
 def add():
 	if f:
