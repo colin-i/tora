@@ -1,10 +1,10 @@
 
 try:
-	import gtk
-	import torrent
-except Exception:
 	from . import gtk
 	from . import torrent
+except Exception:
+	import gtk
+	import torrent
 k=gtk.k
 
 def store(d):

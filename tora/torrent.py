@@ -1,17 +1,17 @@
 import libtorrent as lt
 
 try:
-	import gtk
-	import treesel
-	import stats
-	import sets
-	import layout
-except Exception:
 	from . import gtk
 	from . import treesel
 	from . import stats
 	from . import sets
 	from . import layout
+except Exception:
+	import gtk
+	import treesel
+	import stats
+	import sets
+	import layout
 k=gtk.k
 
 ses = lt.session()

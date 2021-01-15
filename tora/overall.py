@@ -1,11 +1,11 @@
 try:
-	import gtk
-	import layout
-	import torrent
-except Exception:
 	from . import gtk
 	from . import layout
 	from . import torrent
+except Exception:
+	import gtk
+	import layout
+	import torrent
 k=gtk.k
 
 i=gtk.GtkTreeIter()

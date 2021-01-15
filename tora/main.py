@@ -5,15 +5,6 @@ comment
 """
 
 try:
-	import gtk
-	import layout
-	import confs
-	import sets
-	import torrent
-	import overall
-	import listtor
-	import ratio
-except Exception:
 	from . import gtk
 	from . import layout
 	from . import confs
@@ -22,6 +13,15 @@ except Exception:
 	from . import overall
 	from . import listtor
 	from . import ratio
+except Exception:
+	import gtk
+	import layout
+	import confs
+	import sets
+	import torrent
+	import overall
+	import listtor
+	import ratio
 k=gtk.k
 
 @gtk.CALLBACKi

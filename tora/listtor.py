@@ -5,13 +5,13 @@ config_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'conf
 #in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config
 
 try:
-	import gtk
-	import layout
-	import torrent
-except Exception:
 	from . import gtk
 	from . import layout
 	from . import torrent
+except Exception:
+	import gtk
+	import layout
+	import torrent
 k=gtk.k
 
 def write(lst):

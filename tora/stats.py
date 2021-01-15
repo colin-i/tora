@@ -1,9 +1,9 @@
 import libtorrent as lt
 
 try:
-	import gtk
-except Exception:
 	from . import gtk
+except Exception:
+	import gtk
 k=gtk.k
 
 from enum import IntEnum

@@ -3,17 +3,17 @@ configs_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'con
 import json
 
 try:
-	import gtk
-	import sets
-	import ratio
-	import next
-	import log
-except Exception:
 	from . import gtk
 	from . import sets
 	from . import ratio
 	from . import next
 	from . import log
+except Exception:
+	import gtk
+	import sets
+	import ratio
+	import next
+	import log
 k=gtk.k
 
 def write_opt(window):

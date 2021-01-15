@@ -1,11 +1,11 @@
 try:
-	import gtk
-	import treesel
-	import bencod
-except Exception:
 	from . import gtk
 	from . import treesel
 	from . import bencod
+except Exception:
+	import gtk
+	import treesel
+	import bencod
 k=gtk.k
 
 def go(path,window):

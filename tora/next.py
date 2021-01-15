@@ -1,11 +1,11 @@
 try:
-	import gtk
-	import torrent
-	import layout
-except Exception:
 	from . import gtk
 	from . import torrent
 	from . import layout
+except Exception:
+	import gtk
+	import torrent
+	import layout
 k=gtk.k
 
 mask=gtk.GdkModifierType.GDK_CONTROL_MASK

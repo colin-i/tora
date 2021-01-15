@@ -1,7 +1,7 @@
 try:
-	import bencod
-except Exception:
 	from . import bencod
+except Exception:
+	import bencod
 
 def add(filename):
 	with open(filename,'rb') as f:

@@ -1,14 +1,14 @@
 
 try:
-	import gtk
-	import ratio
-	import next
-	import log
-except Exception:
 	from . import gtk
 	from . import ratio
 	from . import next
 	from . import log
+except Exception:
+	import gtk
+	import ratio
+	import next
+	import log
 k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)

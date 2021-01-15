@@ -1,17 +1,17 @@
 try:
-	import gtk
-	import overall
-	import layout
-	import stats
-	import torrent
-	import log
-except Exception:
 	from . import gtk
 	from . import overall
 	from . import layout
 	from . import stats
 	from . import torrent
 	from . import log
+except Exception:
+	import gtk
+	import overall
+	import layout
+	import stats
+	import torrent
+	import log
 k=gtk.k
 
 ratint_bf=k.gtk_entry_buffer_new(b"0",-1)

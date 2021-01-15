@@ -1,15 +1,4 @@
 try:
-	import gtk
-	import addtor
-	import listtor
-	import conmenu
-	import sets
-	import confs
-	import stats
-	import torrent
-	import overall
-	import next
-except Exception:
 	from . import gtk
 	from . import addtor
 	from . import listtor
@@ -20,6 +9,17 @@ except Exception:
 	from . import torrent
 	from . import overall
 	from . import next
+except Exception:
+	import gtk
+	import addtor
+	import listtor
+	import conmenu
+	import sets
+	import confs
+	import stats
+	import torrent
+	import overall
+	import next
 k=gtk.k
 
 from enum import IntEnum

@@ -1,9 +1,9 @@
 try:
-	import gtk
-	import layout
-except Exception:
 	from . import gtk
 	from . import layout
+except Exception:
+	import gtk
+	import layout
 k=gtk.k
 
 def text(f,tree,data):
