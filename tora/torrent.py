@@ -24,6 +24,23 @@ class tor():
 		self.h=h
 		self.u=u
 
+d_m='downloading metadata'.encode()
+ckf='checking fastresume'.encode()
+ck='checking'.encode()
+state_str = ['queued'.encode(), \
+	ck, d_m, 'downloading'.encode(), 'finished'.encode(), 'seeding'.encode(), \
+	'allocating'.encode(), \
+	ckf]
+#queued and allocating are unused_enum_for_backwards_compatibility
+#status().state.__int__() vs keys
+#d meta
+#chec fast,checking
+#down,finish,sd
+def checki():
+	return [state_str.index(ckf),state_str.index(ck)]
+def d_meta():
+	return state_str.index(d_m)
+
 @gtk.CALLBACK0i
 def fresh():
 	stats.show(h)

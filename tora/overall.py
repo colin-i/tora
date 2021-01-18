@@ -1,11 +1,15 @@
+import os
+
 try:
 	from . import gtk
 	from . import layout
 	from . import torrent
+	from . import bencod
 except Exception:
 	import gtk
 	import layout
 	import torrent
+	import bencod
 k=gtk.k
 
 i=gtk.GtkTreeIter()
@@ -27,6 +31,30 @@ def div_ratio(a,b):
 	n=a/b
 	return st(n)
 
+def download_sz(mod,ir):
+	item_text=gtk.c_char_p()
+	gtk.gtk_tree_model_get (mod, ir, layout.COLUMNS.PATH, gtk.byref(item_text))
+	val=item_text.value.decode()
+	k.g_free(item_text)
+	size=0
+	try:
+		with open(val,'rb') as f:
+			d=f.read()
+			cod=bencod.decode(d)
+			files=cod[0][b'info'][b'files']
+			dldir=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
+			#join can concat bytes,but unicode decode otherwise filenotfound
+			#	p.s. join cannot mix str and bytes
+			for x in files:
+				p=x[b'path']
+				nm=dldir
+				for y in p:
+					nm=os.path.join(nm,y.decode())
+				size+=os.path.getsize(nm)
+	except Exception:
+		pass
+	return size
+
 @gtk.CALLBACK0i
 def fresh():
 	up=0
@@ -38,9 +66,13 @@ def fresh():
 	j=0
 	while b:
 		tor=torrent.torrents[j]
-		s=tor.h.status()
+		h=tor.h
+		s=h.status()
 		u=tor.u+s.total_payload_upload#if pause this will be 0, all_time_upload
-		d=s.total_done
+		if s.state==torrent.d_meta():
+			d=download_sz(mod,ir)
+		else:
+			d=s.total_done
 		gtk.gtk_list_store_set3(mod,ir,layout.COLUMNS.UP,st(u),layout.COLUMNS.DOWN,st(d),layout.COLUMNS.RATIO,div_ratio(u,d))
 		up+=u
 		down+=d

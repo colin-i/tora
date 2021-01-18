@@ -2,14 +2,12 @@ try:
 	from . import gtk
 	from . import overall
 	from . import layout
-	from . import stats
 	from . import torrent
 	from . import log
 except Exception:
 	import gtk
 	import overall
 	import layout
-	import stats
 	import torrent
 	import log
 k=gtk.k
@@ -33,7 +31,7 @@ def ini(window):
 	k.gtk_grid_attach(grid,text(b"Value"),0,1,1,1)
 	k.gtk_grid_attach(grid,edit(ratlim_bf),1,1,1,1)
 	#
-	fr=k.gtk_frame_new(b"Close program when Ratio is greater than Value and all torrents are seeds")
+	fr=k.gtk_frame_new(b"Close program when Ratio is greater than Value and torrents checking was done")
 	k.gtk_frame_set_child(fr,grid)
 	return fr
 
@@ -61,7 +59,7 @@ def fresh(window):
 	ratio=getratio()
 	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
 	if ratio>n:
-		if are_done():
+		if check_done():
 			k.gtk_window_close(window)
 	return True
 
@@ -72,12 +70,13 @@ def getratio():
 	k.g_free(z)
 	return r
 
-def are_done():
-	en=stats.sed()
+def check_done():
+	en=torrent.checki()
 	for x in torrent.torrents:
-		s=x.h.status()
-		if s.state!=en:
-			return False
+		s=x.h.status().state
+		for y in en:
+			if s==y:
+				return False
 	return True
 
 def store(d):

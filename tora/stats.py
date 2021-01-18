@@ -2,8 +2,10 @@ import libtorrent as lt
 
 try:
 	from . import gtk
+	from . import torrent
 except Exception:
 	import gtk
+	import torrent
 k=gtk.k
 
 from enum import IntEnum
@@ -40,17 +42,6 @@ def ini(box):
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_box_append(box,tree)
 
-sd='seeding'.encode()
-state_str = ['queued'.encode(), 'checking'.encode(), \
-	'downloading metadata'.encode(), \
-	'downloading'.encode(), 'finished'.encode(), sd, \
-	'allocating'.encode(), 'checking fastresume'.encode()]
-#queued and allocating are unused_enum_for_backwards_compatibility
-#status().state.__int__() vs keys
-
-def sed():
-	return state_str.index(sd)
-
 def show(h):
 	s = h.status()
 	if h.is_seed():
@@ -62,7 +53,7 @@ def show(h):
 				COLUMNS.download_rate, str(0).encode(),
 				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
 				COLUMNS.num_peers, str(s.num_peers).encode(),
-				COLUMNS.state, state_str[s.state])
+				COLUMNS.state, torrent.state_str[s.state])
 		else:
 			gtk.gtk_list_store_set2(list, ip,
 				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
@@ -73,4 +64,4 @@ def show(h):
 			COLUMNS.download_rate, str(s.download_rate / 1000).encode(),
 			COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
 			COLUMNS.num_peers, str(s.num_peers).encode(),
-			COLUMNS.state, state_str[s.state])
+			COLUMNS.state, torrent.state_str[s.state])
