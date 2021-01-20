@@ -17,10 +17,10 @@ def store(d):
 		f.close()
 
 def restore(d):
-	log=d['log_file'].encode()
+	log=d['log_file']
 	if len(log)>0:
 		global log_bf,f
-		log_bf=k.gtk_entry_buffer_new(log,-1)
+		log_bf=k.gtk_entry_buffer_new(log.encode(),-1)
 		f=open(log,"w")
 
 def add():

@@ -8,12 +8,14 @@ try:
 	from . import ratio
 	from . import next
 	from . import log
+	from . import cons
 except Exception:
 	import gtk
 	import sets
 	import ratio
 	import next
 	import log
+	import cons
 k=gtk.k
 
 def write_opt(window):
@@ -30,6 +32,7 @@ def write_opt(window):
 	ratio.store(dict)
 	next.store(dict)
 	log.store(dict)
+	cons.store(dict)
 	with open(configs_filename, "w") as write_file:
 		json.dump(dict, write_file)
 
@@ -56,6 +59,7 @@ def read_opt(window):
 			ratio.restore(dict)
 			next.restore(dict)
 			log.restore(dict)
+			cons.restore(dict)
 	except Exception:
 		width=0
 	ratio.newint(window)

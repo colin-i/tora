@@ -4,11 +4,13 @@ try:
 	from . import ratio
 	from . import next
 	from . import log
+	from . import cons
 except Exception:
 	import gtk
 	import ratio
 	import next
 	import log
+	import cons
 k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
@@ -24,6 +26,7 @@ def labent(t,e):
 @gtk.CALLBACK3
 def response(dialog,re,window):
 	ratio.setint(window)
+	cons.set()
 	k.gtk_window_destroy(dialog)
 
 @gtk.CALLBACK
@@ -47,5 +50,7 @@ def sets(window):
 	next.sets(e)
 	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
 	k.gtk_box_append(box, labent(b"Log File",k.gtk_entry_new_with_buffer(log.log_bf)))
+	k.gtk_box_append(box, labent(b"Max uploads (-1 infinite)",k.gtk_entry_new_with_buffer(cons.slot_bf)))
+	k.gtk_box_append(box, labent(b"Max connections (-1 infinite)",k.gtk_entry_new_with_buffer(cons.con_bf)))
 	#
 	k.gtk_widget_show (dialog)
