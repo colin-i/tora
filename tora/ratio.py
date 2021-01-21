@@ -60,6 +60,7 @@ def fresh(window):
 	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
 	if ratio>n:
 		if check_done():
+			print("Ratio limit. Window close.")
 			k.gtk_window_close(window)
 	return True
 

@@ -6,12 +6,14 @@ try:
 	from . import stats
 	from . import sets
 	from . import layout
+	from . import log
 except Exception:
 	import gtk
 	import treesel
 	import stats
 	import sets
 	import layout
+	import log
 k=gtk.k
 
 ses = lt.session()
@@ -74,6 +76,7 @@ def open_tor(path,u):
 			return False
 	t=tor(th,u)
 	torrents.append(t)
+	log.addT(path)
 	return True
 
 def close():
