@@ -55,9 +55,9 @@ def setint(window):
 
 @gtk.CALLBACKi
 def fresh(window):
-	log.add()
 	ratio=getratio()
 	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
+	log.add(ratio)
 	if ratio>n:
 		if check_done():
 			print("Ratio limit. Window close.")

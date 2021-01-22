@@ -23,13 +23,14 @@ def restore(d):
 		log_bf=k.gtk_entry_buffer_new(log.encode(),-1)
 		f=open(log,"w")
 
-def add():
+def add(ratio):
 	if f:
 		f.write("\n")
 		for x in torrent.torrents:
 			s=x.h.status()
 			u=x.u+s.total_payload_upload#if pause this will be 0, all_time_upload
 			f.write(str(u)+"\n")
+		f.write(str(ratio)+"\n")
 		f.flush()
 
 def addT(path):
