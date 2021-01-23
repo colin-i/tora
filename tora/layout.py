@@ -53,8 +53,9 @@ list=colsdef()
 def add(entr):
 	b=k.gtk_entry_get_buffer(entr)
 	t=k.gtk_entry_buffer_get_text(b)
-	if torrent.open_tor(t,0):
-		tex=addtor.add(t)
+	tx=t.decode()
+	if torrent.open_tor(tx,0):
+		tex=addtor.add(tx)
 		i=gtk.GtkTreeIter()
 		ip=gtk.byref(i)
 		if k.gtk_tree_model_iter_n_children(list,None)==0:
