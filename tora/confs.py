@@ -1,4 +1,4 @@
-import os
+import os.path
 configs_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'configs')
 import json
 

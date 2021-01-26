@@ -1,5 +1,5 @@
 import json
-import os
+import os.path
 
 config_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config')
 #in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config

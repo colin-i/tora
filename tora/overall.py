@@ -1,4 +1,4 @@
-import os
+import os.path
 
 try:
 	from . import gtk
