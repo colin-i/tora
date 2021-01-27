@@ -20,7 +20,7 @@ def restore(d):
 	log=d['log_file']
 	if len(log)>0:
 		global log_bf,f
-		log_bf=k.gtk_entry_buffer_new(log.encode(),-1)
+		log_bf=k.gtk_entry_buffer_set_text(log_bf,log.encode(),-1)
 		f=open(log,"w")
 
 def add(ratio):
