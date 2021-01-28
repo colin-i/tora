@@ -26,6 +26,7 @@ def labent(t,e):
 @gtk.CALLBACK3
 def response(dialog,re,window):
 	ratio.setint(window)
+	log.reset()
 	cons.set()
 	k.gtk_window_destroy(dialog)
 

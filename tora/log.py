@@ -12,10 +12,7 @@ log_bf=k.gtk_entry_buffer_new(None,-1)
 f=None
 
 def store(d):
-	d['log_file']=k.gtk_entry_buffer_get_text(log_bf).decode()
-	if f:
-		f.close()
-
+	d['log_file']=finish()
 def restore(d):
 	log=d['log_file']
 	if len(log)>0:
@@ -36,3 +33,15 @@ def add(ratio):
 def addT(path):
 	if f:
 		f.write(path+"\n")
+
+def finish():
+	global f
+	if f:
+		f.close()
+		f=None
+	return k.gtk_entry_buffer_get_text(log_bf).decode()
+def reset():
+	d=finish()
+	if len(d)>0:
+		global f
+		f=open(d,"a")
