@@ -7,6 +7,7 @@ try:
 	from . import sets
 	from . import layout
 	from . import log
+	from . import ratio
 except Exception:
 	import gtk
 	import treesel
@@ -14,6 +15,7 @@ except Exception:
 	import sets
 	import layout
 	import log
+	import ratio
 k=gtk.k
 
 ses = lt.session()
@@ -77,6 +79,7 @@ def open_tor(path,u):
 	t=tor(th,u)
 	torrents.append(t)
 	log.addT(path)
+	ratio.check_required=True
 	return True
 
 def close():

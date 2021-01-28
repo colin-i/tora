@@ -36,6 +36,7 @@ def ini(window):
 	return fr
 
 timer=0
+check_required=True
 
 def newint(window):
 	n=int(k.gtk_entry_buffer_get_text(ratint_bf))
@@ -55,11 +56,11 @@ def setint(window):
 
 @gtk.CALLBACKi
 def fresh(window):
-	ratio=getratio()
-	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
-	log.add(ratio)
-	if ratio>n:
-		if check_done():
+	if check_done():
+		ratio=getratio()
+		log.add(ratio)
+		n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
+		if ratio>n:
 			print("Ratio limit. Window close.")
 			k.gtk_window_close(window)
 	return True
@@ -72,12 +73,15 @@ def getratio():
 	return r
 
 def check_done():
-	en=torrent.checki()
-	for x in torrent.torrents:
-		s=x.h.status().state
-		for y in en:
-			if s==y:
-				return False
+	global check_required
+	if check_required:
+		en=torrent.checki()
+		for x in torrent.torrents:
+			s=x.h.status().state
+			for y in en:
+				if s==y:
+					return False
+		check_required=False
 	return True
 
 def store(d):
