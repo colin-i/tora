@@ -2,7 +2,6 @@ import libtorrent as lt
 
 try:
 	from . import gtk
-	from . import treesel
 	from . import stats
 	from . import sets
 	from . import layout
@@ -10,7 +9,6 @@ try:
 	from . import ratio
 except Exception:
 	import gtk
-	import treesel
 	import stats
 	import sets
 	import layout
@@ -58,8 +56,12 @@ def pos(i):
 	global h
 	h=torrents[i].h
 
-def sel(tree):
-	treesel.position(pos,tree)
+def sel(tree,path):
+	p2=k.gtk_tree_model_sort_convert_path_to_child_path(layout.sort,path)
+	ix=k.gtk_tree_path_get_indices ( p2 )
+	ix=ix[0]
+	k.gtk_tree_path_free(p2)
+	pos(ix)
 
 def open_tor(path,u):
 	try:

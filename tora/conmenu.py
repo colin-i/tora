@@ -23,13 +23,13 @@ def fire():
 	timer=0
 	return False
 
-@gtk.CALLBACK
-def click(tree):
+@gtk.CALLBACK2
+def click(tree,path):
 	global timer
 	if timer>0:
 		k.g_source_remove(timer)
 	k.gtk_widget_show(menu)
-	torrent.sel(tree)
+	torrent.sel(tree,path)
 	timer=k.g_timeout_add(10000,fire,None)
 
 def hide():

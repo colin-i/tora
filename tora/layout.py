@@ -48,6 +48,8 @@ def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
 
 colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
+sort=k.gtk_tree_model_sort_new_with_model(list)
+k.g_object_unref(list)
 
 @gtk.CALLBACK
 def add(entr):
@@ -78,12 +80,10 @@ def layout(window):
 	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
-	s=k.gtk_tree_model_sort_new_with_model(list)
-	k.g_object_unref(list)
-	k.gtk_tree_sortable_set_sort_column_id(s,COLUMNS.NAME,gtk.GtkSortType.GTK_SORT_ASCENDING)
+	k.gtk_tree_sortable_set_sort_column_id(sort,COLUMNS.NAME,gtk.GtkSortType.GTK_SORT_ASCENDING)
 	global treeV
-	treeV=k.gtk_tree_view_new_with_model(s)
-	k.g_object_unref(s)
+	treeV=k.gtk_tree_view_new_with_model(sort)
+	k.g_object_unref(sort)
 	columns(treeV,confs.width)
 	listtor.read(list)
 	if k.gtk_tree_model_iter_n_children(list,None)>0:
