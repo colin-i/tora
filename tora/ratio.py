@@ -55,14 +55,15 @@ def setint(window):
 	newint(window)
 
 @gtk.CALLBACKi
-def fresh(window):
-	if check_done():
-		ratio=getratio()
-		log.add(ratio)
-		n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
-		if ratio>n:
-			print("Ratio limit. Window close.")
-			k.gtk_window_close(window)
+def superfresh(window):
+	ratio=getratio()
+	log.add(ratio)
+	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
+	if ratio>n:
+		print("Ratio limit. Window close.")
+		timer=0
+		k.gtk_window_close(window)#it is freeint inside here
+		return False
 	return True
 
 def getratio():
@@ -72,16 +73,17 @@ def getratio():
 	k.g_free(z)
 	return r
 
-def check_done():
-	global check_required
-	if check_required:
-		en=torrent.checki()
-		for x in torrent.torrents:
-			s=x.h.status().state
-			for y in en:
-				if s==y:
-					return False
-		check_required=False
+@gtk.CALLBACKi
+def fresh(window):
+	en=torrent.checki()
+	for x in torrent.torrents:
+		s=x.h.status().state
+		for y in en:
+			if s==y:
+				return True
+	gsrc=k.g_main_context_find_source_by_id(None,timer)
+	k.g_source_set_callback(gsrc,superfresh,window,None)
+	log.in_ratio=getratio()
 	return True
 
 def store(d):

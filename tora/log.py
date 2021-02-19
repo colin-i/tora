@@ -20,14 +20,20 @@ def restore(d):
 		global f
 		f=open(log,"w")
 
+def div_ratio(a,b):
+	if not b:
+		return "0"
+	n=a/b
+	return str(n)
 def add(ratio):
 	if f:
 		f.write("\n")
 		for x in torrent.torrents:
 			s=x.h.status()
 			u=x.u+s.total_payload_upload#if pause this will be 0, all_time_upload
-			f.write(str(u)+"\n")
+			f.write(div_ratio(u,s.total_done)+"\n")
 		f.write(str(ratio)+"\n")
+		f.write(str(ratio-in_ratio)+"\n")
 		f.flush()
 
 def addT(path):
