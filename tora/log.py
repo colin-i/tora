@@ -20,25 +20,31 @@ def restore(d):
 		global f
 		f=open(log,"w")
 
-def div_ratio(a,b):
+def div_nr(a,b):
 	if not b:
-		return "0"
-	n=a/b
-	return str(n)
+		return 0
+	return a/b
+def one(x):
+	s=x.h.status()
+	u=x.u+s.total_payload_upload#if pause this will be 0, all_time_upload
+	return div_nr(u,s.total_done)
 def add(ratio):
 	if f:
 		f.write("\n")
 		for x in torrent.torrents:
-			s=x.h.status()
-			u=x.u+s.total_payload_upload#if pause this will be 0, all_time_upload
-			f.write(div_ratio(u,s.total_done)+"\n")
-		f.write(str(ratio)+"\n")
-		f.write(str(ratio-in_ratio)+"\n")
+			r=one(x)
+			f.write(str(r)+"|"+str(r-x.in_ratio)+"\n")
+		f.write(str(ratio)+"|"+str(ratio-in_ratio)+"\n")
 		f.flush()
-
 def addT(path):
 	if f:
 		f.write(path+"\n")
+
+def gain(fn):
+	global in_ratio
+	in_ratio=fn()
+	for x in torrent.torrents:
+		x.in_ratio=one(x)
 
 def finish():
 	global f

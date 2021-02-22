@@ -81,8 +81,12 @@ def open_tor(path,u):
 	t=tor(th,u)
 	torrents.append(t)
 	log.addT(path)
-	ratio.check_required=True
 	return True
+def open_tor_lim(path,u,w):
+	r=open_tor(path,u)
+	if r:
+		ratio.gain(w)
+	return r
 
 def close():
 	if timer>0:

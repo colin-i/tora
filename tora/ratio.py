@@ -14,6 +14,7 @@ k=gtk.k
 
 ratint_bf=k.gtk_entry_buffer_new(b"0",-1)
 ratlim_bf=k.gtk_entry_buffer_new(b"2",-1)
+timer=0
 
 def text(a):
 	tx=k.gtk_label_new(a)
@@ -34,9 +35,6 @@ def ini(window):
 	fr=k.gtk_frame_new(b"Close program when Ratio is greater than Value and torrents checking was done")
 	k.gtk_frame_set_child(fr,grid)
 	return fr
-
-timer=0
-check_required=True
 
 def newint(window):
 	n=int(k.gtk_entry_buffer_get_text(ratint_bf))
@@ -65,14 +63,6 @@ def superfresh(window):
 		k.gtk_window_close(window)#it is freeint inside here
 		return False
 	return True
-
-def getratio():
-	z=gtk.c_char_p()
-	gtk.gtk_tree_model_get(overall.list,overall.it,layout.COLUMNS.RATIO,gtk.byref(z))
-	r=float(z.value)
-	k.g_free(z)
-	return r
-
 @gtk.CALLBACKi
 def fresh(window):
 	en=torrent.checki()
@@ -83,8 +73,19 @@ def fresh(window):
 				return True
 	gsrc=k.g_main_context_find_source_by_id(None,timer)
 	k.g_source_set_callback(gsrc,superfresh,window,None)
-	log.in_ratio=getratio()
+	log.gain(getratio)
 	return True
+def gain(w):
+	if timer>0:
+		gsrc=k.g_main_context_find_source_by_id(None,timer)
+		k.g_source_set_callback(gsrc,fresh,w,None)
+
+def getratio():
+	z=gtk.c_char_p()
+	gtk.gtk_tree_model_get(overall.list,overall.it,layout.COLUMNS.RATIO,gtk.byref(z))
+	r=float(z.value)
+	k.g_free(z)
+	return r
 
 def store(d):
 	d['ratio_time']=int(k.gtk_entry_buffer_get_text(ratint_bf))

@@ -52,11 +52,11 @@ sort=k.gtk_tree_model_sort_new_with_model(list)
 k.g_object_unref(list)
 
 @gtk.CALLBACK
-def add(entr):
-	b=k.gtk_entry_get_buffer(entr)
+def add(window):
+	b=k.gtk_entry_get_buffer(entry_tor)
 	t=k.gtk_entry_buffer_get_text(b)
 	tx=t.decode()
-	if torrent.open_tor(tx,0):
+	if torrent.open_tor_lim(tx,0,window):
 		tex=addtor.add(tx)
 		i=gtk.GtkTreeIter()
 		ip=gtk.byref(i)
@@ -68,13 +68,14 @@ def add(entr):
 		listtor.write(list)
 def layout(window):
 	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
-	e=k.gtk_entry_new()
-	k.gtk_widget_set_hexpand(e,True)
+	global entry_tor
+	entry_tor=k.gtk_entry_new()
+	k.gtk_widget_set_hexpand(entry_tor,True)
 	#
-	k.gtk_box_append(bx,e)
+	k.gtk_box_append(bx,entry_tor)
 	b=k.gtk_button_new_with_label(b"+")
 	k.gtk_box_append(bx,b)
-	k.g_signal_connect_data (b, b"clicked", add, e, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k.g_signal_connect_data (b, b"clicked", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	#
 	b=k.gtk_button_new_with_label(chr(0x2699).encode())
 	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
