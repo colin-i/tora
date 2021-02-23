@@ -34,7 +34,7 @@ def restore(d):
 		k.gtk_entry_buffer_set_text(log_bf,log.encode(),-1)
 		global f
 		f=open(log,"w")
-	k.gtk_entry_buffer_set_text(end_bf,dict['log_end'].encode(),-1)
+	k.gtk_entry_buffer_set_text(end_bf,d['log_end'].encode(),-1)
 
 
 def div_nr(a,b):
