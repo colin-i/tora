@@ -25,7 +25,7 @@ def edit(b):
 	k.gtk_widget_set_hexpand(e,True)
 	return e
 
-def ini(window):
+def ini():
 	grid = k.gtk_grid_new ()
 	k.gtk_grid_attach(grid,text(b"Interval time to verify in minutes (0=disable)"),0,0,1,1)
 	k.gtk_grid_attach(grid,edit(ratint_bf),1,0,1,1)

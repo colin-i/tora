@@ -49,11 +49,11 @@ def sets(window):
 	#
 	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_box_append(box, labent(b"Download Folder",e))
-	k.gtk_box_append(box, ratio.ini(window))
+	k.gtk_box_append(box, ratio.ini())
 	e=k.gtk_entry_new()
 	next.sets(e)
 	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
-	k.gtk_box_append(box, labent(b"Log File",k.gtk_entry_new_with_buffer(log.log_bf)))
+	k.gtk_box_append(box, log.ini())
 	k.gtk_box_append(box, labent(b"Max uploads (-1 infinite)",k.gtk_entry_new_with_buffer(cons.slot_bf)))
 	k.gtk_box_append(box, labent(b"Max connections (-1 infinite)",k.gtk_entry_new_with_buffer(cons.con_bf)))
 	#
