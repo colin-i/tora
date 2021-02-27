@@ -1,19 +1,11 @@
 import libtorrent as lt
 
-try:
-	from . import gtk
-	from . import stats
-	from . import sets
-	from . import layout
-	from . import log
-	from . import ratio
-except Exception:
-	import gtk
-	import stats
-	import sets
-	import layout
-	import log
-	import ratio
+from . import gtk
+from . import stats
+from . import sets
+from . import layout
+from . import log
+from . import ratio
 k=gtk.k
 
 ses = lt.session()

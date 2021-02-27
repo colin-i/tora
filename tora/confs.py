@@ -2,20 +2,12 @@ import os.path
 configs_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'configs')
 import json
 
-try:
-	from . import gtk
-	from . import sets
-	from . import ratio
-	from . import next
-	from . import log
-	from . import cons
-except Exception:
-	import gtk
-	import sets
-	import ratio
-	import next
-	import log
-	import cons
+from . import gtk
+from . import sets
+from . import ratio
+from . import next
+from . import log
+from . import cons
 k=gtk.k
 
 def write_opt(window):

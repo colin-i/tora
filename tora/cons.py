@@ -1,9 +1,5 @@
-try:
-	from . import gtk
-	from . import torrent
-except Exception:
-	import gtk
-	import torrent
+from . import gtk
+from . import torrent
 k=gtk.k
 
 slot_bf=k.gtk_entry_buffer_new(b"-1",-1)

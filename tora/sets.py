@@ -1,16 +1,9 @@
 
-try:
-	from . import gtk
-	from . import ratio
-	from . import next
-	from . import log
-	from . import cons
-except Exception:
-	import gtk
-	import ratio
-	import next
-	import log
-	import cons
+from . import gtk
+from . import ratio
+from . import next
+from . import log
+from . import cons
 k=gtk.k
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)

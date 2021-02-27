@@ -1,7 +1,4 @@
-try:
-	from . import bencod
-except Exception:
-	import bencod
+from . import bencod
 
 def add(filename):
 	with open(filename,'rb') as f:

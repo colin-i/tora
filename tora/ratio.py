@@ -1,15 +1,8 @@
-try:
-	from . import gtk
-	from . import overall
-	from . import layout
-	from . import torrent
-	from . import log
-except Exception:
-	import gtk
-	import overall
-	import layout
-	import torrent
-	import log
+from . import gtk
+from . import overall
+from . import layout
+from . import torrent
+from . import log
 k=gtk.k
 
 ratint_bf=k.gtk_entry_buffer_new(b"0",-1)

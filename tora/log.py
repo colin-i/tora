@@ -1,13 +1,8 @@
 import subprocess
 
-try:
-	from . import gtk
-	from . import torrent
-	from . import ratio
-except Exception:
-	import gtk
-	import torrent
-	import ratio
+from . import gtk
+from . import torrent
+from . import ratio
 k=gtk.k
 
 #in case config file is not yet created

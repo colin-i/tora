@@ -1,25 +1,13 @@
-try:
-	from . import gtk
-	from . import addtor
-	from . import listtor
-	from . import conmenu
-	from . import sets
-	from . import confs
-	from . import stats
-	from . import torrent
-	from . import overall
-	from . import next
-except Exception:
-	import gtk
-	import addtor
-	import listtor
-	import conmenu
-	import sets
-	import confs
-	import stats
-	import torrent
-	import overall
-	import next
+from . import gtk
+from . import addtor
+from . import listtor
+from . import conmenu
+from . import sets
+from . import confs
+from . import stats
+from . import torrent
+from . import overall
+from . import next
 k=gtk.k
 
 from enum import IntEnum

@@ -1,17 +1,9 @@
-try:
-	from . import gtk
-	from . import meninfo
-	from . import torrent
-	from . import treesel
-	from . import layout
-	from . import next
-except Exception:
-	import gtk
-	import meninfo
-	import torrent
-	import treesel
-	import layout
-	import next
+from . import gtk
+from . import meninfo
+from . import torrent
+from . import treesel
+from . import layout
+from . import next
 k=gtk.k
 
 timer=0

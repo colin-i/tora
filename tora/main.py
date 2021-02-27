@@ -1,27 +1,14 @@
-#!/usr/bin/env python3
-
 """
-comment
+torrent client
 """
-
-try:
-	from . import gtk
-	from . import layout
-	from . import confs
-	from . import sets
-	from . import torrent
-	from . import overall
-	from . import listtor
-	from . import ratio
-except Exception:
-	import gtk
-	import layout
-	import confs
-	import sets
-	import torrent
-	import overall
-	import listtor
-	import ratio
+from . import gtk
+from . import layout
+from . import confs
+from . import sets
+from . import torrent
+from . import overall
+from . import listtor
+from . import ratio
 k=gtk.k
 
 @gtk.CALLBACKi

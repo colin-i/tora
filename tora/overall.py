@@ -1,15 +1,9 @@
 import os.path
 
-try:
-	from . import gtk
-	from . import layout
-	from . import torrent
-	from . import bencod
-except Exception:
-	import gtk
-	import layout
-	import torrent
-	import bencod
+from . import gtk
+from . import layout
+from . import torrent
+from . import bencod
 k=gtk.k
 
 i=gtk.GtkTreeIter()
