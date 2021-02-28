@@ -31,7 +31,7 @@ state_str = ['queued'.encode(), \
 #chec fast,checking
 #down,finish,sd
 def checki():
-	return [state_str.index(ckf),state_str.index(ck)]
+	return [d_meta(),state_str.index(ckf),state_str.index(ck)]
 def d_meta():
 	return state_str.index(d_m)
 
