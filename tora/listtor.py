@@ -7,24 +7,21 @@ config_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'conf
 from . import gtk
 from . import layout
 from . import torrent
+from . import torben
 k=gtk.k
 
 def write(lst):
 	arr=[]
 	val=gtk.c_char_p()
-	name=gtk.c_char_p()#:gtk.c_char_p except UnboundLocalError
-	path=gtk.c_char_p()
+	path=gtk.c_char_p()#:gtk.c_char_p except UnboundLocalError
 	i=gtk.GtkTreeIter()
 	it=gtk.byref(i)
 	b=k.gtk_tree_model_get_iter_first(lst,it)
 	while b:
-		gtk.gtk_tree_model_get3 (lst, it,
-			layout.COLUMNS.NAME,gtk.byref(name),
+		gtk.gtk_tree_model_get2 (lst, it,
 			layout.COLUMNS.PATH, gtk.byref(path),
 			layout.COLUMNS.UP,gtk.byref(val))
-		d={'name':name.value.decode(),'path':path.value.decode(),
-			'upload':int(val.value)}
-		k.g_free(name)
+		d={'path':path.value.decode(),'upload':int(val.value)}
 		k.g_free(path)
 		arr.append(d)
 		b=k.gtk_tree_model_iter_next(lst,it)
@@ -44,7 +41,7 @@ def read(lst):
 		if torrent.open_tor(p,x['upload']):
 			k.gtk_list_store_append(lst,ip)
 			gtk.gtk_list_store_set5(lst, ip,
-				layout.COLUMNS.NAME, x['name'].encode(),
+				layout.COLUMNS.NAME, torben.name(p),
 				layout.COLUMNS.PATH, p.encode(),
 				layout.COLUMNS.UP,b"0",layout.COLUMNS.DOWN,b"0",
 				layout.COLUMNS.RATIO,b"0")

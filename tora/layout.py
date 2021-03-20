@@ -1,5 +1,5 @@
 from . import gtk
-from . import addtor
+from . import torben
 from . import listtor
 from . import conmenu
 from . import sets
@@ -45,7 +45,7 @@ def add(window):
 	t=k.gtk_entry_buffer_get_text(b)
 	tx=t.decode()
 	if torrent.open_tor_lim(tx,0,window):
-		tex=addtor.add(tx)
+		tex=torben.name(tx)
 		i=gtk.GtkTreeIter()
 		ip=gtk.byref(i)
 		if k.gtk_tree_model_iter_n_children(list,None)==0:

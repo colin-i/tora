@@ -4,6 +4,7 @@ from . import gtk
 from . import layout
 from . import torrent
 from . import bencod
+from . import sets
 k=gtk.k
 
 i=gtk.GtkTreeIter()
@@ -33,18 +34,24 @@ def download_sz(mod,ir):
 	size=0
 	try:
 		with open(val,'rb') as f:
-			d=f.read()
-			cod=bencod.decode(d)
-			files=cod[0][b'info'][b'files']
 			dldir=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
 			#join can concat bytes,but unicode decode otherwise filenotfound
 			#	p.s. join cannot mix str and bytes
-			for x in files:
-				p=x[b'path']
-				nm=dldir
-				for y in p:
-					nm=os.path.join(nm,y.decode())
-				size+=os.path.getsize(nm)
+			d=f.read()
+			cod=bencod.decode(d)
+			infs=cod[0][b'info']
+			fl=infs[b'name'].decode()
+			if b'files' in infs:
+				files=infs[b'files']
+				dldir=os.path.join(dldir,fl)
+				for x in files:
+					p=x[b'path']
+					nm=dldir
+					for y in p:
+						nm=os.path.join(nm,y.decode())
+					size+=os.path.getsize(nm)
+			else:
+				size=os.path.getsize(os.path.join(dldir,fl))
 	except Exception:
 		pass
 	return size

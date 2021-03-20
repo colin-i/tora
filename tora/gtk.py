@@ -53,9 +53,9 @@ k = cdll.LoadLibrary("libgtk-4.so")#.1")
 def gtk_tree_model_get(a,b,i1,p1):
 	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_tree_model_get(a,b,i1,p1,-1)
-def gtk_tree_model_get3(a,b,i1,p1,i2,p2,i3,p3):
-	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
-	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,i3,p3,-1)
+def gtk_tree_model_get2(a,b,i1,p1,i2,p2):
+	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
+	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,-1)
 def gtk_list_store_set2(a,b,i1,p1,i2,p2):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,p1,i2,p2,-1)

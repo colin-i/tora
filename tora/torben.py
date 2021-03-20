@@ -1,6 +1,6 @@
 from . import bencod
 
-def add(filename):
+def name(filename):
 	with open(filename,'rb') as f:
 		d=f.read()
 		cod=bencod.decode(d)
