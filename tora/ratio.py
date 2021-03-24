@@ -1,7 +1,6 @@
 from . import gtk
 from . import overall
 from . import layout
-from . import torrent
 from . import log
 k=gtk.k
 
@@ -29,24 +28,17 @@ def ini():
 	k.gtk_frame_set_child(fr,grid)
 	return fr
 
-def newint(window):
-	n=int(k.gtk_entry_buffer_get_text(ratint_bf))
-	if n>0:
-		global timer
-		timer=k.g_timeout_add(n*60000,fresh,window)
-
 def freeint():
 	global timer
 	if timer>0:
 		k.g_source_remove(timer)
 		timer=0
-
 def setint(window):
 	freeint()
-	newint(window)
+	gain(window)
 
 @gtk.CALLBACKi
-def superfresh(window):
+def fresh(window):
 	ratio=getratio()
 	log.add(ratio)
 	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
@@ -56,22 +48,13 @@ def superfresh(window):
 		k.gtk_window_close(window)#it is freeint inside here
 		return False
 	return True
-@gtk.CALLBACKi
-def fresh(window):
-	en=torrent.checki()
-	for x in torrent.torrents:
-		s=x.h.status().state
-		for y in en:
-			if s==y:
-				return True
-	gsrc=k.g_main_context_find_source_by_id(None,timer)
-	k.g_source_set_callback(gsrc,superfresh,window,None)
-	log.gain(getratio)
-	return True
-def gain(w):
-	if timer>0:
-		gsrc=k.g_main_context_find_source_by_id(None,timer)
-		k.g_source_set_callback(gsrc,fresh,w,None)
+def gain(w):#when add tor and resets(including log file)
+	global timer
+	if timer==0:
+		n=int(k.gtk_entry_buffer_get_text(ratint_bf))
+		if n>0:
+			timer=k.g_timeout_add(n*60000,fresh,w)
+	log.likenew()
 
 def getratio():
 	z=gtk.c_char_p()

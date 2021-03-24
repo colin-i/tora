@@ -44,7 +44,7 @@ def add(window):
 	b=k.gtk_entry_get_buffer(entry_tor)
 	t=k.gtk_entry_buffer_get_text(b)
 	tx=t.decode()
-	if torrent.open_tor_lim(tx,0,window):
+	if torrent.open_tor(tx,0,window):
 		tex=torben.name(tx)
 		i=gtk.GtkTreeIter()
 		ip=gtk.byref(i)
@@ -74,7 +74,7 @@ def layout(window):
 	treeV=k.gtk_tree_view_new_with_model(sort)
 	k.g_object_unref(sort)
 	columns(treeV,confs.width)
-	listtor.read(list)
+	listtor.read(list,window)
 	if k.gtk_tree_model_iter_n_children(list,None)>0:
 		next.ini(treeV)
 	#

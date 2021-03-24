@@ -68,12 +68,9 @@ def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 
 k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 k.g_free.argtypes = [c_void_p]
-k.g_main_context_find_source_by_id.restype=c_void_p
-k.g_main_context_find_source_by_id.argtypes = [c_void_p,c_int]
 k.g_object_unref.argtypes = [c_void_p]
 k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
 k.g_source_remove.argtypes = [c_void_p]
-k.g_source_set_callback.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p]
 k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
 #
 k.gdk_display_get_default.restype=c_void_p

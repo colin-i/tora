@@ -70,7 +70,7 @@ def fresh():
 		h=tor.h
 		s=h.status()
 		u=tor.u+s.total_payload_upload#if pause this will be 0, all_time_upload
-		if s.state==torrent.d_meta():
+		if torrent.checki(s):
 			d=download_sz(mod,ir)
 		else:
 			d=s.total_done

@@ -54,4 +54,3 @@ def read_opt(window):
 			cons.restore(dict)
 	except Exception:
 		width=0
-	ratio.newint(window)

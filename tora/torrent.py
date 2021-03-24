@@ -30,10 +30,12 @@ state_str = ['queued'.encode(), \
 #d meta
 #chec fast,checking
 #down,finish,sd
-def checki():
-	return [d_meta(),state_str.index(ckf),state_str.index(ck)]
-def d_meta():
-	return state_str.index(d_m)
+checki_states=[state_str.index(d_m),state_str.index(ckf),state_str.index(ck)]
+def checki(s):
+	for x in checki_states:
+		if s.state==x:
+			return True
+	return False
 
 @gtk.CALLBACK0i
 def fresh():
@@ -55,7 +57,7 @@ def sel(tree,path):
 	k.gtk_tree_path_free(p2)
 	pos(ix)
 
-def open_tor(path,u):
+def open_tor(path,u,w):
 	try:
 		with open(path+".fastresume") as f:
 			b=f.read()
@@ -72,13 +74,9 @@ def open_tor(path,u):
 			return False
 	t=tor(th,u)
 	torrents.append(t)
+	ratio.gain(w)
 	log.addT(path)
 	return True
-def open_tor_lim(path,u,w):
-	r=open_tor(path,u)
-	if r:
-		ratio.gain(w)
-	return r
 
 def close():
 	if timer>0:

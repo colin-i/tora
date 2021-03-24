@@ -9,6 +9,7 @@ k=gtk.k
 log_bf=k.gtk_entry_buffer_new(None,-1)
 end_bf=k.gtk_entry_buffer_new(None,-1)
 f=None
+in_ratio=0
 
 def ini():
 	grid = k.gtk_grid_new ()
@@ -36,27 +37,47 @@ def div_nr(a,b):
 	if not b:
 		return 0
 	return a/b
-def one(x):
-	s=x.h.status()
+def one(x,s):
 	u=x.u+s.total_payload_upload#if pause this will be 0, all_time_upload
 	return div_nr(u,s.total_done)
-def add(ratio):
+def rest1(x,s):
+	r=one(x,s)
+	f.write(str(r)+"|"+str(r-x.in_ratio)+"\n")
+def rest2(ratio):
+	f.write("@"+str(ratio)+"|"+str(ratio-in_ratio)+"\n")
+	f.flush()
+def add0(rat):
+	if f:
+		global in_ratio
+		if not in_ratio:
+			in_ratio=rat
+		b=True
+		f.write("\n")
+		for x in torrent.torrents:
+			s=x.h.status()
+			if(torrent.checki(s)):
+				b=False
+				continue
+			elif not hasattr(x,'in_ratio'):
+				x.in_ratio=one(x,s)
+			rest1(x,s)
+		rest2(rat)
+		if b:
+			global add
+			add=add1
+def add1(rat):
 	if f:
 		f.write("\n")
 		for x in torrent.torrents:
-			r=one(x)
-			f.write(str(r)+"|"+str(r-x.in_ratio)+"\n")
-		f.write(str(ratio)+"|"+str(ratio-in_ratio)+"\n")
-		f.flush()
+			s=x.h.status()
+			rest1(c,s)
+		rest2(rat)
+def likenew():
+	global add
+	add=add0
 def addT(path):
 	if f:
 		f.write(path+"\n")
-
-def gain(fn):
-	global in_ratio
-	in_ratio=fn()
-	for x in torrent.torrents:
-		x.in_ratio=one(x)
 
 def finish():
 	global f
