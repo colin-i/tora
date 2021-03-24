@@ -70,7 +70,7 @@ def add1(rat):
 		f.write("\n")
 		for x in torrent.torrents:
 			s=x.h.status()
-			rest1(c,s)
+			rest1(x,s)
 		rest2(rat)
 def likenew():
 	global add
