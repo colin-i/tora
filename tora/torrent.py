@@ -68,7 +68,7 @@ def open_tor(path,u,w):
 		info = lt.torrent_info(path)
 		pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
 		td={'ti': info, 'save_path': pv}
-	th=ses.add_torrent(td)
+	th=ses.add_torrent(td)#got no Name right after opening with libtor
 	for x in torrents:
 		if x.h==th:
 			return False

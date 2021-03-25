@@ -1,10 +1,16 @@
+
+pint='pip'
+ifneq (, $(shell which pip3 ))
+	pint='pip3'
+endif
+
 all: init install
 
 init:
-	pip3 install -r requirements.txt
+	${pint} install -r requirements.txt
 
 install:
-	pip3 install --user .
+	${pint} install --user .
 
 uninstall:
-	pip3 uninstall tora
+	${pint} uninstall tora
