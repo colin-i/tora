@@ -1,5 +1,4 @@
-import os.path
-configs_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'configs')
+
 import json
 
 from . import gtk
@@ -8,7 +7,10 @@ from . import ratio
 from . import next
 from . import log
 from . import cons
+from . import main
 k=gtk.k
+
+configs_filename = main.get_root_file('configs')
 
 def write_opt(window):
 	dict={}

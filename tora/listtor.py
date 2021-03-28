@@ -1,14 +1,14 @@
 import json
-import os.path
-
-config_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config')
-#in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config
 
 from . import gtk
 from . import layout
 from . import torrent
 from . import torben
+from . import main
 k=gtk.k
+
+config_filename = main.get_root_file('config')
+#in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config
 
 def write(lst):
 	arr=[]

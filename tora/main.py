@@ -1,6 +1,11 @@
 """
 torrent client
 """
+
+import os.path
+def get_root_file(f):
+	return os.path.join(os.path.dirname(os.path.realpath(__file__)),f)
+
 from . import gtk
 from . import layout
 from . import confs
