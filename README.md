@@ -1,9 +1,5 @@
 # Torrent client
-Build with:
-
-```
-pip3 install --user .
-```
+Python3 project.\
 Using libtorrent (arvidn) with python bindings.\
 libgtk-4.so required.
 ###### Donations
