@@ -1,3 +1,4 @@
+pkname='torra'
 
 reqs='python-libtorrent>=2.0.2'
 from os import uname
@@ -9,7 +10,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 from setuptools import setup
-setup(name='tora',
+setup(name=pkname,
 	install_requires=[reqs],
 	version='1.0.0',
 	description='Torrent client',
@@ -19,9 +20,9 @@ setup(name='tora',
 	author='bot',
 	author_email='costin.botescu@gmail.com',
 	license='MIT',
-	packages=['tora'],
+	packages=[pkname],
 	zip_safe=False,
 	entry_points = {
-		'console_scripts': ['tora=tora.main:main']
+		'console_scripts': [pkname+'='+pkname+'.main:main']
 	}
 )
