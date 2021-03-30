@@ -1,3 +1,6 @@
+#setuptools.setup is looking at one argv parameter; to "build" and "install":
+#python3 setup.py install
+
 pkname='torra'
 
 reqs='python-libtorrent>=2.0.2'
@@ -12,7 +15,7 @@ README = (HERE / "README.md").read_text()
 from setuptools import setup
 setup(name=pkname,
 	install_requires=[reqs],
-	version='1.0.0',
+	version='1.0.1',
 	description='Torrent client',
 	long_description=README,
 	long_description_content_type="text/markdown",
