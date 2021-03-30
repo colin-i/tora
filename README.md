@@ -2,7 +2,7 @@
 Build with:
 
 ```
-make
+pip3 install --user .
 ```
 Using libtorrent (arvidn) with python bindings.\
 libgtk-4.so required.
