@@ -2,9 +2,13 @@
 torrent client
 """
 
+import appdirs
 import os.path
+import pathlib
 def get_root_file(f):
-	return os.path.join(os.path.dirname(os.path.realpath(__file__)),f)
+	p=pathlib.Path(appdirs.user_config_dir('torra'))
+	p.mkdir(exist_ok=True)
+	return os.path.join(p,f)
 
 from . import gtk
 from . import layout
