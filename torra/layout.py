@@ -59,6 +59,7 @@ def layout(window):
 	global entry_tor
 	entry_tor=k.gtk_entry_new()
 	k.gtk_widget_set_hexpand(entry_tor,True)
+	k.g_signal_connect_data (entry_tor, b"activate", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	#
 	k.gtk_box_append(bx,entry_tor)
 	b=k.gtk_button_new_with_label(b"+")
