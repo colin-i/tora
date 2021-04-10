@@ -14,8 +14,10 @@ README = (HERE / "README.md").read_text()
 
 from setuptools import setup
 setup(name=pkname,
-	version='1.0.6',
+	version='1.0.7',
 	packages=[pkname],
+	#opt
+	python_requires='>=3',
 	install_requires=[reqs,"appdirs>=1.4.3"],
 	description='Torrent client',
 	long_description=README,
