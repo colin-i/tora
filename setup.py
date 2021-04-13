@@ -13,7 +13,7 @@ setup(name=pkname,
 	packages=[pkname],
 	#opt
 	python_requires='>=3',
-	install_requires=["appdirs>=1.4.3","python-libtorrent-bin>=2.0.2"],
+	install_requires=["appdirs>=1.4.3",'python-libtorrent-bin>=2.0.2;platform_system=="Linux"'],
 	description='Torrent client',
 	long_description=README,
 	long_description_content_type="text/markdown",
