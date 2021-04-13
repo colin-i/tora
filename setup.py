@@ -3,27 +3,21 @@
 
 pkname='torra'
 
-#cant put in egg info "libtorrent-bin or libtorrent", only one is
-try:
-   import libtorrent
-except ImportError:
-	import subprocess
-	import sys
-	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=2.0.2'])
-	if test.returncode:
-		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=2.0.2'])
-
 import pathlib
 HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 from setuptools import setup
 setup(name=pkname,
-	version='1.0.8',
+	version='1.0.9',
 	packages=[pkname],
 	#opt
 	python_requires='>=3',
 	install_requires=["appdirs>=1.4.3"],
+	extras_require={#python-libtorrent has no src for rpi,is old,and bin is new but no src
+		'libtorrent':['python-libtorrent>=2.0.2'],
+		'libtorrent-bin':['python-libtorrent-bin>=2.0.2']
+	},
 	description='Torrent client',
 	long_description=README,
 	long_description_content_type="text/markdown",
