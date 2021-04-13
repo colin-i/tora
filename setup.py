@@ -9,11 +9,12 @@ README = (HERE / "README.md").read_text()
 
 from setuptools import setup
 setup(name=pkname,
-	version='1.0.10',
+	version='1.0.11',
 	packages=[pkname],
 	#opt
 	python_requires='>=3',
-	install_requires=["appdirs>=1.4.3",'python-libtorrent-bin>=2.0.2;platform_system=="Linux"'],
+	install_requires=["appdirs>=1.4.3",
+		'python-libtorrent-bin>=2.0.2;platform_system=="Linux" and platform_machine=="x86_64"'],
 	description='Torrent client',
 	long_description=README,
 	long_description_content_type="text/markdown",
