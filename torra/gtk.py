@@ -126,8 +126,6 @@ k.gtk_list_store_remove.argtypes = [c_void_p,c_void_p]
 #N
 k.gtk_native_get_surface.restype=c_void_p
 k.gtk_native_get_surface.argtypes = [c_void_p]
-#O
-k.gtk_orientable_set_orientation.argtypes = [c_void_p,c_void_p]
 #SC
 k.gtk_scrolled_window_new.restype=c_void_p
 k.gtk_scrolled_window_set_child.argtypes = [c_void_p,c_void_p]

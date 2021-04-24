@@ -37,9 +37,7 @@ def sets(window):
 		k.gtk_window_set_default_size(dialog,width,height)
 	k.g_signal_connect_data (dialog,b"response",response,window,None,0)
 	#
-	box=k.gtk_dialog_get_content_area(dialog)
-	k.gtk_orientable_set_orientation(box,gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL)
-	#
+	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
 	e=k.gtk_entry_new_with_buffer(fold_bf)
 	k.gtk_box_append(box, labent(b"Download Folder",e))
 	k.gtk_box_append(box, ratio.ini())
@@ -50,4 +48,9 @@ def sets(window):
 	k.gtk_box_append(box, labent(b"Max uploads (-1 infinite)",k.gtk_entry_new_with_buffer(cons.slot_bf)))
 	k.gtk_box_append(box, labent(b"Max connections (-1 infinite)",k.gtk_entry_new_with_buffer(cons.con_bf)))
 	#
+	scw=k.gtk_scrolled_window_new()
+	k.gtk_scrolled_window_set_child(scw,box)
+	k.gtk_widget_set_vexpand(scw,True)
+	bx=k.gtk_dialog_get_content_area(dialog)
+	k.gtk_box_append(bx,scw)
 	k.gtk_widget_show (dialog)
