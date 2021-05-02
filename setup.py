@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 from setuptools import setup
 setup(name=pkname,
-	version='1.0.13',
+	version='1.0.14',
 	packages=[pkname],
 	#opt
 	python_requires='>=3',
