@@ -19,6 +19,7 @@ class GtkResponseType(IntEnum):
 	GTK_RESPONSE_NONE = -1
 class GtkSortType(IntEnum):
 	GTK_SORT_ASCENDING=0
+	GTK_SORT_DESCENDING=1
 class GtkWrapMode(IntEnum):
 	GTK_WRAP_WORD_CHAR=3
 
@@ -157,6 +158,7 @@ k.gtk_tree_path_get_indices.argtypes = [c_void_p]
 #TS
 k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
 k.gtk_tree_selection_select_path.argtypes = [c_void_p,c_void_p]
+k.gtk_tree_sortable_get_sort_column_id.argtypes=[c_void_p,c_void_p,c_void_p]
 k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]
 #TV
 k.gtk_tree_view_get_selection.restype=c_void_p
@@ -164,6 +166,7 @@ k.gtk_tree_view_get_selection.argtypes = [c_void_p]
 k.gtk_tree_view_append_column.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_view_column_new_with_attributes.restype=c_void_p
 k.gtk_tree_view_column_new_with_attributes.argtypes = [c_void_p,c_void_p,c_void_p,c_int,c_void_p]
+k.gtk_tree_view_column_set_clickable.argtypes=[c_void_p,c_int]
 k.gtk_tree_view_column_set_fixed_width.argtypes = [c_void_p,c_int]
 k.gtk_tree_view_column_set_resizable.argtypes = [c_void_p,c_int]
 k.gtk_tree_view_new_with_model.restype=c_void_p

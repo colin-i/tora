@@ -19,9 +19,26 @@ class COLUMNS(IntEnum):
 	RATIO=4
 	n=5
 
+colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
+list=colsdef()
+sort=k.gtk_tree_model_sort_new_with_model(list)
+k.g_object_unref(list)
+
+@gtk.CALLBACK
+def header_click(ix):
+	ix=gtk.c_int(ix if ix else 0)#this comes none/int
+	n=gtk.c_int()
+	t=gtk.c_int()
+	k.gtk_tree_sortable_get_sort_column_id(sort,gtk.byref(n),gtk.byref(t))
+	if n.value!=ix.value or t.value!=gtk.GtkSortType.GTK_SORT_ASCENDING:
+		k.gtk_tree_sortable_set_sort_column_id(sort,ix,gtk.GtkSortType.GTK_SORT_ASCENDING)
+	else:
+		k.gtk_tree_sortable_set_sort_column_id(sort,ix,gtk.GtkSortType.GTK_SORT_DESCENDING)
 def columns_add(tree,n,i,w):
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(n, renderer, b"text", i, None)
+	k.g_signal_connect_data(column,b"clicked",header_click,i,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k.gtk_tree_view_column_set_clickable(column,True)
 	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
 	if(w>0):
@@ -33,11 +50,6 @@ def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
 	columns_add(tree,b"Uploaded",COLUMNS.UP,w)
 	columns_add(tree,b"Downloaded",COLUMNS.DOWN,w)
 	columns_add(tree,b"Ratio",COLUMNS.RATIO,w)
-
-colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
-list=colsdef()
-sort=k.gtk_tree_model_sort_new_with_model(list)
-k.g_object_unref(list)
 
 @gtk.CALLBACK
 def add(window):
