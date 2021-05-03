@@ -99,7 +99,6 @@ def layout(window):
 	tree=k.gtk_tree_view_new_with_model(lst)
 	k.g_object_unref(lst)
 	columns(tree,confs.width)
-	k.gtk_tree_view_set_headers_visible(tree,False)
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
 	k.gtk_box_append(box,bx)
