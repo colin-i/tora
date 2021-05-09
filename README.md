@@ -1,6 +1,5 @@
 # Torrent client
-Using libtorrent (arvidn) with python bindings (if is not python-libtorrent-bin,
- install python-libtorrent, there is a --no-deps flag at pip).\
+Using libtorrent (arvidn) with python bindings (example: python3-libtorrent).\
 libgtk-4.so required.
 ###### Donations
 | Name      | Address                                    |
