@@ -85,8 +85,8 @@ def finish():
 		bts=k.gtk_entry_buffer_get_text(end_bf)
 		if bts:
 			c=bts.decode()
-			z=subprocess.run(c,capture_output=True)
-			f.write(str(z.stdout))
+			z=subprocess.run(c,capture_output=True,text=True)
+			f.write(z.stdout)
 		f.close()
 		f=None
 	return k.gtk_entry_buffer_get_text(log_bf).decode()
