@@ -28,11 +28,11 @@ def sets(window):
 	dialog = k.gtk_dialog_new_with_buttons (b"Settings",window,
 		gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
 		b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
-	width=gtk.c_int()
-	height=gtk.c_int()
 	if k.gtk_window_is_maximized(window):
 		k.gtk_window_maximize(dialog)
 	else:
+		width=gtk.c_int()
+		height=gtk.c_int()
 		k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
 		k.gtk_window_set_default_size(dialog,width,height)
 	k.g_signal_connect_data (dialog,b"response",response,window,None,0)
