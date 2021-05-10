@@ -62,7 +62,7 @@ def add(window):
 		ip=gtk.byref(i)
 		if k.gtk_tree_model_iter_n_children(list,None)==0:
 			next.ini(treeV)
-		k.gtk_list_store_append(list,ip)
+		k.gtk_list_store_prepend(list,ip)
 		gtk.gtk_list_store_set5(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
 			COLUMNS.UP,b"0",COLUMNS.DOWN,b"0",COLUMNS.RATIO,b"0")
 		listtor.write(list)

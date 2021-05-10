@@ -23,7 +23,7 @@ def write(lst):
 			layout.COLUMNS.UP,gtk.byref(val))
 		d={'path':path.value.decode(),'upload':int(val.value)}
 		k.g_free(path)
-		arr.append(d)
+		arr.insert(0,d)
 		b=k.gtk_tree_model_iter_next(lst,it)
 	with open(config_filename, "w") as write_file:
 		json.dump(arr, write_file)
@@ -39,7 +39,7 @@ def read(lst,window):
 	for x in dat:
 		p=x['path']
 		if torrent.open_tor(p,x['upload'],window):
-			k.gtk_list_store_append(lst,ip)
+			k.gtk_list_store_prepend(lst,ip)
 			gtk.gtk_list_store_set5(lst, ip,
 				layout.COLUMNS.NAME, torben.name(p),
 				layout.COLUMNS.PATH, p.encode(),

@@ -123,6 +123,7 @@ k.gtk_label_new.argtypes = [c_void_p]
 #LI
 k.gtk_list_store_append.argtypes = [c_void_p,c_void_p]
 k.gtk_list_store_new.restype=c_void_p
+k.gtk_list_store_prepend.argtypes = [c_void_p,c_void_p]
 k.gtk_list_store_remove.argtypes = [c_void_p,c_void_p]
 #N
 k.gtk_native_get_surface.restype=c_void_p

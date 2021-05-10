@@ -73,7 +73,7 @@ def open_tor(path,u,w):
 		if x.h==th:
 			return False
 	t=tor(th,u)
-	torrents.append(t)
+	torrents.insert(0,t)
 	ratio.gain(w)
 	log.addT(path)
 	return True
