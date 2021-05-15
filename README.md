@@ -1,5 +1,5 @@
 # Torrent client
-Using libtorrent (arvidn) with python bindings (example: python3-libtorrent).\
+Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
 libgtk-4.so required.
 ###### Donations
 | Name      | Address                                    |
