@@ -43,8 +43,8 @@ def read_opt(window):
 				k.gdk_monitor_get_geometry(mon,gtk.byref(rct))
 				width=rct.width
 			else:
-				k.gtk_window_set_default_size(window,width,dict['height'])
 				width=dict['width']
+				k.gtk_window_set_default_size(window,width,dict['height'])
 			if dict['min']:
 				k.gtk_window_minimize(window)
 			#

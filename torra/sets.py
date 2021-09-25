@@ -45,8 +45,7 @@ def sets(window):
 	next.sets(e)
 	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
 	k.gtk_box_append(box, log.ini())
-	k.gtk_box_append(box, labent(b"Max uploads (-1 infinite)",k.gtk_entry_new_with_buffer(cons.slot_bf)))
-	k.gtk_box_append(box, labent(b"Max connections (-1 infinite)",k.gtk_entry_new_with_buffer(cons.con_bf)))
+	k.gtk_box_append(box, cons.ini())
 	#
 	scw=k.gtk_scrolled_window_new()
 	k.gtk_scrolled_window_set_child(scw,box)
