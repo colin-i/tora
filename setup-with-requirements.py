@@ -17,4 +17,9 @@ from ctypes import cdll
 cdll.LoadLibrary("libgtk-4.so")
 print('gtk4 found')
 
+test=subprocess.run([sys.executable,'-m','pip','install','python-apt'])
+if test.returncode:
+	print('missing python-apt')
+	exit(test.returncode)
+
 subprocess.run([sys.executable,'-m','pip','install','--user','.'])
