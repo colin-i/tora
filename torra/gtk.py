@@ -46,15 +46,8 @@ class GtkTreeIter(Structure):
 
 path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
 os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
-lib_gtk_name="libgtk-4.so"
-try:
-	k = cdll.LoadLibrary(lib_gtk_name)
-except OSError:
-	from . import gtk4
-	k = gtk4.version()
-	if not k:
-		raise
-	k = cdll.LoadLibrary(lib_gtk_name+'.'+k)
+lib_gtk_name="libgtk-4.so.1"
+k = cdll.LoadLibrary(lib_gtk_name)
 
 #restype default is C int
 #argtypes no default. c_void_p is python int. pointers must be announced
