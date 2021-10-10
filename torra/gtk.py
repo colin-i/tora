@@ -39,8 +39,6 @@ CALLBACK2 = CFUNCTYPE(None,c_void_p,c_void_p)
 CALLBACK3 = CFUNCTYPE(None,c_void_p,c_int,c_void_p)
 CALLBACK4i = CFUNCTYPE(c_int,c_void_p,c_int,c_int,c_int)
 
-class GdkRectangle(Structure):
-	_fields_=[("x",c_int),("y",c_int),("width",c_int),("height",c_int)]
 class GtkTreeIter(Structure):
 	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
 
@@ -76,11 +74,8 @@ k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
 k.g_source_remove.argtypes = [c_void_p]
 k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
 #
-k.gdk_display_get_default.restype=c_void_p
-k.gdk_display_get_monitor_at_surface.restype=c_void_p
-k.gdk_display_get_monitor_at_surface.argtypes = [c_void_p,c_void_p]
 k.gdk_keyval_name.restype=c_char_p
-k.gdk_monitor_get_geometry.argtypes = [c_void_p,c_void_p]
+k.gdk_toplevel_get_state.argtypes = [c_void_p]
 #A
 k.gtk_application_new.restype=c_void_p
 k.gtk_application_new.argtypes=[c_void_p,c_int]
@@ -141,8 +136,8 @@ k.gtk_text_view_get_buffer.argtypes = [c_void_p]
 k.gtk_text_view_new.restype=c_void_p
 k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
 k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
-#TL
-k.gdk_toplevel_get_state.argtypes = [c_void_p]
+#TEW
+k.gtk_test_widget_wait_for_draw.argtypes = [c_void_p]
 #TM
 k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
 k.gtk_tree_model_get_path.restype=c_void_p
@@ -179,6 +174,7 @@ k.gtk_tree_view_set_activate_on_single_click.argtypes = [c_void_p,c_int]
 k.gtk_widget_add_controller.argtypes = [c_void_p,c_void_p]
 k.gtk_widget_get_root.restype=c_void_p
 k.gtk_widget_get_root.argtypes=[c_void_p]
+k.gtk_widget_get_width.argtypes=[c_void_p]
 k.gtk_widget_hide.argtypes=[c_void_p]
 k.gtk_widget_remove_controller.argtypes = [c_void_p,c_void_p]
 k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]

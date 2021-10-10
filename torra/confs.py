@@ -37,16 +37,9 @@ def read_opt(window):
 			dict=json.load(f)
 			if dict['max']:
 				k.gtk_window_maximize(window)
-				disp=k.gdk_display_get_default()
-				mon=k.gdk_display_get_monitor_at_surface(disp,k.gtk_native_get_surface(window))
-				rct=gtk.GdkRectangle()
-				k.gdk_monitor_get_geometry(mon,gtk.byref(rct))
-				width=rct.width
 			else:
-				width=dict['width']
-				k.gtk_window_set_default_size(window,width,dict['height'])
-			if dict['min']:
-				k.gtk_window_minimize(window)
+				k.gtk_window_set_default_size(window,dict['width'],dict['height'])
+			width=-2 if dict['min'] else -1
 			#
 			a=dict['download_folder'].encode()
 			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
