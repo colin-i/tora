@@ -1,7 +1,7 @@
 # Torrent client
 
 ## Install
-On Ubuntu, but other distros may have the same tree and dependencies.
+On Ubuntu from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
@@ -10,17 +10,17 @@ Install:
 ```sh
 sudo apt-get install torra
 ```
+\
+From pypi:
+```sh
+pip3 install torra
+```
+And having the dependencies.
 
 ## From source
 Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
 libgtk-4.so.1 required.\
 With setup.py or the other python setup script.
-
-## From pypi
-```sh
-pip3 install torra
-```
-And having the dependencies.
 
 ## Donations
 The *donations* section is here
