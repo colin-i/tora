@@ -5,9 +5,9 @@ import sys
 try:
    import libtorrent
 except Exception:
-	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=2.0.2'])
+	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=1.2.9'])
 	if test.returncode:
-		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=2.0.2'])
+		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
 		if test.returncode:
 			exit(test.returncode)
 		import libtorrent
