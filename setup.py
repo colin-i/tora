@@ -1,6 +1,12 @@
 #setuptools.setup is looking at one argv parameter; to "build" and "install":
 #python3 setup.py install
 
+#ok, package python-libtorrent-bin is old. install with pip install --no-deps but add somehow appdirs
+#                                          and python-libtorrent on ubuntu
+#                                          if it's not old python-libtorrent at pip:
+#                                          	that+(libtorrent-rasterbar2.0 on ubuntu) can be a solution
+#last is at 3.9 on x86-64
+
 pkname='torra'
 
 import pathlib
