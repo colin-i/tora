@@ -5,7 +5,7 @@
 #                                          and python-libtorrent on ubuntu
 #                                          if it's not old python-libtorrent at pip:
 #                                          	that+(libtorrent-rasterbar2.0 on ubuntu) can be a solution
-#last is at 3.9 on x86-64
+#last python is at 3.9 on x86-64
 
 pkname='torra'
 
