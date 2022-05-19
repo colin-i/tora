@@ -1,0 +1,145 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ torra (1-1ubuntu1) impish; urgency=medium
+ .
+   *
+Author: pi <pi@pi-desktop>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2021-10-10
+
+--- torra-1.orig/README.md
++++ torra-1/README.md
+@@ -1,7 +1,25 @@
+ # Torrent client
++
++## Install
++On Ubuntu, but other distros may have the same tree and dependencies.
++```sh
++sudo add-apt-repository ppa:colin-i/ppa
++sudo apt-get update
++sudo apt-get install torra
++```
++
++## From source
+ Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
+-libgtk-4.so.1 required.
+-###### Donations
++libgtk-4.so.1 required.\
++With setup.py or the other python setup script.
++
++## From pypi
++```sh
++pip3 install torra
++```
++And having the dependencies.
++
++## Donations
+ | Name      | Address                                    |
+ |-----------|--------------------------------------------|
+ | Bitcoin   | 1DcXWYXpmopfgg3oZYWVBTLbDTmQ6nWG7s         |
+--- torra-1.orig/setup.py
++++ torra-1/setup.py
+@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text(
+ 
+ from setuptools import setup
+ setup(name=pkname,
+-	version='1.0.25',
++	version='1.0.26',
+ 	packages=[pkname],
+ 	#opt
+ 	python_requires='>=3',
+--- torra-1.orig/torra/confs.py
++++ torra-1/torra/confs.py
+@@ -37,16 +37,9 @@ def read_opt(window):
+ 			dict=json.load(f)
+ 			if dict['max']:
+ 				k.gtk_window_maximize(window)
+-				disp=k.gdk_display_get_default()
+-				mon=k.gdk_display_get_monitor_at_surface(disp,k.gtk_native_get_surface(window))
+-				rct=gtk.GdkRectangle()
+-				k.gdk_monitor_get_geometry(mon,gtk.byref(rct))
+-				width=rct.width
+ 			else:
+-				width=dict['width']
+-				k.gtk_window_set_default_size(window,width,dict['height'])
+-			if dict['min']:
+-				k.gtk_window_minimize(window)
++				k.gtk_window_set_default_size(window,dict['width'],dict['height'])
++			width=-2 if dict['min'] else -1
+ 			#
+ 			a=dict['download_folder'].encode()
+ 			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
+--- torra-1.orig/torra/gtk.py
++++ torra-1/torra/gtk.py
+@@ -39,8 +39,6 @@ CALLBACK2 = CFUNCTYPE(None,c_void_p,c_vo
+ CALLBACK3 = CFUNCTYPE(None,c_void_p,c_int,c_void_p)
+ CALLBACK4i = CFUNCTYPE(c_int,c_void_p,c_int,c_int,c_int)
+ 
+-class GdkRectangle(Structure):
+-	_fields_=[("x",c_int),("y",c_int),("width",c_int),("height",c_int)]
+ class GtkTreeIter(Structure):
+ 	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
+ 
+@@ -76,11 +74,8 @@ k.g_signal_connect_data.argtypes = [c_vo
+ k.g_source_remove.argtypes = [c_void_p]
+ k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
+ #
+-k.gdk_display_get_default.restype=c_void_p
+-k.gdk_display_get_monitor_at_surface.restype=c_void_p
+-k.gdk_display_get_monitor_at_surface.argtypes = [c_void_p,c_void_p]
+ k.gdk_keyval_name.restype=c_char_p
+-k.gdk_monitor_get_geometry.argtypes = [c_void_p,c_void_p]
++k.gdk_toplevel_get_state.argtypes = [c_void_p]
+ #A
+ k.gtk_application_new.restype=c_void_p
+ k.gtk_application_new.argtypes=[c_void_p,c_int]
+@@ -141,8 +136,8 @@ k.gtk_text_view_get_buffer.argtypes = [c
+ k.gtk_text_view_new.restype=c_void_p
+ k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
+ k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
+-#TL
+-k.gdk_toplevel_get_state.argtypes = [c_void_p]
++#TEW
++k.gtk_test_widget_wait_for_draw.argtypes = [c_void_p]
+ #TM
+ k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
+ k.gtk_tree_model_get_path.restype=c_void_p
+@@ -179,6 +174,7 @@ k.gtk_tree_view_set_activate_on_single_c
+ k.gtk_widget_add_controller.argtypes = [c_void_p,c_void_p]
+ k.gtk_widget_get_root.restype=c_void_p
+ k.gtk_widget_get_root.argtypes=[c_void_p]
++k.gtk_widget_get_width.argtypes=[c_void_p]
+ k.gtk_widget_hide.argtypes=[c_void_p]
+ k.gtk_widget_remove_controller.argtypes = [c_void_p,c_void_p]
+ k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]
+--- torra-1.orig/torra/main.py
++++ torra-1/torra/main.py
+@@ -37,6 +37,12 @@ def activate(app):
+ 	k.g_signal_connect_data (window, b"close-request", closing, None, None, 0)
+ 	k.gtk_widget_show (window)
+ 	confs.read_opt(window)
++	wd=confs.width
++	if wd<0:
++		k.gtk_test_widget_wait_for_draw(window)
++		confs.width=k.gtk_widget_get_width(window)
++		if wd==-2:
++			k.gtk_window_minimize(window)
+ 	layout.layout(window)
+ 
+ def main():

@@ -1,0 +1,30 @@
+torra (1-jammy4) jammy; urgency=medium
+
+  * distribution
+
+ -- pi <pi@pi-desktop>  Sat, 16 Oct 2021 13:37:32 +0300
+
+torra (1-1ubuntu3) impish; urgency=medium
+
+  * description
+
+ -- pi <pi@pi-desktop>  Mon, 11 Oct 2021 16:17:04 +0300
+
+torra (1-1ubuntu2) impish; urgency=medium
+
+  * vert bar environs fix
+
+ -- pi <pi@pi-desktop>  Sun, 10 Oct 2021 11:50:52 +0300
+
+torra (1-1ubuntu1) impish; urgency=medium
+
+  * 
+
+ -- pi <pi@pi-desktop>  Sat, 09 Oct 2021 12:48:55 +0300
+
+torra (1-1) impish; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- Botescu Costin <costin.botescu@gmail.com>  Sat, 09 Oct 2021 10:02:48 +0300

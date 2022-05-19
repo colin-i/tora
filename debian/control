@@ -1,0 +1,14 @@
+Source: torra
+Section: python
+Priority: optional
+Maintainer: Botescu Costin <costin.botescu@gmail.com>
+Build-Depends: debhelper-compat (= 12), dh-python, python3-all, python3-setuptools
+Standards-Version: 4.5.0
+Homepage: https://github.com/colin-i/tora
+X-Python3-Version: >= 3.2
+
+Package: torra
+Architecture: all
+Multi-Arch: foreign
+Depends: python3-libtorrent, libgtk-4-1, ${misc:Depends}, ${python3:Depends}
+Description: Torrent client

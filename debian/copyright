@@ -1,0 +1,35 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: torra
+Upstream-Contact: <preferred name and address to reach the upstream project>
+Source: <url://example.com>
+#
+# Please double check copyright with the licensecheck(1) command.
+
+Files:     .gitignore
+           README.md
+           setup-with-requirements.py
+           setup.py
+           torra/bencod.py
+           torra/confs.py
+           torra/conmenu.py
+           torra/cons.py
+           torra/gtk.py
+           torra/layout.py
+           torra/listtor.py
+           torra/log.py
+           torra/main.py
+           torra/meninfo.py
+           torra/next.py
+           torra/overall.py
+           torra/ratio.py
+           torra/sets.py
+           torra/stats.py
+           torra/torben.py
+           torra/torrent.py
+           torra/treesel.py
+Copyright: __NO_COPYRIGHT_NOR_LICENSE__
+License:   __NO_COPYRIGHT_NOR_LICENSE__
+
+#----------------------------------------------------------------------------
+# Files marked as NO_LICENSE_TEXT_FOUND may be covered by the following
+# license/copyright files.
