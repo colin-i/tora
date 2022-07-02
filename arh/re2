@@ -1,0 +1,5 @@
+
+#must replace python3/dist-packages with python3.10/site-packages
+
+sudo sed '/^Requires.*\/python3.*$/a Requires:      python3-appdirs\nRequires:      rb_libtorrent-python3\nRequires:      libgtk-4.so.1' text > text2
+sudo mv text2 text
