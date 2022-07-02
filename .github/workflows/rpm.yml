@@ -12,14 +12,15 @@ jobs:
    - name: Run a multi-line script
      run: |
       #get deb
-      arh=`cat debian/control | grep ^Architecture | cut -d ' ' -f2`
+      arh=`cat debian/control | grep ^Architecture | cut -d ' ' -f2` #all
+      arh_lp=amd64
       name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
       version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
       #dist=`cat debian/changelog | head -1 | grep -Poe "[^ ]*(?=;)"`
       if [ ! -e "lp2.py" ]; then
        wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
       fi
-      OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} ${arh})
+      OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} ${arh_lp})
       wget ${OUTPUT}/+files/${name}_${version}_${arh}.deb -O ${name}.deb
       #make rpm
       mkdir out
