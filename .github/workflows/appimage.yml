@@ -43,10 +43,11 @@ jobs:
       #dependencies
       downdeb () {
        pkg=${1}
+       repo=${2}
        src="ro.archive.ubuntu.com"
        inter=Packages
        if [ ! -e "${inter}" ]; then
-        wget http://${src}/ubuntu/dists/jammy/main/binary-amd64/Packages.xz -O ${inter}.xz
+        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/Packages.xz -O ${inter}.xz
         xz -d ${inter}.xz
        fi
        debfilename=`grep "^Filename.*/${pkg}_" ${inter}`
@@ -56,11 +57,10 @@ jobs:
        wget ${wget_url} -O ${maindeb}
        dpkg -x ${maindeb} AppDir
       }
-      array=( libboost-python1.74.0 libtorrent-rasterbar2.0 python3-appdirs python3-libtorrent )
-      for var in "${array[@]}"
-      do
-       downdeb ${var}
-      done
+      downdeb libboost-python1.74.0 main
+      downdeb libtorrent-rasterbar2.0 universe
+      downdeb python3-appdirs main
+      downdeb python3-libtorrent main
       #
       apd=AppDir
       cd ${apd}
