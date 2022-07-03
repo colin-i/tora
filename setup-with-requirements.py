@@ -10,7 +10,7 @@ except Exception:
 		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
 		if test.returncode:
 			exit(test.returncode)
-		import libtorrent
+	import libtorrent
 print('libtorrent found')
 
 from ctypes import cdll
