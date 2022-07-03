@@ -4,7 +4,7 @@ on:
 
 jobs:
  dbuild:
-  runs-on: ubuntu-22.04 #launchpad stuck at "Uploading build"
+  runs-on: ubuntu-22.04 #launchpad stuck at Uploading build
   steps:
    - uses: actions/checkout@v3
      with:
