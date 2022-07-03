@@ -1,0 +1,46 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ torra (1-jammy6) jammy; urgency=medium
+ .
+   * lp stuck
+Author: bc <bc@bc-HP-Pavilion-x360-Convertible>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2022-07-03
+
+--- torra-1.orig/.github/workflows/deb.yml
++++ torra-1/.github/workflows/deb.yml
+@@ -4,7 +4,7 @@ on:
+ 
+ jobs:
+  dbuild:
+-  runs-on: ubuntu-latest
++  runs-on: ubuntu-22.04 #launchpad stuck at Uploading build
+   steps:
+    - uses: actions/checkout@v3
+      with:
+@@ -12,7 +12,8 @@ jobs:
+    - name: Run a multi-line script
+      run: |
+       if [ -z "`dpkg -s devscripts>/dev/null 2>&1 && echo x`" ]; then
+-       sudo apt install -y devscripts debhelper dh-python python3-all python3-setuptools
++       sudo apt install -y devscripts debhelper dh-python python3-all
++       #python3-setuptools is already
+       fi
+       name=`cat in/debian/changelog | head -1 | grep -o ^[^\ ]*`
+       origf=${name}-1.tar.gz
