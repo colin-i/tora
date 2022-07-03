@@ -1,15 +1,3 @@
-torra (1-jammy7) jammy; urgency=medium
-
-  * lp stuck
-
- -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sun, 03 Jul 2022 15:17:07 +0300
-
-torra (1-jammy6) jammy; urgency=medium
-
-  * lp stuck
-
- -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sun, 03 Jul 2022 15:14:05 +0300
-
 torra (1-jammy5) jammy; urgency=medium
 
   * fix for path not found

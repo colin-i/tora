@@ -34,7 +34,7 @@ jobs:
        version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
        if [ ! -e "lp2.py" ]; then
         wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
-        sudo apt install python3-launchpadlib
+        #is already sudo apt install python3-launchpadlib
        fi
        OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} amd64)
        wget ${OUTPUT}/+files/${name}_${version}_all.deb -O ${name}.deb
