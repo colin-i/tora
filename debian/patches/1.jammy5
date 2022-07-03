@@ -1,0 +1,448 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ torra (1-jammy5) jammy; urgency=medium
+ .
+   * fix for path not found
+Author: bc <bc@bc-HP-Pavilion-x360-Convertible>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2022-07-03
+
+--- /dev/null
++++ torra-1/.github/workflows/appimage.yml
+@@ -0,0 +1,141 @@
++
++on:
++ workflow_dispatch:
++  inputs:
++   ppa:
++    description: "ppa sufix"
++
++jobs:
++ build:
++  runs-on: ubuntu-22.04
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      name2=Torra
++      #
++      mkdir -p AppDir
++      file=runtime
++      arch_ai=-x86_64
++      archfile=${file}${arch_ai}
++      kitpart () {
++       #https://github.com/AppImage/pkg2appimage
++       urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/latest -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
++      }
++      if [ ! -e "${file}" ]; then
++       kitpart
++       #"pkg2appimage-.*-x86_64.AppImage"
++       wget -c https://github.com/${urlpart}
++       mv ${archfile} ${file}
++       chmod a+x ${file}
++      fi
++      if [ ! -e "${name}.deb" ]; then
++       version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
++       if [ ! -e "lp2.py" ]; then
++        wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
++        sudo apt install python3-launchpadlib
++       fi
++       OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} amd64)
++       wget ${OUTPUT}/+files/${name}_${version}_all.deb -O ${name}.deb
++       dpkg -x ${name}.deb AppDir
++      fi
++      #dependencies
++      downdeb () {
++       pkg=${1}
++       src="ro.archive.ubuntu.com"
++       inter=Packages
++       if [ ! -e "${inter}" ]; then
++        wget http://${src}/ubuntu/dists/jammy/main/binary-amd64/Packages.xz -O ${inter}.xz
++        xz -d ${inter}.xz
++       fi
++       debfilename=`grep "^Filename.*/${pkg}_" ${inter}`
++       debfilename=`echo ${debfilename} | tail -1 | cut -d ' ' -f 2`
++       wget_url=http://${src}/ubuntu/${debfilename}
++       maindeb=${pkg}.deb
++       wget ${wget_url} -O ${maindeb}
++       dpkg -x ${maindeb} AppDir
++      }
++      array=( libboost-python1.74.0 libtorrent-rasterbar2.0 python3-appdirs python3-libtorrent )
++      for var in "${array[@]}"
++      do
++       downdeb ${var}
++      done
++      #
++      apd=AppDir
++      cd ${apd}
++      file2=AppRun
++      if [ ! -e "${file2}" ]; then
++       if [ -z "${urlpart}" ]; then
++        kitpart
++       fi
++       archfile2=${file2}${arch_ai}
++       urlpart=${urlpart:0:`echo ${urlpart} | grep -ob '[^/]*$' | cut -d ':' -f 1`}${archfile2}
++       wget -c https://github.com/${urlpart}
++       chmod a+x ${archfile2}
++       mv ${archfile2} ${file2}
++      fi
++      pngfile=${name}.png
++      if [ ! -e "${pngfile}" ]; then
++       wget https://github.com/colin-i/test/releases/download/1.5/${name}.png -O ${pngfile}
++       cat > ${name}.desktop <<EOF
++      [Desktop Entry]
++      Type=Application
++      Name=${name2}
++      Exec=${name}
++      Icon=${name}
++      Categories=Utility
++      EOF
++       ln -s ${pngfile} .DirIcon
++      fi
++      #metadata file
++      mi=usr/share/metainfo
++      mif=${mi}/com.colin.${name}.appdata.xml
++      if [ ! -e "${mif}" ]; then
++       page=`cat ../debian/control | grep "^Homepage" | cut -d ' ' -f2`
++       srcname=`echo ${page} | grep -o "[^/]*$"`
++       mkdir -p ${mi}
++       cat > ${mif} <<EOF
++      <?xml version="1.0" encoding="UTF-8"?>
++      <!-- Copyright 2022 -->
++      <component type="desktop-application">
++       <id>com.colin.${name}</id>
++       <metadata_license>FSFAP</metadata_license>
++       <name>${name2}</name>
++       <summary>Torrent client</summary>
++       <description>
++        <ul>
++         <li>Download/Upload torrents data</li>
++         <li>Fast resume</li>
++         <li>Detailed statistics</li>
++        </ul>
++       </description>
++       <url type="homepage">${page}</url>
++       <screenshots>
++        <screenshot type="default">
++         <caption>${name2} image</caption>
++         <image>https://raw.github.com/colin-i/${srcname}/master/arh/${name}.png</image>
++        </screenshot>
++       </screenshots>
++       <content_rating/>
++      </component>
++      EOF
++      fi
++      #
++      cd ..
++      #
++      if [ ! -e "${name}.AppImage" ]; then
++       mksquashfs AppDir ${name}.squashfs -root-owned -noappend
++       cat runtime >> ${name}.AppImage
++       cat ${name}.squashfs >> ${name}.AppImage
++       chmod a+x ${name}.AppImage
++      fi
++      #glibc=`readelf -V ${apd}/usr/bin/${name} | grep -Po "(?<= GLIBC_)[^ ]*" | sort -Vr | head -1 | sed "s/\./-/g"`
++      #echo -n ${glibc} > version #"glibc" will not be ok for upload-artifact
++   - name: artifact
++     uses: actions/upload-artifact@v3
++     with:
++      name: appimage
++      path: |
++       ./*.AppImage
++      # ./version
+--- /dev/null
++++ torra-1/.github/workflows/deb.yml
+@@ -0,0 +1,34 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ dbuild:
++  runs-on: ubuntu-latest
++  steps:
++   - uses: actions/checkout@v3
++     with:
++      path: in
++   - name: Run a multi-line script
++     run: |
++      if [ -z "`dpkg -s devscripts>/dev/null 2>&1 && echo x`" ]; then
++       sudo apt install -y devscripts debhelper dh-python python3-all python3-setuptools
++      fi
++      name=`cat in/debian/changelog | head -1 | grep -o ^[^\ ]*`
++      origf=${name}-1.tar.gz
++      if [ ! -e "${origf}" ]; then
++       origln=${name}_1.orig.tar.gz
++       wget https://ppa.launchpadcontent.net/colin-i/ppa/ubuntu/pool/main/t/${name}/${origln} -O ${origf}
++       ln -s ${origf} ${origln}
++      fi
++      cd in
++      debuild -S -us -uc
++   - name: unsigned debs
++     uses: actions/upload-artifact@v3
++     with:
++      name: sdebs
++      path: |
++       ./*.dsc
++       ./*.changes
++       ./*.buildinfo
++       ./*.debian.tar.xz
+--- /dev/null
++++ torra-1/.github/workflows/rel.yml
+@@ -0,0 +1,41 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ rbuild:
++  runs-on: ubuntu-latest
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      #get the version from changelog/launchpad/input
++      tag=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
++      echo "tag=${tag}" >> $GITHUB_ENV
++   - name: Create Release
++     id: create_release
++     uses: actions/create-release@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      tag_name: ${{ env.tag }}
++      release_name: Release ${{ env.tag }}
++      draft: false
++      prerelease: false
++      #this can be undone. example: git push origin :refs/tags/1.6
++   - name: Store upload url for assets
++     run: |
++      #echo straight will not escape {}
++      a=${{ steps.create_release.outputs.upload_url }}
++      echo -n ${a} > 1.txt
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      echo "proj=${name}" >> $GITHUB_ENV
++   - name: Upload Release Asset
++     uses: actions/upload-release-asset@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      upload_url: https://uploads.github.com/repos/colin-i/test/releases/67484178/assets{?name,label}
++      asset_path: ./1.txt
++      asset_name: ${{ env.proj }}
++      asset_content_type: text/plain
+--- /dev/null
++++ torra-1/.github/workflows/rpm.yml
+@@ -0,0 +1,38 @@
++on:
++ workflow_dispatch:
++  inputs:
++   ppa:
++    description: "ppa sufix"
++
++jobs:
++ rpbuild:
++  runs-on: ubuntu-22.04 #focal alien is not testing ok on docker fedora
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      #get deb
++      arh=`cat debian/control | grep ^Architecture | cut -d ' ' -f2` #all
++      arh_lp=amd64
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
++      #dist=`cat debian/changelog | head -1 | grep -Poe "[^ ]*(?=;)"`
++      if [ ! -e "lp2.py" ]; then
++       wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
++      fi
++      OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} ${arh_lp})
++      wget ${OUTPUT}/+files/${name}_${version}_${arh}.deb -O ${name}.deb
++      #make rpm
++      mkdir out
++      cd out
++      #sudo apt update
++      sudo apt install alien
++      sudo alien -rk ../${name}.deb
++      fname=`ls`
++      mv ${fname} ../${fnamefinal}
++      echo "file=${fname}" >> $GITHUB_ENV
++   - name: artifact
++     uses: actions/upload-artifact@v3
++     with:
++      name: rpm
++      path: ./${{ env.file }}
+--- /dev/null
++++ torra-1/.github/workflows/uprpm.yml
+@@ -0,0 +1,24 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ urbuild:
++  runs-on: ubuntu-18.04
++  steps:
++   - name: Run a multi-line script
++     run: |
++      if [ -n "${{ env.init }}" ]; then
++       exit 1
++      fi
++      wget https://github.com/colin-i/test/releases/download/1.5/${{ env.proj }} -O 1.txt
++      echo "up_url=`cat 1.txt`" >> $GITHUB_ENV
++   - name: Upload Release Asset
++     uses: actions/upload-release-asset@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      upload_url: ${{ env.up_url }}
++      asset_path: ./${{ env.file }}
++      asset_name: ${{ env.file }}
++      asset_content_type: application/x-rpm
+--- torra-1.orig/README.md
++++ torra-1/README.md
+@@ -1,28 +1,32 @@
+ # Torrent client
+ 
+ ## Install
+-On Ubuntu, but other distros may have the same tree and dependencies.
++On Ubuntu from PPA.
+ ```sh
+ sudo add-apt-repository ppa:colin-i/ppa
+ ```
+ Or the *manual installation step* from this link *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6* \
+-Update and install:
++Install:
+ ```sh
+-sudo apt-get update
+ sudo apt-get install torra
+ ```
++\
++On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/tora/releases).
++```sh
++yum install torra-*.*.rpm
++```
++\
++From pypi:
++```sh
++pip3 install torra
++```
++And having the dependencies.
+ 
+ ## From source
+ Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
+ libgtk-4.so.1 required.\
+ With setup.py or the other python setup script.
+ 
+-## From pypi
+-```sh
+-pip3 install torra
+-```
+-And having the dependencies.
+-
+ ## Donations
+ The *donations* section is here
+ *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6*
+--- /dev/null
++++ torra-1/arh/re2
+@@ -0,0 +1,15 @@
++
++
++#this is warning is absolute
++#ln -s /usr/lib/python3/dist-packages/torra-1.0.26.egg-info ./usr/lib64/python3.10/site-packages/torra-1.0.26.egg-info && \
++#ln -s /usr/lib/python3/dist-packages/torra ./usr/lib64/python3.10/site-packages/torra && \
++#%%{buildroot}  there is an example without http://rpm.rutgers.edu/guide.html   the solution can be: it is a mount, then ln -s
++
++#sudo sed is still permission
++
++mkdir -p ./usr/lib64/python3.10/site-packages && \
++sed '/^Requires.*\/python3.*$/a Requires:      python3-appdirs\nRequires:      rb_libtorrent-python3\nRequires:      libgtk-4.so.1' text > text2 && \
++sed '/^%doc.*copyright.*$/a %ghost "/usr/lib64/python3.10/site-packages/torra-1.0.26.egg-info"\n%ghost "/usr/lib64/python3.10/site-packages/torra"' text2 > text3 && \
++printf "\n%%post\nln -s /usr/lib/python3/dist-packages/torra-1.0.26.egg-info /usr/lib64/python3.10/site-packages/torra-1.0.26.egg-info\nln -s /usr/lib/python3/dist-packages/torra /usr/lib64/python3.10/site-packages/torra" >> text3 && \
++rm text2 && \
++sudo mv text3 text
+--- torra-1.orig/setup-with-requirements.py
++++ torra-1/setup-with-requirements.py
+@@ -5,9 +5,9 @@ import sys
+ try:
+    import libtorrent
+ except Exception:
+-	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=2.0.2'])
++	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=1.2.9'])
+ 	if test.returncode:
+-		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=2.0.2'])
++		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
+ 		if test.returncode:
+ 			exit(test.returncode)
+ 		import libtorrent
+--- torra-1.orig/setup.py
++++ torra-1/setup.py
+@@ -1,21 +1,29 @@
+ #setuptools.setup is looking at one argv parameter; to "build" and "install":
+ #python3 setup.py install
+ 
++#ok, package python-libtorrent-bin is old. install with pip install --no-deps but add somehow appdirs
++#                                          and python-libtorrent on ubuntu
++#                                          if it's not old python-libtorrent at pip:
++#                                          	that+(libtorrent-rasterbar2.0 on ubuntu) can be a solution
++#last python is at 3.9 on x86-64
++
+ pkname='torra'
+ 
+ import pathlib
+ HERE = pathlib.Path(__file__).parent
++#here README is ok, else will be README.md not found for pypi
+ README = (HERE / "README.md").read_text()
+ 
+ from setuptools import setup
+ setup(name=pkname,
+-	version='1.0.26',
++	version='1.0.28',
+ 	packages=[pkname],
+ 	#opt
+ 	python_requires='>=3',
+ 	install_requires=["appdirs>=1.4.3"
++		#it's not updated at pypi (old 3.9)
++		#,'python-libtorrent-bin>=1.2.9' #;platform_system=="Linux" and platform_machine=="x86_64"'
+ 		#,"python-apt"#is from 2012 0.7.8, missing DistUtilsExtra, sudo apt install python-apt is 2.2., verify with pip3 install python-apt
+-		#,'python-libtorrent-bin;platform_system=="Linux" and platform_machine=="x86_64"'
+ 	],
+ 	extras_require={
+ 		'bin': ['python-libtorrent-bin>=1.2.9']
+--- torra-1.orig/torra/torrent.py
++++ torra-1/torra/torrent.py
+@@ -65,9 +65,14 @@ def open_tor(path,u,w):
+ 			d=lt.bencode(c)
+ 			td=lt.read_resume_data(d)
+ 	except Exception:
+-		info = lt.torrent_info(path)
+-		pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
+-		td={'ti': info, 'save_path': pv}
++		try:
++			info = lt.torrent_info(path)
++			pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
++			td={'ti': info, 'save_path': pv}
++		except Exception:
++			#the path is not existent
++			print("Errors with: "+path)
++			return False
+ 	th=ses.add_torrent(td)#got no Name right after opening with libtor
+ 	for x in torrents:
+ 		if x.h==th:

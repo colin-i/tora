@@ -65,14 +65,9 @@ def open_tor(path,u,w):
 			d=lt.bencode(c)
 			td=lt.read_resume_data(d)
 	except Exception:
-		try:
-			info = lt.torrent_info(path)
-			pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
-			td={'ti': info, 'save_path': pv}
-		except Exception:
-			#the path is not existent
-			print("Errors with: "+path)
-			return False
+		info = lt.torrent_info(path)
+		pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
+		td={'ti': info, 'save_path': pv}
 	th=ses.add_torrent(td)#got no Name right after opening with libtor
 	for x in torrents:
 		if x.h==th:

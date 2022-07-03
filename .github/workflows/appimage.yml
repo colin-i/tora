@@ -105,7 +105,7 @@ jobs:
        <summary>Torrent client</summary>
        <description>
         <ul>
-         <li>Download torrents</li>
+         <li>Download/Upload torrents data</li>
          <li>Fast resume</li>
          <li>Detailed statistics</li>
         </ul>
