@@ -11,6 +11,11 @@ Install:
 sudo apt-get install torra
 ```
 \
+On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/tora/releases).
+```sh
+yum install torra-*.*.rpm
+```
+\
 From pypi:
 ```sh
 pip3 install torra

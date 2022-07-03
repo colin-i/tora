@@ -1,0 +1,24 @@
+
+on:
+ workflow_dispatch:
+
+jobs:
+ urbuild:
+  runs-on: ubuntu-18.04
+  steps:
+   - name: Run a multi-line script
+     run: |
+      if [ -n "${{ env.init }}" ]; then
+       exit 1
+      fi
+      wget https://github.com/colin-i/test/releases/download/1.5/${{ env.proj }} -O 1.txt
+      echo "up_url=`cat 1.txt`" >> $GITHUB_ENV
+   - name: Upload Release Asset
+     uses: actions/upload-release-asset@v1
+     env:
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+     with:
+      upload_url: ${{ env.up_url }}
+      asset_path: ./${{ env.file }}
+      asset_name: ${{ env.file }}
+      asset_content_type: application/x-rpm
