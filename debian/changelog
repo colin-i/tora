@@ -1,4 +1,10 @@
-torra (1-jammy5) jammy; urgency=medium
+torra (1-impish6) impish; urgency=medium
+
+  * workflow already item
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sun, 03 Jul 2022 14:36:31 +0300
+
+torra (1-impish5) impish; urgency=medium
 
   * fix for path not found
 
