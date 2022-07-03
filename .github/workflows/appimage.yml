@@ -46,11 +46,12 @@ jobs:
        repo=${2}
        src="ro.archive.ubuntu.com"
        inter=Packages
-       if [ ! -e "${inter}" ]; then
-        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/Packages.xz -O ${inter}.xz
-        xz -d ${inter}.xz
+       fullinter=${inter}${repo}
+       if [ ! -e "${fullinter}" ]; then
+        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
+        xz -d ${fullinter}.xz
        fi
-       debfilename=`grep "^Filename.*/${pkg}_" ${inter}`
+       debfilename=`grep "^Filename.*/${pkg}_" ${fullinter}`
        debfilename=`echo ${debfilename} | tail -1 | cut -d ' ' -f 2`
        wget_url=http://${src}/ubuntu/${debfilename}
        maindeb=${pkg}.deb
