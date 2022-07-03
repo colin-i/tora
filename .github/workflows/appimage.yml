@@ -61,7 +61,7 @@ jobs:
       downdeb libboost-python1.74.0 main
       downdeb libtorrent-rasterbar2.0 universe
       downdeb python3-appdirs main
-      downdeb python3-libtorrent main
+      downdeb python3-libtorrent universe
       #
       apd=AppDir
       cd ${apd}
