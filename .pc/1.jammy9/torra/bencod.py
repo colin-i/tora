@@ -1,6 +1,5 @@
 """ Module to construct / parse bencoded data """
 
-is_info=False
 
 def parse_blist(bdata):
     """ Convert bencoded data to python list """
@@ -72,10 +71,9 @@ def parse_bstring(bdata):
 	if sz != length:
 		raise ValueError("Incorrect bencoded string length")
 
-	if is_info:
-		if sz>=1000:
-			#bencod is for meninfo,torben name, and overall sizes
-			bstring='*****'+sz.__str__()+'*****'
+	if sz>=1000:
+		#bencod is for meninfo,torben name, and overall sizes
+		bstring='*****'+sz.__str__()+'*****'
 
 	return bstring, bdata
 

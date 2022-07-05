@@ -1,0 +1,71 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ torra (1-jammy9) jammy; urgency=medium
+ .
+   * only at info
+Author: bc <bc@bc-HP-Pavilion-x360-Convertible>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2022-07-05
+
+--- torra-1.orig/setup.py
++++ torra-1/setup.py
+@@ -16,7 +16,7 @@ README = (HERE / "README.md").read_text(
+ 
+ from setuptools import setup
+ setup(name=pkname,
+-	version='1.0.29',
++	version='1.0.30',
+ 	packages=[pkname],
+ 	#opt
+ 	python_requires='>=3',
+--- torra-1.orig/torra/bencod.py
++++ torra-1/torra/bencod.py
+@@ -1,5 +1,6 @@
+ """ Module to construct / parse bencoded data """
+ 
++is_info=False
+ 
+ def parse_blist(bdata):
+     """ Convert bencoded data to python list """
+@@ -71,9 +72,10 @@ def parse_bstring(bdata):
+ 	if sz != length:
+ 		raise ValueError("Incorrect bencoded string length")
+ 
+-	if sz>=1000:
+-		#bencod is for meninfo,torben name, and overall sizes
+-		bstring='*****'+sz.__str__()+'*****'
++	if is_info:
++		if sz>=1000:
++			#bencod is for meninfo,torben name, and overall sizes
++			bstring='*****'+sz.__str__()+'*****'
+ 
+ 	return bstring, bdata
+ 
+--- torra-1.orig/torra/meninfo.py
++++ torra-1/torra/meninfo.py
+@@ -6,7 +6,9 @@ k=gtk.k
+ def go(path,window):
+ 	with open(path,'rb') as f:
+ 		d=f.read()
++		bencod.is_info=True
+ 		a=bencod.decode(d)
++		bencod.is_info=False
+ 		dialog = k.gtk_dialog_new_with_buttons (b"Info",window,
+ 			gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
+ 			b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
