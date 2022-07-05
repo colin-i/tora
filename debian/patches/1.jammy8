@@ -1,0 +1,209 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ torra (1-jammy8) jammy; urgency=medium
+ .
+   * pieces waiting no more
+Author: bc <bc@bc-HP-Pavilion-x360-Convertible>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2022-07-05
+
+--- torra-1.orig/.github/workflows/appimage.yml
++++ torra-1/.github/workflows/appimage.yml
+@@ -34,7 +34,7 @@ jobs:
+        version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
+        if [ ! -e "lp2.py" ]; then
+         wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
+-        sudo apt install python3-launchpadlib
++        #is already sudo apt install python3-launchpadlib
+        fi
+        OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} amd64)
+        wget ${OUTPUT}/+files/${name}_${version}_all.deb -O ${name}.deb
+@@ -43,24 +43,25 @@ jobs:
+       #dependencies
+       downdeb () {
+        pkg=${1}
++       repo=${2}
+        src="ro.archive.ubuntu.com"
+        inter=Packages
+-       if [ ! -e "${inter}" ]; then
+-        wget http://${src}/ubuntu/dists/jammy/main/binary-amd64/Packages.xz -O ${inter}.xz
+-        xz -d ${inter}.xz
++       fullinter=${inter}${repo}
++       if [ ! -e "${fullinter}" ]; then
++        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
++        xz -d ${fullinter}.xz
+        fi
+-       debfilename=`grep "^Filename.*/${pkg}_" ${inter}`
++       debfilename=`grep "^Filename.*/${pkg}_" ${fullinter}`
+        debfilename=`echo ${debfilename} | tail -1 | cut -d ' ' -f 2`
+        wget_url=http://${src}/ubuntu/${debfilename}
+        maindeb=${pkg}.deb
+        wget ${wget_url} -O ${maindeb}
+        dpkg -x ${maindeb} AppDir
+       }
+-      array=( libboost-python1.74.0 libtorrent-rasterbar2.0 python3-appdirs python3-libtorrent )
+-      for var in "${array[@]}"
+-      do
+-       downdeb ${var}
+-      done
++      downdeb libboost-python1.74.0 main
++      downdeb libtorrent-rasterbar2.0 universe
++      downdeb python3-appdirs main
++      downdeb python3-libtorrent universe
+       #
+       apd=AppDir
+       cd ${apd}
+--- torra-1.orig/.github/workflows/deb.yml
++++ torra-1/.github/workflows/deb.yml
+@@ -4,7 +4,7 @@ on:
+ 
+ jobs:
+  dbuild:
+-  runs-on: ubuntu-22.04 #launchpad stuck at "Uploading build"
++  runs-on: ubuntu-latest #launchpad "Uploading build" longer but is ok withou 22.04
+   steps:
+    - uses: actions/checkout@v3
+      with:
+--- torra-1.orig/setup-with-requirements.py
++++ torra-1/setup-with-requirements.py
+@@ -10,7 +10,7 @@ except Exception:
+ 		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
+ 		if test.returncode:
+ 			exit(test.returncode)
+-		import libtorrent
++	import libtorrent
+ print('libtorrent found')
+ 
+ from ctypes import cdll
+--- torra-1.orig/setup.py
++++ torra-1/setup.py
+@@ -16,7 +16,7 @@ README = (HERE / "README.md").read_text(
+ 
+ from setuptools import setup
+ setup(name=pkname,
+-	version='1.0.28',
++	version='1.0.29',
+ 	packages=[pkname],
+ 	#opt
+ 	python_requires='>=3',
+--- torra-1.orig/torra/bencod.py
++++ torra-1/torra/bencod.py
+@@ -3,17 +3,17 @@
+ 
+ def parse_blist(bdata):
+     """ Convert bencoded data to python list """
+-    
++
+     blist = []
+ 
+     if bdata[0:1] == b'l':
+         bdata = bdata[1:]
+-    
++
+     while bdata[0:1] != b'' and bdata[0:1] != b'e':
+         
+         parse_func = btype_dict.get(bdata[0:1], parse_bstring)
+         elem, bdata = parse_func(bdata) 
+-    
++
+         blist.append(elem)
+ 
+     return blist, bdata[1:]
+@@ -28,10 +28,10 @@ def parse_bdict(bdata):
+         bdata = bdata[1:]
+ 
+     while bdata[0:1] != b'' and bdata[0:1] != b'e':
+-        
++
+         parse_func = btype_dict.get(bdata[0:1], parse_bstring)
+         key, bdata = parse_func(bdata)
+-        
++
+         if bdata[0:1] == '' or bdata[0:1] == 'e':
+             value = None
+         else:
+@@ -40,7 +40,7 @@ def parse_bdict(bdata):
+ 
+         if key in bdict:
+             raise KeyError("Multiple keys in bencoded dictionary")
+-        
++
+         bdict[key] = value
+ 
+     return bdict, bdata[1:]
+@@ -48,7 +48,7 @@ def parse_bdict(bdata):
+ 
+ def parse_bint(bdata):
+     """ Convert bencoded data to int """
+-    
++
+     end_pos = bdata.index(ord('e'))
+     num_str = bdata[1:end_pos]
+     bdata = bdata[end_pos + 1:]
+@@ -57,30 +57,35 @@ def parse_bint(bdata):
+ 
+ 
+ def parse_bstring(bdata):
+-    """ Convert bencoded data to string """
+-    
+-    delim_pos = bdata.index(ord(':'))
+-    length = bdata[0:delim_pos]
+-    length = int(length) 
+-    
+-    delim_pos += 1
+-    bstring = bdata[delim_pos:delim_pos + length]
+-    bdata = bdata[delim_pos + length:]
++	""" Convert bencoded data to string """
++
++	delim_pos = bdata.index(ord(':'))
++	length = bdata[0:delim_pos]
++	length = int(length) 
+ 
+-    if len(bstring) != length:
+-        raise ValueError("Incorrect bencoded string length")
++	delim_pos += 1
++	bstring = bdata[delim_pos:delim_pos + length]
++	bdata = bdata[delim_pos + length:]
+ 
+-    return bstring, bdata
++	sz=len(bstring)
++	if sz != length:
++		raise ValueError("Incorrect bencoded string length")
++
++	if sz>=1000:
++		#bencod is for meninfo,torben name, and overall sizes
++		bstring='*****'+sz.__str__()+'*****'
++
++	return bstring, bdata
+ 
+ 
+ def decode(bdata):
+     """ Parse data and return a list of objects """
+ 
+     return parse_blist(bdata)[0]
+-    
++
+ 
+ btype_dict = {
+     b'd' : parse_bdict,
+     b'l' : parse_blist,
+     b'i' : parse_bint
+-}
+\ No newline at end of file
++}
