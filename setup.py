@@ -13,10 +13,11 @@ import pathlib
 HERE = pathlib.Path(__file__).parent
 #here README is ok, else will be README.md not found for pypi
 README = (HERE / "README.md").read_text()
+ver=(HERE / "v2").read_text()
 
 from setuptools import setup
 setup(name=pkname,
-	version='1.0.30',
+	version=ver,
 	packages=[pkname],
 	#opt
 	python_requires='>=3',
