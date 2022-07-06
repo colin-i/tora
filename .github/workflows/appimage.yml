@@ -89,6 +89,23 @@ jobs:
       EOF
        ln -s ${pngfile} .DirIcon
       fi
+      #launcher
+      sname=tora
+      if [ ! -e "usr/bin/${sname}" ]; then
+       echo launcher
+       mv ${name} ${sname}
+       cd usr/bin
+       cat > ${name} <<EOF
+      #!/bin/bash
+      cd "\$(dirname "\$0")"
+      cd ../
+      LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu" \
+       PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
+       python3 bin/torra
+      EOF
+       chmod 755 ${name}
+       cd ../../
+      fi
       #metadata file
       mi=usr/share/metainfo
       mif=${mi}/com.colin.${name}.appdata.xml
