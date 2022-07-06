@@ -101,7 +101,7 @@ jobs:
       cd ../
       LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu" \
        PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
-       python3 bin/torra
+       python3 bin/tora
       EOF
        chmod 755 ${name}
        cd ../../
