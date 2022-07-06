@@ -95,12 +95,14 @@ jobs:
        echo launcher
        cd usr/bin
        mv ${name} ${sname}
+       #PYTHONHOME is also set by AppRun wrong
        cat > ${name} <<EOF
       #!/bin/bash
       cd "\$(dirname "\$0")"
       cd ../
       LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu" \
        PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
+       PYTHONHOME=
        python3 bin/${sname}
       EOF
        chmod 755 ${name}
