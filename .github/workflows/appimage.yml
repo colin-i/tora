@@ -93,8 +93,8 @@ jobs:
       sname=tora
       if [ ! -e "usr/bin/${sname}" ]; then
        echo launcher
-       mv ${name} ${sname}
        cd usr/bin
+       mv ${name} ${sname}
        cat > ${name} <<EOF
       #!/bin/bash
       cd "\$(dirname "\$0")"
