@@ -11,6 +11,8 @@ Install:
 sudo apt-get install torra
 ```
 \
+On linux distributions, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
+\
 On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/tora/releases).
 ```sh
 yum install torra-*.*.rpm
