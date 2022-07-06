@@ -21,7 +21,8 @@ jobs:
       archfile=${file}${arch_ai}
       kitpart () {
        #https://github.com/AppImage/pkg2appimage
-       urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/latest -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
+       #in searching for fuse3, was latest
+       urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/continuous -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
       }
       if [ ! -e "${file}" ]; then
        kitpart
