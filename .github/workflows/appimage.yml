@@ -22,7 +22,10 @@ jobs:
       kitpart () {
        #https://github.com/AppImage/pkg2appimage
        #in searching for fuse3, was latest
-       urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/continuous -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
+       #this is not today urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/continuous -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
+       #this is at o urlpart=AppImage/AppImageKit/releases/latest/download/${archfile}
+       #this is from a browser, not tested at this comment
+       urlpart=AppImage/AppImageKit/releases/download/continuous/${archfile}
       }
       if [ ! -e "${file}" ]; then
        kitpart
