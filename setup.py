@@ -1,6 +1,7 @@
 #setuptools.setup is looking at one argv parameter; to "build" and "install":
 #python3 setup.py install
 
+#python-libtorrent-bin is at extra require now, but, if was at install requires:
 #ok, package python-libtorrent-bin is old. install with pip install --no-deps but add somehow appdirs
 #                                          and python-libtorrent on ubuntu
 #                                          if it's not old python-libtorrent at pip:
