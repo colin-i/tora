@@ -1,3 +1,9 @@
+torra (1-jammy11) jammy; urgency=medium
+
+  * list_peers, seeds, leeches, next announce, last upload
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sat, 18 Feb 2023 15:39:16 +0200
+
 torra (1-jammy10) jammy; urgency=medium
 
   * list_peers, seeds, leeches, next announce, last upload
