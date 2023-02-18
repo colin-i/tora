@@ -35,7 +35,7 @@ k.gtk_list_store_append(list,ip)
 
 list2=k.gtk_list_store_new(COLUMNS2.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 i2=gtk.GtkTreeIter()
-ip2=gtk.byref(i)
+ip2=gtk.byref(i2)
 k.gtk_list_store_append(list2,ip2)
 
 def ini(box):
@@ -101,8 +101,8 @@ def show(h):
 			COLUMNS.num_peers, str(s.num_peers).encode(),
 			COLUMNS.state, torrent.state_str[s.state])
 	gtk.gtk_list_store_set5(list2, ip2,
-		COLUMNS.list_peers, str(s.list_peers).encode(),
-		COLUMNS.num_complete, str(s.num_complete).encode(),
-		COLUMNS.num_incomplete, str(s.num_incomplete).encode(),
-		COLUMNS.next_announce, str(s.next_announce).encode(),
-		COLUMNS.last_upload, str(s.last_upload).encode())
+		COLUMNS2.list_peers, str(s.list_peers).encode(),
+		COLUMNS2.num_complete, str(s.num_complete).encode(),
+		COLUMNS2.num_incomplete, str(s.num_incomplete).encode(),
+		COLUMNS2.next_announce, str(s.next_announce).encode(),
+		COLUMNS2.last_upload, str(s.last_upload).encode())
