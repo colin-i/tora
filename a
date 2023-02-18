@@ -1,0 +1,8 @@
+
+if [ -z "$1" ]; then
+z="python"
+else
+z=${1}
+fi
+
+${z} -m torra.main

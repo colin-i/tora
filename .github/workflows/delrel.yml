@@ -1,0 +1,15 @@
+
+on:
+ workflow_dispatch:
+  inputs:
+   tag:
+    description: "project version"
+
+jobs:
+ delrel:
+   runs-on: ubuntu-latest
+   steps:
+    - uses: cb80/delrel@latest
+      with:
+       tag: ${{ github.event.inputs.tag }}
+       token: ${{ secrets.PAT }}
