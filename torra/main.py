@@ -10,6 +10,7 @@ def get_root_dir():
 get_root_dir().mkdir(exist_ok=True)
 def get_root_file(f):
 	return os.path.join(get_root_dir(),f)
+import sys
 
 from . import gtk
 from . import layout
@@ -46,6 +47,8 @@ def activate(app):
 	layout.layout(window)
 
 def main():
+	if len(sys.argv)>1:
+		listtor.config_filename=sys.argv[1]
 	a=k.gtk_application_new(None,0)
 	actv=b"activate"
 	k.g_signal_connect_data (a, actv, activate, None, None, 0)

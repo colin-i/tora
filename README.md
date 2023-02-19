@@ -29,6 +29,8 @@ Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or 
 libgtk-4.so.1 required.\
 With setup.py or the other python setup script.
 
+## [Info](https://github.com/colin-i/tora/blob/master/info.md)
+
 ## Donations
 The *donations* section is here
 *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6*

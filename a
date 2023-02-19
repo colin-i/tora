@@ -3,6 +3,7 @@ if [ -z "$1" ]; then
 z="python"
 else
 z=${1}
+shift
 fi
 
-${z} -m torra.main
+${z} -m torra.main $@

@@ -1,3 +1,9 @@
+torra (1-jammy12) jammy; urgency=medium
+
+  * argument as torrent list file
+
+ -- bc <bc@bc-HP-Pavilion-x360-Convertible>  Sun, 19 Feb 2023 09:43:42 +0200
+
 torra (1-jammy11) jammy; urgency=medium
 
   * list_peers, seeds, leeches, next announce, last upload
