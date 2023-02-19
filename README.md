@@ -22,7 +22,6 @@ From pypi:
 ```sh
 pip3 install torra
 ```
-And having the dependencies.
 
 ## From source
 Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
