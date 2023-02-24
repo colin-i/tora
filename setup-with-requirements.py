@@ -5,11 +5,14 @@ import sys
 try:
    import libtorrent
 except Exception:
-	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=1.2.9'])
+	#test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=1.2.9'])
+	#if test.returncode:
+	#	subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
+	#	if test.returncode:
+	#		exit(test.returncode)
+	subprocess.run([sys.executable,'-m','pip','install','libtorrent'])
 	if test.returncode:
-		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
-		if test.returncode:
-			exit(test.returncode)
+		exit(test.returncode)
 	import libtorrent
 print('libtorrent found')
 
