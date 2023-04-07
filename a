@@ -8,5 +8,5 @@ fi
 
 ${z} -m torra.main $@
 
-#bitstorm starred
+#bitstorm starred/forked
 #rtorrent at debian/ubuntu
