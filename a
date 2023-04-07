@@ -7,3 +7,6 @@ shift
 fi
 
 ${z} -m torra.main $@
+
+#bitstorm starred
+#rtorrent at debian/ubuntu
