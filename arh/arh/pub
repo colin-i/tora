@@ -1,0 +1,26 @@
+
+last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^Homepage" | grep -o [^/]*$)/releases/latest -s | jq .tag_name -r) && echo ${last} && \
+~/test/pyver && \
+~/test/debinit "${1}" && \
+~/test/pub deb && \
+~/test/keyring2 && \
+~/test/deb && \
+~/test/publp && \
+~/test/ai && \
+~/test/rpm && \
+~/test/pub appimage rpm && \
+~/test/rerpm && \
+~/test/del && \
+~/test/rel && \
+~/test/pub rel && \
+~/test/upapp && \
+~/test/uprpm && \
+~/test/pub upapp && \
+~/test/pub2 && \
+~/test/publp2 && \
+~/test/lp && \
+~/test/lp x && \
+~/test/keyring && \
+~/test/del x ${last} && \
+~/test/arh2 ${last} && \
+~/test/pypi

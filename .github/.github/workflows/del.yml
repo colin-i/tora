@@ -1,0 +1,20 @@
+
+on:
+ # Allows you to run this workflow manually from the Actions tab
+ workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+ # This workflow contains a single job called "build"
+ del:
+  # The type of runner that the job will run on
+  runs-on: ubuntu-18.04
+  # Steps represent a sequence of tasks that will be executed as part of the job
+  steps:
+   - name: Remove asset
+     uses: mknejp/delete-release-assets@v1
+     env:
+     with:
+      token: ${{ secrets.PAT }}
+      tag: refs/tags/${{ env.tag }}
+      assets: ${{ env.file }}

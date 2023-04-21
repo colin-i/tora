@@ -11,8 +11,6 @@ Install:
 sudo apt-get install torra
 ```
 \
-On linux distributions, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
-\
 On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/tora/releases).
 ```sh
 yum install torra-*.*.rpm
@@ -22,13 +20,12 @@ From pypi:
 ```sh
 pip3 install torra
 ```
+And having the dependencies.
 
 ## From source
 Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
 libgtk-4.so.1 required.\
 With setup.py or the other python setup script.
-
-## [Info](https://github.com/colin-i/tora/blob/master/info.md)
 
 ## Donations
 The *donations* section is here

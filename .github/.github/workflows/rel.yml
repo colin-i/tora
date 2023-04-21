@@ -1,0 +1,41 @@
+
+on:
+ workflow_dispatch:
+
+jobs:
+ rbuild:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v3
+   - name: Run a multi-line script
+     run: |
+      #get the version from changelog/launchpad/input
+      tag=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
+      echo "tag=${tag}" >> $GITHUB_ENV
+   - name: Create Release
+     id: create_release
+     uses: actions/create-release@v1
+     env:
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+     with:
+      tag_name: ${{ env.tag }}
+      release_name: Release ${{ env.tag }}
+      draft: false
+      prerelease: false
+      #this can be undone. example: git push origin :refs/tags/1.6
+   - name: Store upload url for assets
+     run: |
+      #echo straight will not escape {}
+      a=${{ steps.create_release.outputs.upload_url }}
+      echo -n ${a} > 1.txt
+      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
+      echo "proj=${name}" >> $GITHUB_ENV
+   - name: Upload Release Asset
+     uses: actions/upload-release-asset@v1
+     env:
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+     with:
+      upload_url: https://uploads.github.com/repos/colin-i/test/releases/67484178/assets{?name,label}
+      asset_path: ./1.txt
+      asset_name: ${{ env.proj }}
+      asset_content_type: text/plain

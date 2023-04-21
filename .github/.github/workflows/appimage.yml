@@ -1,0 +1,165 @@
+
+on:
+ workflow_dispatch:
+  inputs:
+   ppa:
+    description: "ppa sufix"
+
+jobs:
+ build:
+  runs-on: ubuntu-22.04
+  steps:
+   - uses: actions/checkout@v3
+   - name: Run a multi-line script
+     run: |
+      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
+      name2=Torra
+      #
+      mkdir -p AppDir
+      file=runtime
+      arch_ai=-x86_64
+      archfile=${file}${arch_ai}
+      kitpart () {
+       #https://github.com/AppImage/pkg2appimage
+       #in searching for fuse3, was latest
+       #this is not today urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/continuous -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
+       #this is at o urlpart=AppImage/AppImageKit/releases/latest/download/${archfile}
+       #this is from a browser, not tested at this comment
+       urlpart=AppImage/AppImageKit/releases/download/continuous/${archfile}
+      }
+      if [ ! -e "${file}" ]; then
+       kitpart
+       #"pkg2appimage-.*-x86_64.AppImage"
+       wget -c https://github.com/${urlpart}
+       mv ${archfile} ${file}
+       chmod a+x ${file}
+      fi
+      if [ ! -e "${name}.deb" ]; then
+       version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
+       if [ ! -e "lp2.py" ]; then
+        wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
+        #is already sudo apt install python3-launchpadlib
+       fi
+       OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} amd64)
+       wget ${OUTPUT}/+files/${name}_${version}_all.deb -O ${name}.deb
+       dpkg -x ${name}.deb AppDir
+      fi
+      #dependencies
+      downdeb () {
+       pkg=${1}
+       repo=${2}
+       src="ro.archive.ubuntu.com"
+       inter=Packages
+       fullinter=${inter}${repo}
+       if [ ! -e "${fullinter}" ]; then
+        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
+        xz -d ${fullinter}.xz
+       fi
+       debfilename=`grep "^Filename.*/${pkg}_" ${fullinter}`
+       debfilename=`echo ${debfilename} | tail -1 | cut -d ' ' -f 2`
+       wget_url=http://${src}/ubuntu/${debfilename}
+       maindeb=${pkg}.deb
+       wget ${wget_url} -O ${maindeb}
+       dpkg -x ${maindeb} AppDir
+      }
+      downdeb libboost-python1.74.0 main
+      downdeb libtorrent-rasterbar2.0 universe
+      downdeb python3-appdirs main
+      downdeb python3-libtorrent universe
+      #
+      apd=AppDir
+      cd ${apd}
+      file2=AppRun
+      if [ ! -e "${file2}" ]; then
+       if [ -z "${urlpart}" ]; then
+        kitpart
+       fi
+       archfile2=${file2}${arch_ai}
+       urlpart=${urlpart:0:`echo ${urlpart} | grep -ob '[^/]*$' | cut -d ':' -f 1`}${archfile2}
+       wget -c https://github.com/${urlpart}
+       chmod a+x ${archfile2}
+       mv ${archfile2} ${file2}
+      fi
+      pngfile=${name}.png
+      if [ ! -e "${pngfile}" ]; then
+       wget https://github.com/colin-i/test/releases/download/1.5/${name}.png -O ${pngfile}
+       cat > ${name}.desktop <<EOF
+      [Desktop Entry]
+      Type=Application
+      Name=${name2}
+      Exec=${name}
+      Icon=${name}
+      Categories=Utility
+      EOF
+       ln -s ${pngfile} .DirIcon
+      fi
+      #launcher
+      sname=tora
+      if [ ! -e "usr/bin/${sname}" ]; then
+       echo launcher
+       cd usr/bin
+       mv ${name} ${sname}
+       #PYTHONHOME is also set by AppRun wrong
+       cat > ${name} <<EOF
+      #!/bin/bash
+      cd "\$(dirname "\$0")"
+      cd ../
+      unset PYTHONHOME
+      LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu" \
+       PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
+       python3 bin/${sname}
+      EOF
+       chmod 755 ${name}
+       cd ../../
+      fi
+      #metadata file
+      mi=usr/share/metainfo
+      mif=${mi}/com.colin.${name}.appdata.xml
+      if [ ! -e "${mif}" ]; then
+       page=`cat ../debian/control | grep "^Homepage" | cut -d ' ' -f2`
+       srcname=`echo ${page} | grep -o "[^/]*$"`
+       mkdir -p ${mi}
+       cat > ${mif} <<EOF
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!-- Copyright 2022 -->
+      <component type="desktop-application">
+       <id>com.colin.${name}</id>
+       <metadata_license>FSFAP</metadata_license>
+       <name>${name2}</name>
+       <summary>Torrent client</summary>
+       <description>
+        <ul>
+         <li>Download/Upload torrents data</li>
+         <li>Fast resume</li>
+         <li>Detailed statistics</li>
+        </ul>
+       </description>
+       <url type="homepage">${page}</url>
+       <screenshots>
+        <screenshot type="default">
+         <caption>${name2} image</caption>
+         <image>https://raw.github.com/colin-i/${srcname}/master/arh/${name}.png</image>
+        </screenshot>
+       </screenshots>
+       <content_rating/>
+      </component>
+      EOF
+      fi
+      #
+      cd ..
+      #
+      if [ ! -e "${name}.AppImage" ]; then
+       mksquashfs AppDir ${name}.squashfs -root-owned -noappend
+       cat runtime >> ${name}.AppImage
+       cat ${name}.squashfs >> ${name}.AppImage
+       chmod a+x ${name}.AppImage
+      fi
+      #glibc=`readelf -V ${apd}/usr/bin/${name} | grep -Po "(?<= GLIBC_)[^ ]*" | sort -Vr | head -1 | sed "s/\./-/g"`
+      #echo -n ${glibc} > version #"glibc" will not be ok for upload-artifact
+   - name: artifact
+     uses: actions/upload-artifact@v3
+     with:
+      name: appimage
+      path: |
+       ./*.AppImage
+      # ./version

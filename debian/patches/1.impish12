@@ -1,0 +1,2061 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ torra (1-impish12) impish; urgency=medium
+ .
+   * sync
+Author: bc <bc@bc-HP-Pavilion-x360-Convertible>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
+Bug: <upstream-bugtracker-url>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: (no|not-needed|<patch-forwarded-url>)
+Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
+Reviewed-By: <name and email of someone who approved/reviewed the patch>
+Last-Update: 2023-04-21
+
+--- /dev/null
++++ torra-1/.github/.github/FUNDING.yml
+@@ -0,0 +1,13 @@
++# These are supported funding model platforms
++
++github: # Replace with up to 4 GitHub Sponsors-enabled usernames e.g., [user1, user2]
++patreon: # Replace with a single Patreon username
++open_collective: # Replace with a single Open Collective username
++ko_fi: # Replace with a single Ko-fi username
++tidelift: # Replace with a single Tidelift platform-name/package-name e.g., npm/babel
++community_bridge: # Replace with a single Community Bridge project-name e.g., cloud-foundry
++liberapay: costin
++issuehunt: # Replace with a single IssueHunt username
++otechie: # Replace with a single Otechie username
++lfx_crowdfunding: # Replace with a single LFX Crowdfunding project-name e.g., cloud-foundry
++custom: # Replace with up to 4 custom sponsorship URLs e.g., ['link1', 'link2']
+--- /dev/null
++++ torra-1/.github/.github/workflows/appimage.yml
+@@ -0,0 +1,165 @@
++
++on:
++ workflow_dispatch:
++  inputs:
++   ppa:
++    description: "ppa sufix"
++
++jobs:
++ build:
++  runs-on: ubuntu-22.04
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      name2=Torra
++      #
++      mkdir -p AppDir
++      file=runtime
++      arch_ai=-x86_64
++      archfile=${file}${arch_ai}
++      kitpart () {
++       #https://github.com/AppImage/pkg2appimage
++       #in searching for fuse3, was latest
++       #this is not today urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/continuous -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
++       #this is at o urlpart=AppImage/AppImageKit/releases/latest/download/${archfile}
++       #this is from a browser, not tested at this comment
++       urlpart=AppImage/AppImageKit/releases/download/continuous/${archfile}
++      }
++      if [ ! -e "${file}" ]; then
++       kitpart
++       #"pkg2appimage-.*-x86_64.AppImage"
++       wget -c https://github.com/${urlpart}
++       mv ${archfile} ${file}
++       chmod a+x ${file}
++      fi
++      if [ ! -e "${name}.deb" ]; then
++       version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
++       if [ ! -e "lp2.py" ]; then
++        wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
++        #is already sudo apt install python3-launchpadlib
++       fi
++       OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} amd64)
++       wget ${OUTPUT}/+files/${name}_${version}_all.deb -O ${name}.deb
++       dpkg -x ${name}.deb AppDir
++      fi
++      #dependencies
++      downdeb () {
++       pkg=${1}
++       repo=${2}
++       src="ro.archive.ubuntu.com"
++       inter=Packages
++       fullinter=${inter}${repo}
++       if [ ! -e "${fullinter}" ]; then
++        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
++        xz -d ${fullinter}.xz
++       fi
++       debfilename=`grep "^Filename.*/${pkg}_" ${fullinter}`
++       debfilename=`echo ${debfilename} | tail -1 | cut -d ' ' -f 2`
++       wget_url=http://${src}/ubuntu/${debfilename}
++       maindeb=${pkg}.deb
++       wget ${wget_url} -O ${maindeb}
++       dpkg -x ${maindeb} AppDir
++      }
++      downdeb libboost-python1.74.0 main
++      downdeb libtorrent-rasterbar2.0 universe
++      downdeb python3-appdirs main
++      downdeb python3-libtorrent universe
++      #
++      apd=AppDir
++      cd ${apd}
++      file2=AppRun
++      if [ ! -e "${file2}" ]; then
++       if [ -z "${urlpart}" ]; then
++        kitpart
++       fi
++       archfile2=${file2}${arch_ai}
++       urlpart=${urlpart:0:`echo ${urlpart} | grep -ob '[^/]*$' | cut -d ':' -f 1`}${archfile2}
++       wget -c https://github.com/${urlpart}
++       chmod a+x ${archfile2}
++       mv ${archfile2} ${file2}
++      fi
++      pngfile=${name}.png
++      if [ ! -e "${pngfile}" ]; then
++       wget https://github.com/colin-i/test/releases/download/1.5/${name}.png -O ${pngfile}
++       cat > ${name}.desktop <<EOF
++      [Desktop Entry]
++      Type=Application
++      Name=${name2}
++      Exec=${name}
++      Icon=${name}
++      Categories=Utility
++      EOF
++       ln -s ${pngfile} .DirIcon
++      fi
++      #launcher
++      sname=tora
++      if [ ! -e "usr/bin/${sname}" ]; then
++       echo launcher
++       cd usr/bin
++       mv ${name} ${sname}
++       #PYTHONHOME is also set by AppRun wrong
++       cat > ${name} <<EOF
++      #!/bin/bash
++      cd "\$(dirname "\$0")"
++      cd ../
++      unset PYTHONHOME
++      LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu" \
++       PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
++       python3 bin/${sname}
++      EOF
++       chmod 755 ${name}
++       cd ../../
++      fi
++      #metadata file
++      mi=usr/share/metainfo
++      mif=${mi}/com.colin.${name}.appdata.xml
++      if [ ! -e "${mif}" ]; then
++       page=`cat ../debian/control | grep "^Homepage" | cut -d ' ' -f2`
++       srcname=`echo ${page} | grep -o "[^/]*$"`
++       mkdir -p ${mi}
++       cat > ${mif} <<EOF
++      <?xml version="1.0" encoding="UTF-8"?>
++      <!-- Copyright 2022 -->
++      <component type="desktop-application">
++       <id>com.colin.${name}</id>
++       <metadata_license>FSFAP</metadata_license>
++       <name>${name2}</name>
++       <summary>Torrent client</summary>
++       <description>
++        <ul>
++         <li>Download/Upload torrents data</li>
++         <li>Fast resume</li>
++         <li>Detailed statistics</li>
++        </ul>
++       </description>
++       <url type="homepage">${page}</url>
++       <screenshots>
++        <screenshot type="default">
++         <caption>${name2} image</caption>
++         <image>https://raw.github.com/colin-i/${srcname}/master/arh/${name}.png</image>
++        </screenshot>
++       </screenshots>
++       <content_rating/>
++      </component>
++      EOF
++      fi
++      #
++      cd ..
++      #
++      if [ ! -e "${name}.AppImage" ]; then
++       mksquashfs AppDir ${name}.squashfs -root-owned -noappend
++       cat runtime >> ${name}.AppImage
++       cat ${name}.squashfs >> ${name}.AppImage
++       chmod a+x ${name}.AppImage
++      fi
++      #glibc=`readelf -V ${apd}/usr/bin/${name} | grep -Po "(?<= GLIBC_)[^ ]*" | sort -Vr | head -1 | sed "s/\./-/g"`
++      #echo -n ${glibc} > version #"glibc" will not be ok for upload-artifact
++   - name: artifact
++     uses: actions/upload-artifact@v3
++     with:
++      name: appimage
++      path: |
++       ./*.AppImage
++      # ./version
+--- /dev/null
++++ torra-1/.github/.github/workflows/deb.yml
+@@ -0,0 +1,41 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ dbuild:
++  runs-on: ubuntu-latest #launchpad "Uploading build" longer but is ok without 22.04
++  steps:
++   - uses: actions/checkout@v3
++     with:
++      path: in
++   - uses: actions/checkout@master
++     with:
++      repository: colin-i/test
++      path: in2
++   - name: Run a multi-line script
++     run: |
++      name=`cat in/debian/changelog | head -1 | grep -o ^[^\ ]*`
++      cp -r in2/sync/${name}/debian/patches in/debian
++      cp -r in2/sync/${name}/.pc in
++      if [ -z "`dpkg -s devscripts>/dev/null 2>&1 && echo x`" ]; then
++       sudo apt install -y devscripts debhelper dh-python python3-all
++       #python3-setuptools is already
++      fi
++      origf=${name}-1.tar.gz
++      if [ ! -e "${origf}" ]; then
++       origln=${name}_1.orig.tar.gz
++       wget https://ppa.launchpadcontent.net/colin-i/ppa/ubuntu/pool/main/t/${name}/${origln} -O ${origf}
++       ln -s ${origf} ${origln}
++      fi
++      cd in
++      debuild -S -us -uc
++   - name: unsigned debs
++     uses: actions/upload-artifact@v3
++     with:
++      name: sdebs
++      path: |
++       ./*.dsc
++       ./*.changes
++       ./*.buildinfo
++       ./*.debian.tar.xz
+--- /dev/null
++++ torra-1/.github/.github/workflows/del.yml
+@@ -0,0 +1,20 @@
++
++on:
++ # Allows you to run this workflow manually from the Actions tab
++ workflow_dispatch:
++
++# A workflow run is made up of one or more jobs that can run sequentially or in parallel
++jobs:
++ # This workflow contains a single job called "build"
++ del:
++  # The type of runner that the job will run on
++  runs-on: ubuntu-18.04
++  # Steps represent a sequence of tasks that will be executed as part of the job
++  steps:
++   - name: Remove asset
++     uses: mknejp/delete-release-assets@v1
++     env:
++     with:
++      token: ${{ secrets.PAT }}
++      tag: refs/tags/${{ env.tag }}
++      assets: ${{ env.file }}
+--- /dev/null
++++ torra-1/.github/.github/workflows/delrel.yml
+@@ -0,0 +1,15 @@
++
++on:
++ workflow_dispatch:
++  inputs:
++   tag:
++    description: "project version"
++
++jobs:
++ delrel:
++   runs-on: ubuntu-latest
++   steps:
++    - uses: cb80/delrel@latest
++      with:
++       tag: ${{ github.event.inputs.tag }}
++       token: ${{ secrets.PAT }}
+--- /dev/null
++++ torra-1/.github/.github/workflows/rel.yml
+@@ -0,0 +1,41 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ rbuild:
++  runs-on: ubuntu-latest
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      #get the version from changelog/launchpad/input
++      tag=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
++      echo "tag=${tag}" >> $GITHUB_ENV
++   - name: Create Release
++     id: create_release
++     uses: actions/create-release@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      tag_name: ${{ env.tag }}
++      release_name: Release ${{ env.tag }}
++      draft: false
++      prerelease: false
++      #this can be undone. example: git push origin :refs/tags/1.6
++   - name: Store upload url for assets
++     run: |
++      #echo straight will not escape {}
++      a=${{ steps.create_release.outputs.upload_url }}
++      echo -n ${a} > 1.txt
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      echo "proj=${name}" >> $GITHUB_ENV
++   - name: Upload Release Asset
++     uses: actions/upload-release-asset@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      upload_url: https://uploads.github.com/repos/colin-i/test/releases/67484178/assets{?name,label}
++      asset_path: ./1.txt
++      asset_name: ${{ env.proj }}
++      asset_content_type: text/plain
+--- /dev/null
++++ torra-1/.github/.github/workflows/rpm.yml
+@@ -0,0 +1,38 @@
++on:
++ workflow_dispatch:
++  inputs:
++   ppa:
++    description: "ppa sufix"
++
++jobs:
++ rpbuild:
++  runs-on: ubuntu-22.04 #focal alien is not testing ok on docker fedora
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      #get deb
++      arh=`cat debian/control | grep ^Architecture | cut -d ' ' -f2` #all
++      arh_lp=amd64
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
++      #dist=`cat debian/changelog | head -1 | grep -Poe "[^ ]*(?=;)"`
++      if [ ! -e "lp2.py" ]; then
++       wget -q https://raw.githubusercontent.com/colin-i/test/master/lp2.py
++      fi
++      OUTPUT=$(python3 lp2.py ppa${{ github.event.inputs.ppa }} ${name} ${version} ${arh_lp})
++      wget ${OUTPUT}/+files/${name}_${version}_${arh}.deb -O ${name}.deb
++      #make rpm
++      mkdir out
++      cd out
++      #sudo apt update
++      sudo apt install alien
++      sudo alien -rk ../${name}.deb
++      fname=`ls`
++      mv ${fname} ../${fname}
++      echo "file=${fname}" >> $GITHUB_ENV
++   - name: artifact
++     uses: actions/upload-artifact@v3
++     with:
++      name: rpm
++      path: ./${{ env.file }}
+--- /dev/null
++++ torra-1/.github/.github/workflows/upapp.yml
+@@ -0,0 +1,40 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ uabuild:
++  runs-on: ubuntu-latest
++  steps:
++   - uses: actions/checkout@v3
++   - name: Run a multi-line script
++     run: |
++      #proj
++      name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
++      #get up_url
++      wget https://github.com/colin-i/test/releases/download/1.5/${name} -O 1.txt
++      echo "up_url=`cat 1.txt`" >> $GITHUB_ENV
++      #get appimage artifact
++      id=$(gh run list --workflow=appimage.yml -b $(git rev-parse --abbrev-ref HEAD) | cut -f7 | head -1)
++      repo_at_gh=`cat debian/control | grep "^Homepage" | grep -o [^/]*$`
++      #
++      url=`gh api -H "Accept: application/vnd.github.v3+json" /repos/colin-i/${repo_at_gh}/actions/runs/${id}/artifacts | jq ".artifacts[0].archive_download_url"`
++      url=${url:1:-1}
++      echo ${url}
++      curl -L -H "Authorization: token ${{ secrets.PAT }}" ${url} --output a.zip
++      #to env
++      unzip ./a.zip
++      echo "file=${name}.AppImage" >> $GITHUB_ENV
++      echo "fullfile=${name}.amd64.AppImage" >> $GITHUB_ENV
++     env:
++      #for gh
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++   - name: Upload Release Asset
++     uses: actions/upload-release-asset@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      upload_url: ${{ env.up_url }}
++      asset_path: ./${{ env.file }}
++      asset_name: ${{ env.fullfile }}
++      asset_content_type: application/x-executable
+--- /dev/null
++++ torra-1/.github/.github/workflows/uprpm.yml
+@@ -0,0 +1,24 @@
++
++on:
++ workflow_dispatch:
++
++jobs:
++ urbuild:
++  runs-on: ubuntu-18.04
++  steps:
++   - name: Run a multi-line script
++     run: |
++      if [ -n "${{ env.init }}" ]; then
++       exit 1
++      fi
++      wget https://github.com/colin-i/test/releases/download/1.5/${{ env.proj }} -O 1.txt
++      echo "up_url=`cat 1.txt`" >> $GITHUB_ENV
++   - name: Upload Release Asset
++     uses: actions/upload-release-asset@v1
++     env:
++      GITHUB_TOKEN: ${{ secrets.PAT }}
++     with:
++      upload_url: ${{ env.up_url }}
++      asset_path: ./${{ env.file }}
++      asset_name: ${{ env.file }}
++      asset_content_type: application/x-rpm
+--- torra-1.orig/README.md
++++ torra-1/README.md
+@@ -11,6 +11,8 @@ Install:
+ sudo apt-get install torra
+ ```
+ \
++On linux distributions, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
++\
+ On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/tora/releases).
+ ```sh
+ yum install torra-*.*.rpm
+@@ -20,13 +22,14 @@ From pypi:
+ ```sh
+ pip3 install torra
+ ```
+-And having the dependencies.
+ 
+ ## From source
+ Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
+ libgtk-4.so.1 required.\
+ With setup.py or the other python setup script.
+ 
++## [Info](https://github.com/colin-i/tora/blob/master/info.md)
++
+ ## Donations
+ The *donations* section is here
+ *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6*
+--- /dev/null
++++ torra-1/a
+@@ -0,0 +1,12 @@
++
++if [ -z "$1" ]; then
++z="python"
++else
++z=${1}
++shift
++fi
++
++${z} -m torra.main $@
++
++#bitstorm starred/forked
++#rtorrent at debian/ubuntu
+--- /dev/null
++++ torra-1/arh/arh/pub
+@@ -0,0 +1,26 @@
++
++last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^Homepage" | grep -o [^/]*$)/releases/latest -s | jq .tag_name -r) && echo ${last} && \
++~/test/pyver && \
++~/test/debinit "${1}" && \
++~/test/pub deb && \
++~/test/keyring2 && \
++~/test/deb && \
++~/test/publp && \
++~/test/ai && \
++~/test/rpm && \
++~/test/pub appimage rpm && \
++~/test/rerpm && \
++~/test/del && \
++~/test/rel && \
++~/test/pub rel && \
++~/test/upapp && \
++~/test/uprpm && \
++~/test/pub upapp && \
++~/test/pub2 && \
++~/test/publp2 && \
++~/test/lp && \
++~/test/lp x && \
++~/test/keyring && \
++~/test/del x ${last} && \
++~/test/arh2 ${last} && \
++~/test/pypi
+--- /dev/null
++++ torra-1/arh/arh/re
+@@ -0,0 +1,16 @@
++
++ver=`cat ${1}/v2`
++
++#this is warning is absolute
++#ln -s /usr/lib/python3/dist-packages/torra-${ver}.egg-info ./usr/lib64/python3.10/site-packages/torra-${ver}.egg-info && \
++#ln -s /usr/lib/python3/dist-packages/torra ./usr/lib64/python3.10/site-packages/torra && \
++#%%{buildroot}  there is an example without http://rpm.rutgers.edu/guide.html   the solution can be: it is a mount, then ln -s
++
++#sudo sed is still permission
++
++mkdir -p ./usr/lib64/python3.10/site-packages && \
++sed '/^Requires.*\/python3.*$/a Requires:      python3-appdirs\nRequires:      rb_libtorrent-python3\nRequires:      libgtk-4.so.1' text > text2 && \
++sed "/^%doc.*copyright.*$/a %ghost \"/usr/lib64/python3.10/site-packages/torra-${ver}.egg-info\"\n%ghost \"/usr/lib64/python3.10/site-packages/torra\"" text2 > text3 && \
++printf "\n%%post\nln -s /usr/lib/python3/dist-packages/torra-${ver}.egg-info /usr/lib64/python3.10/site-packages/torra-${ver}.egg-info\nln -s /usr/lib/python3/dist-packages/torra /usr/lib64/python3.10/site-packages/torra\n" >> text3 && \
++rm text2 && \
++sudo mv text3 text
+--- /dev/null
++++ torra-1/b
+@@ -0,0 +1,2 @@
++
++./a pdb
+--- /dev/null
++++ torra-1/c
+@@ -0,0 +1,8 @@
++
++if [ -z "$1" ]; then
++z=./a
++else
++z=./b
++fi
++
++GTK_DEBUG=all ${z}
+--- /dev/null
++++ torra-1/info.md
+@@ -0,0 +1,4 @@
++Torrent client.\
++To specify another torrent list at start, launch with an argument:\
++For example ```torra ~/torrents.txt```\
++[Git Page](https://github.com/colin-i/tora)
+--- torra-1.orig/setup-with-requirements.py
++++ torra-1/setup-with-requirements.py
+@@ -5,12 +5,15 @@ import sys
+ try:
+    import libtorrent
+ except Exception:
+-	test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=1.2.9'])
++	#test=subprocess.run([sys.executable,'-m','pip','install','python-libtorrent-bin>=1.2.9'])
++	#if test.returncode:
++	#	subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
++	#	if test.returncode:
++	#		exit(test.returncode)
++	subprocess.run([sys.executable,'-m','pip','install','libtorrent'])
+ 	if test.returncode:
+-		subprocess.run([sys.executable,'-m','pip','install','python-libtorrent>=1.2.9'])
+-		if test.returncode:
+-			exit(test.returncode)
+-		import libtorrent
++		exit(test.returncode)
++	import libtorrent
+ print('libtorrent found')
+ 
+ from ctypes import cdll
+--- torra-1.orig/setup.py
++++ torra-1/setup.py
+@@ -1,34 +1,38 @@
++
+ #setuptools.setup is looking at one argv parameter; to "build" and "install":
+ #python3 setup.py install
+ 
+-#ok, package python-libtorrent-bin is old. install with pip install --no-deps but add somehow appdirs
+-#                                          and python-libtorrent on ubuntu
+-#                                          if it's not old python-libtorrent at pip:
+-#                                          	that+(libtorrent-rasterbar2.0 on ubuntu) can be a solution
+-#last python is at 3.9 on x86-64
++#libtorrent from pypi has bindings and library now, before was:
++#	python-libtorrent-bin is at extra require now, but, if was at install requires:
++#		ok, package python-libtorrent-bin is old. install with pip install --no-deps but add somehow appdirs
++#			and python-libtorrent on ubuntu
++#			if it's not old python-libtorrent at pip:
++#				that+(libtorrent-rasterbar2.0 on ubuntu) can be a solution
+ 
+ pkname='torra'
+ 
+ import pathlib
+ HERE = pathlib.Path(__file__).parent
+ #here README is ok, else will be README.md not found for pypi
+-README = (HERE / "README.md").read_text()
++README = (HERE / "info.md").read_text()
++ver=(HERE / "v2").read_text()
+ 
+ from setuptools import setup
+ setup(name=pkname,
+-	version='1.0.28',
++	version=ver,
+ 	packages=[pkname],
+ 	#opt
+ 	python_requires='>=3',
+ 	install_requires=["appdirs>=1.4.3"
+-		#it's not updated at pypi (old 3.9)
++		,"libtorrent"
++		#python-libtorrent-bin it's not updated at pypi (old 3.9)
+ 		#,'python-libtorrent-bin>=1.2.9' #;platform_system=="Linux" and platform_machine=="x86_64"'
+ 		#,"python-apt"#is from 2012 0.7.8, missing DistUtilsExtra, sudo apt install python-apt is 2.2., verify with pip3 install python-apt
+ 	],
+-	extras_require={
+-		'bin': ['python-libtorrent-bin>=1.2.9']
+-		#,'apt': ['python-apt']
+-	},
++	#extras_require={
++	#	'bin': ['python-libtorrent-bin>=1.2.9']
++	#	#,'apt': ['python-apt']
++	#},
+ 	description='Torrent client',
+ 	long_description=README,
+ 	long_description_content_type="text/markdown",
+--- /dev/null
++++ torra-1/torra/torra/bencod.py
+@@ -0,0 +1,93 @@
++""" Module to construct / parse bencoded data """
++
++is_info=False
++
++def parse_blist(bdata):
++    """ Convert bencoded data to python list """
++
++    blist = []
++
++    if bdata[0:1] == b'l':
++        bdata = bdata[1:]
++
++    while bdata[0:1] != b'' and bdata[0:1] != b'e':
++        
++        parse_func = btype_dict.get(bdata[0:1], parse_bstring)
++        elem, bdata = parse_func(bdata) 
++
++        blist.append(elem)
++
++    return blist, bdata[1:]
++
++
++def parse_bdict(bdata):
++    """ Convert bencoded data to python dict """
++
++    bdict = {}
++
++    if bdata[0:1] == b'd':
++        bdata = bdata[1:]
++
++    while bdata[0:1] != b'' and bdata[0:1] != b'e':
++
++        parse_func = btype_dict.get(bdata[0:1], parse_bstring)
++        key, bdata = parse_func(bdata)
++
++        if bdata[0:1] == '' or bdata[0:1] == 'e':
++            value = None
++        else:
++            parse_func = btype_dict.get(bdata[0:1], parse_bstring)
++            value, bdata = parse_func(bdata)
++
++        if key in bdict:
++            raise KeyError("Multiple keys in bencoded dictionary")
++
++        bdict[key] = value
++
++    return bdict, bdata[1:]
++
++
++def parse_bint(bdata):
++    """ Convert bencoded data to int """
++
++    end_pos = bdata.index(ord('e'))
++    num_str = bdata[1:end_pos]
++    bdata = bdata[end_pos + 1:]
++
++    return int(num_str), bdata
++
++
++def parse_bstring(bdata):
++	""" Convert bencoded data to string """
++
++	delim_pos = bdata.index(ord(':'))
++	length = bdata[0:delim_pos]
++	length = int(length) 
++
++	delim_pos += 1
++	bstring = bdata[delim_pos:delim_pos + length]
++	bdata = bdata[delim_pos + length:]
++
++	sz=len(bstring)
++	if sz != length:
++		raise ValueError("Incorrect bencoded string length")
++
++	if is_info:
++		if sz>=1000:
++			#bencod is for meninfo,torben name, and overall sizes
++			bstring='*****'+sz.__str__()+'*****'
++
++	return bstring, bdata
++
++
++def decode(bdata):
++    """ Parse data and return a list of objects """
++
++    return parse_blist(bdata)[0]
++
++
++btype_dict = {
++    b'd' : parse_bdict,
++    b'l' : parse_blist,
++    b'i' : parse_bint
++}
+--- /dev/null
++++ torra-1/torra/torra/confs.py
+@@ -0,0 +1,51 @@
++
++import json
++
++from . import gtk
++from . import sets
++from . import ratio
++from . import next
++from . import log
++from . import cons
++from . import main
++k=gtk.k
++
++configs_filename = main.get_root_file('configs')
++
++def write_opt(window):
++	dict={}
++	width=gtk.c_int()
++	height=gtk.c_int()
++	k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
++	dict['max']=k.gtk_window_is_maximized(window)
++	dict['width']=width.value
++	dict['height']=height.value
++	dict['min']=k.gdk_toplevel_get_state(k.gtk_native_get_surface(window))&gtk.GdkToplevelState.GDK_TOPLEVEL_STATE_MINIMIZED
++	#
++	dict['download_folder']=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
++	ratio.store(dict)
++	next.store(dict)
++	log.store(dict)
++	cons.store(dict)
++	with open(configs_filename, "w") as write_file:
++		json.dump(dict, write_file)
++
++def read_opt(window):
++	global width#used at columns
++	try:
++		with open(configs_filename) as f:
++			dict=json.load(f)
++			if dict['max']:
++				k.gtk_window_maximize(window)
++			else:
++				k.gtk_window_set_default_size(window,dict['width'],dict['height'])
++			width=-2 if dict['min'] else -1
++			#
++			a=dict['download_folder'].encode()
++			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
++			ratio.restore(dict)
++			next.restore(dict)
++			log.restore(dict)
++			cons.restore(dict)
++	except Exception:
++		width=0
+--- /dev/null
++++ torra-1/torra/torra/conmenu.py
+@@ -0,0 +1,62 @@
++from . import gtk
++from . import meninfo
++from . import torrent
++from . import treesel
++from . import layout
++from . import next
++k=gtk.k
++
++timer=0
++
++@gtk.CALLBACK0i
++def fire():
++	global timer
++	k.gtk_widget_hide(menu)
++	timer=0
++	return False
++
++@gtk.CALLBACK2
++def click(tree,path):
++	global timer
++	if timer>0:
++		k.g_source_remove(timer)
++	k.gtk_widget_show(menu)
++	torrent.sel(tree,path)
++	timer=k.g_timeout_add(10000,fire,None)
++
++def hide():
++	global timer
++	k.g_source_remove(timer)
++	timer=0
++	k.gtk_widget_hide(menu)
++
++def remtor(i,iter):
++	torrent.remsel(i)
++	k.gtk_list_store_remove(layout.list,iter)
++@gtk.CALLBACK
++def remclick(tree):
++	treesel.position__iter(remtor,tree)
++	if k.gtk_tree_model_iter_n_children(layout.list,None)==0:
++		next.unini(tree)
++	hide()
++
++@gtk.CALLBACK2
++def infoclick(b,t):
++	meninfo.act(b,t)
++	hide()
++
++def ini(parent,tree):
++	global menu
++	menu=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
++	uni=chr(0x24D8).encode()
++	b=k.gtk_button_new_with_label(uni)
++	k.g_signal_connect_data(b,b"clicked",infoclick,tree,None,0)
++	k.gtk_box_append(menu,b)
++	uni=chr(0x1F5D1).encode()
++	b=k.gtk_button_new_with_label(uni)
++	k.g_signal_connect_data(b,b"clicked",remclick,tree,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	k.gtk_box_append(menu,b)
++	k.gtk_box_append(parent,menu)
++	k.gtk_widget_hide(menu)
++	k.g_signal_connect_data(tree,b"row-activated",click,None,None,0)
++	k.gtk_tree_view_set_activate_on_single_click(tree,True)
+--- /dev/null
++++ torra-1/torra/torra/cons.py
+@@ -0,0 +1,34 @@
++from . import gtk
++from . import torrent
++from . import ratio
++k=gtk.k
++
++slot_bf=k.gtk_entry_buffer_new(b"-1",-1)
++con_bf=k.gtk_entry_buffer_new(b"-1",-1)
++
++def store(d):
++	d['max_uploads']=getu()
++	d['max_connections']=getc()
++def restore(d):
++	k.gtk_entry_buffer_set_text(slot_bf,str(d['max_uploads']).encode(),-1)
++	k.gtk_entry_buffer_set_text(con_bf,str(d['max_connections']).encode(),-1)
++	set()
++
++def getu():
++	return int(k.gtk_entry_buffer_get_text(slot_bf))
++def getc():
++	return int(k.gtk_entry_buffer_get_text(con_bf))
++def set():
++	torrent.ses.set_max_uploads(getu())
++	torrent.ses.set_max_connections(getc())
++
++def ini():
++	grid = k.gtk_grid_new ()
++	k.gtk_grid_attach(grid,ratio.text(b"Max uploads (-1 infinite)"),0,0,1,1)
++	k.gtk_grid_attach(grid,ratio.edit(slot_bf),1,0,1,1)
++	k.gtk_grid_attach(grid,ratio.text(b"Max connections (-1 infinite)"),0,1,1,1)
++	k.gtk_grid_attach(grid,ratio.edit(con_bf),1,1,1,1)
++	#
++	fr=k.gtk_frame_new(b"Maximum limits")
++	k.gtk_frame_set_child(fr,grid)
++	return fr
+--- /dev/null
++++ torra-1/torra/torra/gtk.py
+@@ -0,0 +1,193 @@
++
++from enum import IntEnum,auto
++class GdkModifierType(IntEnum):
++	GDK_CONTROL_MASK = 1 << 2
++	GDK_ALT_MASK = 1 << 3
++class GdkToplevelState(IntEnum):
++	GDK_TOPLEVEL_STATE_MINIMIZED = 1 << 0
++class GtkAlign(IntEnum):
++	GTK_ALIGN_START = auto()
++class GConnectFlags(IntEnum):
++	G_CONNECT_SWAPPED = 1 << 1
++class GtkDialogFlags(IntEnum):
++	GTK_DIALOG_MODAL = 1 << 0
++	GTK_DIALOG_DESTROY_WITH_PARENT = 1 << 1
++class GtkOrientation(IntEnum):
++	GTK_ORIENTATION_HORIZONTAL=0
++	GTK_ORIENTATION_VERTICAL=1
++class GtkResponseType(IntEnum):
++	GTK_RESPONSE_NONE = -1
++class GtkSortType(IntEnum):
++	GTK_SORT_ASCENDING=0
++	GTK_SORT_DESCENDING=1
++class GtkWrapMode(IntEnum):
++	GTK_WRAP_WORD_CHAR=3
++
++G_TYPE_FUNDAMENTAL_SHIFT = 2
++G_TYPE_MAKE_FUNDAMENTAL=lambda x: x << G_TYPE_FUNDAMENTAL_SHIFT
++G_TYPE_STRING=G_TYPE_MAKE_FUNDAMENTAL (16)
++G_TYPE_INT=G_TYPE_MAKE_FUNDAMENTAL (6)
++GDK_KEY_n=0x06e
++
++import os
++from ctypes import *
++
++CALLBACK0i = CFUNCTYPE(c_int)
++CALLBACK = CFUNCTYPE(None,c_void_p)
++CALLBACKi = CFUNCTYPE(c_int,c_void_p)
++CALLBACK2 = CFUNCTYPE(None,c_void_p,c_void_p)
++CALLBACK3 = CFUNCTYPE(None,c_void_p,c_int,c_void_p)
++CALLBACK4i = CFUNCTYPE(c_int,c_void_p,c_int,c_int,c_int)
++
++class GtkTreeIter(Structure):
++	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
++
++path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
++os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
++lib_gtk_name="libgtk-4.so.1"
++k = cdll.LoadLibrary(lib_gtk_name)
++
++#restype default is C int
++#argtypes no default. c_void_p is python int. pointers must be announced
++#variadics are troubles
++
++def gtk_tree_model_get(a,b,i1,p1):
++	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int]
++	k.gtk_tree_model_get(a,b,i1,p1,-1)
++def gtk_tree_model_get2(a,b,i1,p1,i2,p2):
++	k.gtk_tree_model_get.argtypes=[c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
++	k.gtk_tree_model_get(a,b,i1,p1,i2,p2,-1)
++def gtk_list_store_set2(a,b,i1,p1,i2,p2):
++	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
++	k.gtk_list_store_set(a,b,i1,p1,i2,p2,-1)
++def gtk_list_store_set3(a,b,i1,p1,i2,p2,i3,p3):
++	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
++	k.gtk_list_store_set(a,b,i1,p1,i2,p2,i3,p3,-1)
++def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
++	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
++	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
++
++k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
++k.g_free.argtypes = [c_void_p]
++k.g_object_unref.argtypes = [c_void_p]
++k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
++k.g_source_remove.argtypes = [c_void_p]
++k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
++#
++k.gdk_keyval_name.restype=c_char_p
++k.gdk_toplevel_get_state.argtypes = [c_void_p]
++#A
++k.gtk_application_new.restype=c_void_p
++k.gtk_application_new.argtypes=[c_void_p,c_int]
++k.gtk_application_window_new.restype=c_void_p
++k.gtk_application_window_new.argtypes = [c_void_p]
++#BO
++k.gtk_box_append.argtypes = [c_void_p,c_void_p]
++k.gtk_box_new.restype=c_void_p
++#BU
++k.gtk_button_new_with_label.restype=c_void_p
++k.gtk_button_new_with_label.argtypes = [c_void_p]
++#C
++k.gtk_cell_renderer_progress_new.restype=c_void_p
++k.gtk_cell_renderer_text_new.restype=c_void_p
++#D
++k.gtk_dialog_get_content_area.restype=c_void_p
++k.gtk_dialog_get_content_area.argtypes = [c_void_p]
++k.gtk_dialog_new_with_buttons.restype=c_void_p
++k.gtk_dialog_new_with_buttons.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p]
++#EN
++k.gtk_entry_buffer_get_text.restype=c_char_p
++k.gtk_entry_buffer_get_text.argtypes = [c_void_p]
++k.gtk_entry_buffer_new.restype=c_void_p
++k.gtk_entry_buffer_set_text.argtypes = [c_void_p,c_void_p,c_int]
++k.gtk_entry_get_buffer.restype=c_void_p
++k.gtk_entry_get_buffer.argtypes = [c_void_p]
++k.gtk_entry_new.restype=c_void_p
++k.gtk_entry_new_with_buffer.restype=c_void_p
++k.gtk_entry_new_with_buffer.argtypes = [c_void_p]
++#EV
++k.gtk_event_controller_key_new.restype=c_void_p
++#F
++k.gtk_frame_new.restype=c_void_p
++k.gtk_frame_new.argtypes = [c_void_p]
++k.gtk_frame_set_child.argtypes = [c_void_p,c_void_p]
++#G
++k.gtk_grid_attach.argtypes = [c_void_p,c_void_p,c_int,c_int,c_int,c_int]
++k.gtk_grid_new.restype=c_void_p
++#LA
++k.gtk_label_new.restype=c_void_p
++k.gtk_label_new.argtypes = [c_void_p]
++#LI
++k.gtk_list_store_append.argtypes = [c_void_p,c_void_p]
++k.gtk_list_store_new.restype=c_void_p
++k.gtk_list_store_prepend.argtypes = [c_void_p,c_void_p]
++k.gtk_list_store_remove.argtypes = [c_void_p,c_void_p]
++#N
++k.gtk_native_get_surface.restype=c_void_p
++k.gtk_native_get_surface.argtypes = [c_void_p]
++#SC
++k.gtk_scrolled_window_new.restype=c_void_p
++k.gtk_scrolled_window_set_child.argtypes = [c_void_p,c_void_p]
++#TEB
++k.gtk_text_buffer_set_text.argtypes = [c_void_p,c_void_p,c_int]
++#TEV
++k.gtk_text_view_get_buffer.restype=c_void_p
++k.gtk_text_view_get_buffer.argtypes = [c_void_p]
++k.gtk_text_view_new.restype=c_void_p
++k.gtk_text_view_set_editable.argtypes=[c_void_p,c_int]
++k.gtk_text_view_set_wrap_mode.argtypes=[c_void_p,c_int]
++#TEW
++k.gtk_test_widget_wait_for_draw.argtypes = [c_void_p]
++#TM
++k.gtk_tree_model_get_iter_first.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_model_get_path.restype=c_void_p
++k.gtk_tree_model_get_path.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_model_iter_n_children.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_model_iter_next.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_model_sort_convert_iter_to_child_iter.argtypes = [c_void_p,c_void_p,c_void_p]
++k.gtk_tree_model_sort_convert_path_to_child_path.restype=c_void_p
++k.gtk_tree_model_sort_convert_path_to_child_path.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_model_sort_new_with_model.restype=c_void_p
++k.gtk_tree_model_sort_new_with_model.argtypes = [c_void_p]
++#TP
++k.gtk_tree_path_free.argtypes = [c_void_p]
++k.gtk_tree_path_get_indices.restype=POINTER(c_int)
++k.gtk_tree_path_get_indices.argtypes = [c_void_p]
++#TS
++k.gtk_tree_selection_get_selected.argtypes = [c_void_p,c_void_p,c_void_p]
++k.gtk_tree_selection_select_path.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_sortable_get_sort_column_id.argtypes=[c_void_p,c_void_p,c_void_p]
++k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]
++#TV
++k.gtk_tree_view_get_selection.restype=c_void_p
++k.gtk_tree_view_get_selection.argtypes = [c_void_p]
++k.gtk_tree_view_append_column.argtypes = [c_void_p,c_void_p]
++k.gtk_tree_view_column_new_with_attributes.restype=c_void_p
++k.gtk_tree_view_column_new_with_attributes.argtypes = [c_void_p,c_void_p,c_void_p,c_int,c_void_p]
++k.gtk_tree_view_column_set_clickable.argtypes=[c_void_p,c_int]
++k.gtk_tree_view_column_set_fixed_width.argtypes = [c_void_p,c_int]
++k.gtk_tree_view_column_set_resizable.argtypes = [c_void_p,c_int]
++k.gtk_tree_view_new_with_model.restype=c_void_p
++k.gtk_tree_view_new_with_model.argtypes = [c_void_p]
++k.gtk_tree_view_set_activate_on_single_click.argtypes = [c_void_p,c_int]
++#WID
++k.gtk_widget_add_controller.argtypes = [c_void_p,c_void_p]
++k.gtk_widget_get_root.restype=c_void_p
++k.gtk_widget_get_root.argtypes=[c_void_p]
++k.gtk_widget_get_width.argtypes=[c_void_p]
++k.gtk_widget_hide.argtypes=[c_void_p]
++k.gtk_widget_remove_controller.argtypes = [c_void_p,c_void_p]
++k.gtk_widget_set_halign.argtypes = [c_void_p,c_int]
++k.gtk_widget_set_hexpand.argtypes=[c_void_p,c_int]
++k.gtk_widget_set_vexpand.argtypes=[c_void_p,c_int]
++k.gtk_widget_show.argtypes=[c_void_p]
++#WIN
++k.gtk_window_close.argtypes=[c_void_p]
++k.gtk_window_destroy.argtypes=[c_void_p]
++k.gtk_window_get_default_size.argtypes=[c_void_p,c_void_p,c_void_p]
++k.gtk_window_is_maximized.argtypes=[c_void_p]
++k.gtk_window_maximize.argtypes=[c_void_p]
++k.gtk_window_minimize.argtypes=[c_void_p]
++k.gtk_window_set_child.argtypes = [c_void_p,c_void_p]
++k.gtk_window_set_default_size.argtypes=[c_void_p,c_int,c_int]
++k.gtk_window_set_title.argtypes=[c_void_p,c_void_p]
+\ No newline at end of file
+--- /dev/null
++++ torra-1/torra/torra/layout.py
+@@ -0,0 +1,109 @@
++from . import gtk
++from . import torben
++from . import listtor
++from . import conmenu
++from . import sets
++from . import confs
++from . import stats
++from . import torrent
++from . import overall
++from . import next
++k=gtk.k
++
++from enum import IntEnum
++class COLUMNS(IntEnum):
++	NAME=0
++	PATH=1
++	UP=2
++	DOWN=3
++	RATIO=4
++	n=5
++
++colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
++list=colsdef()
++sort=k.gtk_tree_model_sort_new_with_model(list)
++k.g_object_unref(list)
++
++@gtk.CALLBACK
++def header_click(ix):
++	ix=gtk.c_int(ix if ix else 0)#this comes none/int
++	n=gtk.c_int()
++	t=gtk.c_int()
++	k.gtk_tree_sortable_get_sort_column_id(sort,gtk.byref(n),gtk.byref(t))
++	if n.value!=ix.value or t.value!=gtk.GtkSortType.GTK_SORT_ASCENDING:
++		k.gtk_tree_sortable_set_sort_column_id(sort,ix,gtk.GtkSortType.GTK_SORT_ASCENDING)
++	else:
++		k.gtk_tree_sortable_set_sort_column_id(sort,ix,gtk.GtkSortType.GTK_SORT_DESCENDING)
++def columns_add(tree,n,i,w):
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(n, renderer, b"text", i, None)
++	k.g_signal_connect_data(column,b"clicked",header_click,i,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	k.gtk_tree_view_column_set_clickable(column,True)
++	k.gtk_tree_view_append_column(tree, column)
++	k.gtk_tree_view_column_set_resizable(column,True)
++	if(w>0):
++		k.gtk_tree_view_column_set_fixed_width(column,w)
++def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
++	w=int(w/COLUMNS.n)
++	columns_add(tree,b"Name",COLUMNS.NAME,w)
++	columns_add(tree,b"Path",COLUMNS.PATH,w)
++	columns_add(tree,b"Uploaded",COLUMNS.UP,w)
++	columns_add(tree,b"Downloaded",COLUMNS.DOWN,w)
++	columns_add(tree,b"Ratio",COLUMNS.RATIO,w)
++
++@gtk.CALLBACK
++def add(window):
++	b=k.gtk_entry_get_buffer(entry_tor)
++	t=k.gtk_entry_buffer_get_text(b)
++	tx=t.decode()
++	if torrent.open_tor(tx,0,window):
++		tex=torben.name(tx)
++		i=gtk.GtkTreeIter()
++		ip=gtk.byref(i)
++		if k.gtk_tree_model_iter_n_children(list,None)==0:
++			next.ini(treeV)
++		k.gtk_list_store_prepend(list,ip)
++		gtk.gtk_list_store_set5(list, ip, COLUMNS.NAME, tex, COLUMNS.PATH, t,
++			COLUMNS.UP,b"0",COLUMNS.DOWN,b"0",COLUMNS.RATIO,b"0")
++		listtor.write(list)
++def layout(window):
++	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
++	global entry_tor
++	entry_tor=k.gtk_entry_new()
++	k.gtk_widget_set_hexpand(entry_tor,True)
++	k.g_signal_connect_data (entry_tor, b"activate", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	#
++	k.gtk_box_append(bx,entry_tor)
++	b=k.gtk_button_new_with_label(b"+")
++	k.gtk_box_append(bx,b)
++	k.g_signal_connect_data (b, b"clicked", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	#
++	b=k.gtk_button_new_with_label(chr(0x2699).encode())
++	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	k.gtk_box_append(bx,b)
++	#
++	global treeV
++	treeV=k.gtk_tree_view_new_with_model(sort)
++	k.g_object_unref(sort)
++	columns(treeV,confs.width)
++	listtor.read(list,window)
++	if k.gtk_tree_model_iter_n_children(list,None)>0:
++		next.ini(treeV)
++	#
++	scroll = k.gtk_scrolled_window_new ()
++	k.gtk_widget_set_vexpand(scroll,True)
++	k.gtk_scrolled_window_set_child (scroll,treeV)
++	#
++	lst=overall.ini(colsdef())
++	tree=k.gtk_tree_view_new_with_model(lst)
++	k.g_object_unref(lst)
++	columns(tree,confs.width)
++	#
++	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
++	k.gtk_box_append(box,bx)
++	k.gtk_box_append(box,scroll)
++	k.gtk_box_append(box,tree)
++	stats.ini(box)
++	conmenu.ini(box,treeV)
++	#
++	k.gtk_window_set_child(window,box)
+\ No newline at end of file
+--- /dev/null
++++ torra-1/torra/torra/listtor.py
+@@ -0,0 +1,47 @@
++import json
++
++from . import gtk
++from . import layout
++from . import torrent
++from . import torben
++from . import main
++k=gtk.k
++
++config_filename = main.get_root_file('config')
++#in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config
++
++def write(lst):
++	arr=[]
++	val=gtk.c_char_p()
++	path=gtk.c_char_p()#:gtk.c_char_p except UnboundLocalError
++	i=gtk.GtkTreeIter()
++	it=gtk.byref(i)
++	b=k.gtk_tree_model_get_iter_first(lst,it)
++	while b:
++		gtk.gtk_tree_model_get2 (lst, it,
++			layout.COLUMNS.PATH, gtk.byref(path),
++			layout.COLUMNS.UP,gtk.byref(val))
++		d={'path':path.value.decode(),'upload':int(val.value)}
++		k.g_free(path)
++		arr.insert(0,d)
++		b=k.gtk_tree_model_iter_next(lst,it)
++	with open(config_filename, "w") as write_file:
++		json.dump(arr, write_file)
++
++def read(lst,window):
++	i=gtk.GtkTreeIter()
++	ip=gtk.byref(i)
++	try:
++		with open(config_filename) as f:
++			dat=json.load(f)
++	except Exception:
++		return
++	for x in dat:
++		p=x['path']
++		if torrent.open_tor(p,x['upload'],window):
++			k.gtk_list_store_prepend(lst,ip)
++			gtk.gtk_list_store_set5(lst, ip,
++				layout.COLUMNS.NAME, torben.name(p),
++				layout.COLUMNS.PATH, p.encode(),
++				layout.COLUMNS.UP,b"0",layout.COLUMNS.DOWN,b"0",
++				layout.COLUMNS.RATIO,b"0")
+--- /dev/null
++++ torra-1/torra/torra/log.py
+@@ -0,0 +1,97 @@
++import subprocess
++
++from . import gtk
++from . import torrent
++from . import ratio
++k=gtk.k
++
++#in case config file is not yet created
++log_bf=k.gtk_entry_buffer_new(None,-1)
++end_bf=k.gtk_entry_buffer_new(None,-1)
++f=None
++in_ratio=0
++
++def ini():
++	grid = k.gtk_grid_new ()
++	k.gtk_grid_attach(grid,ratio.text(b"Location"),0,0,1,1)
++	k.gtk_grid_attach(grid,ratio.edit(log_bf),1,0,1,1)
++	k.gtk_grid_attach(grid,ratio.text(b"External command when closing"),0,1,1,1)
++	k.gtk_grid_attach(grid,ratio.edit(end_bf),1,1,1,1)
++	fr=k.gtk_frame_new(b"Log File")
++	k.gtk_frame_set_child(fr,grid)
++	return fr
++
++def store(d):
++	d['log_file']=finish()
++	d['log_end']=k.gtk_entry_buffer_get_text(end_bf).decode()
++def restore(d):
++	log=d['log_file']
++	if len(log)>0:
++		k.gtk_entry_buffer_set_text(log_bf,log.encode(),-1)
++		global f
++		f=open(log,"w")
++	k.gtk_entry_buffer_set_text(end_bf,d['log_end'].encode(),-1)
++
++
++def div_nr(a,b):
++	if not b:
++		return 0
++	return a/b
++def one(x,s):
++	u=x.u+s.total_payload_upload#if pause this will be 0, all_time_upload
++	return div_nr(u,s.total_done)
++def rest1(x,s):
++	r=one(x,s)
++	f.write(str(r)+"|"+str(r-x.in_ratio)+"\n")
++def rest2(ratio):
++	f.write("@"+str(ratio)+"|"+str(ratio-in_ratio)+"\n")
++	f.flush()
++def add0(rat):
++	if f:
++		global in_ratio
++		if not in_ratio:
++			in_ratio=rat
++		b=True
++		f.write("\n")
++		for x in torrent.torrents:
++			s=x.h.status()
++			if(torrent.checki(s)):
++				b=False
++				continue
++			elif not hasattr(x,'in_ratio'):
++				x.in_ratio=one(x,s)
++			rest1(x,s)
++		rest2(rat)
++		if b:
++			global add
++			add=add1
++def add1(rat):
++	if f:
++		f.write("\n")
++		for x in torrent.torrents:
++			s=x.h.status()
++			rest1(x,s)
++		rest2(rat)
++def likenew():
++	global add
++	add=add0
++def addT(path):
++	if f:
++		f.write(path+"\n")
++
++def finish():
++	global f
++	if f:
++		bts=k.gtk_entry_buffer_get_text(end_bf)
++		if bts:
++			c=bts.decode()
++			z=subprocess.run(c,capture_output=True,text=True)
++			f.write(z.stdout)
++		f.close()
++		f=None
++	return k.gtk_entry_buffer_get_text(log_bf).decode()
++def reset():
++	d=finish()
++	if len(d)>0:
++		global f
++		f=open(d,"a")
+--- /dev/null
++++ torra-1/torra/torra/main.py
+@@ -0,0 +1,61 @@
++"""
++torrent client
++"""
++
++import appdirs
++import os.path
++import pathlib
++def get_root_dir():
++	return pathlib.Path(appdirs.user_config_dir('torra'))
++get_root_dir().mkdir(exist_ok=True)
++def get_root_file(f):
++	return os.path.join(get_root_dir(),f)
++import sys
++
++from . import gtk
++from . import layout
++from . import confs
++from . import sets
++from . import torrent
++from . import overall
++from . import listtor
++from . import ratio
++k=gtk.k
++
++@gtk.CALLBACKi
++def closing(window):
++	listtor.write(layout.list)
++	confs.write_opt(window)
++	torrent.close()
++	overall.close()
++	ratio.freeint()
++	return False
++
++@gtk.CALLBACK
++def activate(app):
++	window = k.gtk_application_window_new (app)
++	k.gtk_window_set_title (window, b"Torrent")
++	k.g_signal_connect_data (window, b"close-request", closing, None, None, 0)
++	k.gtk_widget_show (window)
++	confs.read_opt(window)
++	wd=confs.width
++	if wd<0:
++		k.gtk_test_widget_wait_for_draw(window)
++		confs.width=k.gtk_widget_get_width(window)
++		if wd==-2:
++			k.gtk_window_minimize(window)
++	layout.layout(window)
++
++def main():
++	if len(sys.argv)>1:
++		listtor.config_filename=sys.argv[1]
++	a=k.gtk_application_new(None,0)
++	actv=b"activate"
++	k.g_signal_connect_data (a, actv, activate, None, None, 0)
++	r=k.g_application_run (a,0,None)
++	k.g_object_unref(sets.fold_bf)
++	k.g_object_unref(a)
++	exit(r)
++
++if __name__ == "__main__":
++    main()
+--- /dev/null
++++ torra-1/torra/torra/meninfo.py
+@@ -0,0 +1,40 @@
++from . import gtk
++from . import treesel
++from . import bencod
++k=gtk.k
++
++def go(path,window):
++	with open(path,'rb') as f:
++		d=f.read()
++		bencod.is_info=True
++		a=bencod.decode(d)
++		bencod.is_info=False
++		dialog = k.gtk_dialog_new_with_buttons (b"Info",window,
++			gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
++			b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
++		if k.gtk_window_is_maximized(window):
++			k.gtk_window_maximize(dialog)
++		else:
++			width=gtk.c_int()
++			height=gtk.c_int()
++			k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
++			k.gtk_window_set_default_size(dialog,width,height)
++		k.g_signal_connect_data (dialog,b"response",k.gtk_window_destroy,None,None,0)
++		box=k.gtk_dialog_get_content_area(dialog)
++		#
++		text = k.gtk_text_view_new ()
++		k.gtk_text_view_set_editable(text, False)
++		k.gtk_text_view_set_wrap_mode(text,gtk.GtkWrapMode.GTK_WRAP_WORD_CHAR)
++		text_buffer = k.gtk_text_view_get_buffer (text)
++		k.gtk_text_buffer_set_text (text_buffer,str(a).encode(),-1)
++		#
++		scrolled_window = k.gtk_scrolled_window_new ()
++		k.gtk_scrolled_window_set_child (scrolled_window,text)
++		k.gtk_box_append(box, scrolled_window)
++		k.gtk_widget_set_hexpand(scrolled_window,True)
++		k.gtk_widget_set_vexpand(scrolled_window,True)
++		#
++		k.gtk_widget_show (dialog)
++
++def act(button,tree):
++	treesel.text(go,tree,k.gtk_widget_get_root(button))
+--- /dev/null
++++ torra-1/torra/torra/next.py
+@@ -0,0 +1,100 @@
++from . import gtk
++from . import torrent
++from . import layout
++k=gtk.k
++
++mask=gtk.GdkModifierType.GDK_CONTROL_MASK
++key=gtk.GDK_KEY_n
++
++@gtk.CALLBACK4i
++def eve(tree, keyval, keycode, state):
++	if (state&mask)==mask:
++		K=k.gdk_keyval_to_lower(keyval)#shiftlock+n is N and lock mod NOT n and mod
++		if K==key:
++			mod=gtk.c_void_p()
++			it=gtk.GtkTreeIter()
++			i=gtk.byref(it)
++			sl=k.gtk_tree_view_get_selection(tree)
++			k.gtk_tree_selection_get_selected(sl,gtk.byref(mod),i)
++			p=k.gtk_tree_model_get_path(mod,i)
++			ix=k.gtk_tree_path_get_indices ( p )
++			ix=ix[0]
++			k.gtk_tree_path_free(p)
++			find(sl,mod,i,ix)
++			return True
++	return False
++
++def ini(tree):
++	global controller
++	controller=k.gtk_event_controller_key_new()
++	k.g_signal_connect_data (controller,b"key-pressed",eve,tree,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	k.gtk_widget_add_controller (tree, controller)
++
++def unini(tree):
++	k.gtk_widget_remove_controller(tree,controller)
++	
++def find(sl,mod,it,pos):
++	i2=gtk.GtkTreeIter()
++	it2=gtk.byref(i2)
++	b=k.gtk_tree_model_iter_next(mod,it)
++	while b:
++		if is_unfinished(mod,it,it2,sl):
++			return
++		b=k.gtk_tree_model_iter_next(mod,it)
++	if pos>0:
++		k.gtk_tree_model_get_iter_first(mod,it)
++		while True:
++			if is_unfinished(mod,it,it2,sl):
++				return
++			pos-=1
++			if pos==0:
++				break
++			k.gtk_tree_model_iter_next(mod,it)
++
++def is_unfinished(mod,it,it2,sl):
++	k.gtk_tree_model_sort_convert_iter_to_child_iter(mod,it2,it)
++	p2=k.gtk_tree_model_get_path(layout.list,it2)
++	ix=k.gtk_tree_path_get_indices ( p2 )
++	ix=ix[0]
++	k.gtk_tree_path_free(p2)
++	s=torrent.torrents[ix].h.status()
++	if s.progress<1:
++		p=k.gtk_tree_model_get_path(mod,it)
++		k.gtk_tree_selection_select_path(sl,p)
++		k.gtk_tree_path_free(p)
++		torrent.pos(ix)
++		return True
++	return False
++
++def sets(e):
++	show(e)
++	control=k.gtk_event_controller_key_new()
++	k.g_signal_connect_data (control,b"key-pressed",reset,e,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
++	k.gtk_widget_add_controller (e, control)
++
++def show(e):
++	if (mask&gtk.GdkModifierType.GDK_CONTROL_MASK)!=0:
++		txt="Ctrl+"
++	else:
++		txt=""
++	if (mask&gtk.GdkModifierType.GDK_ALT_MASK)!=0:
++		txt+="Alt+"
++	txt+=k.gdk_keyval_name(key).decode()
++	bf=k.gtk_entry_get_buffer(e)
++	k.gtk_entry_buffer_set_text(bf,txt.encode(),-1)
++
++@gtk.CALLBACK4i
++def reset(e, keyval, keycode, state):
++	global mask,key
++	mask=state&(gtk.GdkModifierType.GDK_CONTROL_MASK|gtk.GdkModifierType.GDK_ALT_MASK)
++	key=keyval
++	show(e)
++	return True
++
++def store(d):
++	d['next_mask']=mask
++	d['next_key']=key
++def restore(d):
++	global mask,key
++	mask=d['next_mask']
++	key=d['next_key']
+--- /dev/null
++++ torra-1/torra/torra/overall.py
+@@ -0,0 +1,86 @@
++import os.path
++
++from . import gtk
++from . import layout
++from . import torrent
++from . import bencod
++from . import sets
++k=gtk.k
++
++i=gtk.GtkTreeIter()
++it=gtk.byref(i)
++
++def ini(lst):
++	global list
++	list=lst
++	k.gtk_list_store_append(list,it)
++	global timer
++	timer=k.g_timeout_add(5000,fresh,None)
++	return list
++
++def st(a):
++	return str(a).encode()
++def div_ratio(a,b):
++	if not b:
++		return "0"
++	n=a/b
++	return st(n)
++
++def download_sz(mod,ir):
++	item_text=gtk.c_char_p()
++	gtk.gtk_tree_model_get (mod, ir, layout.COLUMNS.PATH, gtk.byref(item_text))
++	val=item_text.value.decode()
++	k.g_free(item_text)
++	size=0
++	try:
++		with open(val,'rb') as f:
++			dldir=k.gtk_entry_buffer_get_text(sets.fold_bf).decode()
++			#join can concat bytes,but unicode decode otherwise filenotfound
++			#	p.s. join cannot mix str and bytes
++			d=f.read()
++			cod=bencod.decode(d)
++			infs=cod[0][b'info']
++			fl=infs[b'name'].decode()
++			if b'files' in infs:
++				files=infs[b'files']
++				dldir=os.path.join(dldir,fl)
++				for x in files:
++					p=x[b'path']
++					nm=dldir
++					for y in p:
++						nm=os.path.join(nm,y.decode())
++					size+=os.path.getsize(nm)
++			else:
++				size=os.path.getsize(os.path.join(dldir,fl))
++	except Exception:
++		pass
++	return size
++
++@gtk.CALLBACK0i
++def fresh():
++	up=0
++	down=0
++	i=gtk.GtkTreeIter()
++	ir=gtk.byref(i)
++	mod=layout.list
++	b=k.gtk_tree_model_get_iter_first(mod,ir)
++	j=0
++	while b:
++		tor=torrent.torrents[j]
++		h=tor.h
++		s=h.status()
++		u=tor.u+s.total_payload_upload#if pause this will be 0, all_time_upload
++		if torrent.checki(s):
++			d=download_sz(mod,ir)
++		else:
++			d=s.total_done
++		gtk.gtk_list_store_set3(mod,ir,layout.COLUMNS.UP,st(u),layout.COLUMNS.DOWN,st(d),layout.COLUMNS.RATIO,div_ratio(u,d))
++		up+=u
++		down+=d
++		b=k.gtk_tree_model_iter_next(mod,ir)
++		j+=1
++	gtk.gtk_list_store_set3(list,it,layout.COLUMNS.UP,st(up),layout.COLUMNS.DOWN,st(down),layout.COLUMNS.RATIO,div_ratio(up,down))
++	return True
++
++def close():
++	k.g_source_remove(timer)
+\ No newline at end of file
+--- /dev/null
++++ torra-1/torra/torra/ratio.py
+@@ -0,0 +1,73 @@
++from . import gtk
++from . import overall
++from . import layout
++from . import log
++k=gtk.k
++
++ratint_bf=k.gtk_entry_buffer_new(b"0",-1)
++ratlim_bf=k.gtk_entry_buffer_new(b"2",-1)
++timer=0
++
++def text(a):
++	tx=k.gtk_label_new(a)
++	k.gtk_widget_set_halign(tx,gtk.GtkAlign.GTK_ALIGN_START)
++	return tx
++def edit(b):
++	e=k.gtk_entry_new_with_buffer(b)
++	k.gtk_widget_set_hexpand(e,True)
++	return e
++
++def ini():
++	grid = k.gtk_grid_new ()
++	k.gtk_grid_attach(grid,text(b"Interval time to verify in minutes (0=disable)"),0,0,1,1)
++	k.gtk_grid_attach(grid,edit(ratint_bf),1,0,1,1)
++	k.gtk_grid_attach(grid,text(b"Value"),0,1,1,1)
++	k.gtk_grid_attach(grid,edit(ratlim_bf),1,1,1,1)
++	#
++	fr=k.gtk_frame_new(b"Close program when Ratio is greater than Value and torrents checking was done")
++	k.gtk_frame_set_child(fr,grid)
++	return fr
++
++def freeint():
++	global timer
++	if timer>0:
++		k.g_source_remove(timer)
++		timer=0
++def setint(window):
++	freeint()
++	gain(window)
++
++@gtk.CALLBACKi
++def fresh(window):
++	ratio=getratio()
++	log.add(ratio)
++	n=float(k.gtk_entry_buffer_get_text(ratlim_bf))
++	if ratio>n:
++		print("Ratio limit. Window close.")
++		timer=0
++		k.gtk_window_close(window)#it is freeint inside here
++		return False
++	return True
++def gain(w):#when add tor and resets(including log file)
++	global timer
++	if timer==0:
++		n=int(k.gtk_entry_buffer_get_text(ratint_bf))
++		if n>0:
++			timer=k.g_timeout_add(n*60000,fresh,w)
++	log.likenew()
++
++def getratio():
++	z=gtk.c_char_p()
++	gtk.gtk_tree_model_get(overall.list,overall.it,layout.COLUMNS.RATIO,gtk.byref(z))
++	r=float(z.value)
++	k.g_free(z)
++	return r
++
++def store(d):
++	d['ratio_time']=int(k.gtk_entry_buffer_get_text(ratint_bf))
++	d['ratio_limit']=float(k.gtk_entry_buffer_get_text(ratlim_bf))
++def restore(d):
++	a=str(d['ratio_time']).encode()
++	k.gtk_entry_buffer_set_text(ratint_bf,a,-1)
++	a=str(d['ratio_limit']).encode()
++	k.gtk_entry_buffer_set_text(ratlim_bf,a,-1)
+--- /dev/null
++++ torra-1/torra/torra/sets.py
+@@ -0,0 +1,55 @@
++
++from . import gtk
++from . import ratio
++from . import next
++from . import log
++from . import cons
++k=gtk.k
++
++fold_bf=k.gtk_entry_buffer_new(None,-1)
++
++def labent(t,e):
++	t=k.gtk_label_new (t)
++	k.gtk_widget_set_hexpand(e,True)
++	bx=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
++	k.gtk_box_append(bx, t)
++	k.gtk_box_append(bx, e)
++	return bx
++
++@gtk.CALLBACK3
++def response(dialog,re,window):
++	log.reset()#before ratio
++	ratio.setint(window)
++	cons.set()
++	k.gtk_window_destroy(dialog)
++
++@gtk.CALLBACK
++def sets(window):
++	dialog = k.gtk_dialog_new_with_buttons (b"Settings",window,
++		gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
++		b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
++	if k.gtk_window_is_maximized(window):
++		k.gtk_window_maximize(dialog)
++	else:
++		width=gtk.c_int()
++		height=gtk.c_int()
++		k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
++		k.gtk_window_set_default_size(dialog,width,height)
++	k.g_signal_connect_data (dialog,b"response",response,window,None,0)
++	#
++	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
++	e=k.gtk_entry_new_with_buffer(fold_bf)
++	k.gtk_box_append(box, labent(b"Download Folder",e))
++	k.gtk_box_append(box, ratio.ini())
++	e=k.gtk_entry_new()
++	next.sets(e)
++	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
++	k.gtk_box_append(box, log.ini())
++	k.gtk_box_append(box, cons.ini())
++	#
++	scw=k.gtk_scrolled_window_new()
++	k.gtk_scrolled_window_set_child(scw,box)
++	k.gtk_widget_set_vexpand(scw,True)
++	bx=k.gtk_dialog_get_content_area(dialog)
++	k.gtk_box_append(bx,scw)
++	k.gtk_widget_show (dialog)
+--- /dev/null
++++ torra-1/torra/torra/stats.py
+@@ -0,0 +1,108 @@
++import libtorrent as lt
++
++from . import gtk
++from . import torrent
++k=gtk.k
++
++from enum import IntEnum
++class COLUMNS(IntEnum):
++	progress=0
++	download_rate=1
++	upload_rate=2
++	num_peers=3
++	state=4
++	N=5
++class COLUMNS2(IntEnum):
++	list_peers=0
++	num_complete=1
++	num_incomplete=2
++	next_announce=3
++	last_upload=4
++	N=5
++
++#this is violation
++#arr =  [24,64]
++#arr_c = (gtk.c_int * 2)(*arr)
++#k.gtk_list_store_newv.argtypes = [gtk.c_int, gtk.POINTER(gtk.c_int)]
++#list=k.gtk_list_store_newv(gtk.c_int(2),arr_c)
++
++#k.gtk_list_store_new is limited to 5 (five) entries, at six is violation
++
++list=k.gtk_list_store_new(COLUMNS.N, gtk.G_TYPE_INT, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
++i=gtk.GtkTreeIter()
++ip=gtk.byref(i)
++k.gtk_list_store_append(list,ip)
++
++list2=k.gtk_list_store_new(COLUMNS2.N, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
++i2=gtk.GtkTreeIter()
++ip2=gtk.byref(i2)
++k.gtk_list_store_append(list2,ip2)
++
++def ini(box):
++	tree=k.gtk_tree_view_new_with_model(list)
++	k.g_object_unref(list)
++	renderer = k.gtk_cell_renderer_progress_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Percentage", renderer, b"value", COLUMNS.progress, None)
++	k.gtk_tree_view_append_column(tree, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Download kB/s", renderer, b"text", COLUMNS.download_rate, None)
++	k.gtk_tree_view_append_column(tree, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Upload kB/s", renderer, b"text", COLUMNS.upload_rate, None)
++	k.gtk_tree_view_append_column(tree, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Peers num", renderer, b"text", COLUMNS.num_peers, None)
++	k.gtk_tree_view_append_column(tree, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"State", renderer, b"text", COLUMNS.state, None)
++	k.gtk_tree_view_append_column(tree, column)
++	k.gtk_box_append(box,tree)
++	#
++	tree2=k.gtk_tree_view_new_with_model(list2)
++	k.g_object_unref(list2)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Peers list", renderer, b"text", COLUMNS2.list_peers, None)
++	k.gtk_tree_view_append_column(tree2, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Seeds", renderer, b"text", COLUMNS2.num_complete, None)
++	k.gtk_tree_view_append_column(tree2, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Leeches", renderer, b"text", COLUMNS2.num_incomplete, None)
++	k.gtk_tree_view_append_column(tree2, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Next Announce", renderer, b"text", COLUMNS2.next_announce, None)
++	k.gtk_tree_view_append_column(tree2, column)
++	renderer = k.gtk_cell_renderer_text_new()
++	column = k.gtk_tree_view_column_new_with_attributes(b"Last Upload", renderer, b"text", COLUMNS2.last_upload, None)
++	k.gtk_tree_view_append_column(tree2, column)
++	k.gtk_box_append(box,tree2)
++
++def show(h):
++	s = h.status()
++	if h.is_seed():
++		val=gtk.c_int()
++		gtk.gtk_tree_model_get(list,ip,COLUMNS.progress,gtk.byref(val))
++		if val.value<100:
++			gtk.gtk_list_store_set5(list, ip,
++				COLUMNS.progress, 100,
++				COLUMNS.download_rate, str(0).encode(),
++				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
++				COLUMNS.num_peers, str(s.num_peers).encode(),
++				COLUMNS.state, torrent.state_str[s.state])
++		else:
++			gtk.gtk_list_store_set2(list, ip,
++				COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
++				COLUMNS.num_peers, str(s.num_peers).encode())
++	else:
++		gtk.gtk_list_store_set5(list, ip,
++			COLUMNS.progress, int(s.progress * 100),
++			COLUMNS.download_rate, str(s.download_rate / 1000).encode(),
++			COLUMNS.upload_rate, str(s.upload_rate / 1000).encode(),
++			COLUMNS.num_peers, str(s.num_peers).encode(),
++			COLUMNS.state, torrent.state_str[s.state])
++	gtk.gtk_list_store_set5(list2, ip2,
++		COLUMNS2.list_peers, str(s.list_peers).encode(),
++		COLUMNS2.num_complete, str(s.num_complete).encode(),
++		COLUMNS2.num_incomplete, str(s.num_incomplete).encode(),
++		COLUMNS2.next_announce, str(s.next_announce).encode(),
++		COLUMNS2.last_upload, str(s.last_upload).encode())
+--- /dev/null
++++ torra-1/torra/torra/torben.py
+@@ -0,0 +1,7 @@
++from . import bencod
++
++def name(filename):
++	with open(filename,'rb') as f:
++		d=f.read()
++		cod=bencod.decode(d)
++		return cod[0][b'info'][b'name']
+\ No newline at end of file
+--- /dev/null
++++ torra-1/torra/torra/torrent.py
+@@ -0,0 +1,109 @@
++import libtorrent as lt
++
++from . import gtk
++from . import stats
++from . import sets
++from . import layout
++from . import log
++from . import ratio
++k=gtk.k
++
++ses = lt.session()
++ses.listen_on(6881, 6891)
++torrents=[]
++timer=0
++
++class tor():
++	def __init__(self,h,u):
++		self.h=h
++		self.u=u
++
++d_m='downloading metadata'.encode()
++ckf='checking fastresume'.encode()
++ck='checking'.encode()
++state_str = ['queued'.encode(), \
++	ck, d_m, 'downloading'.encode(), 'finished'.encode(), 'seeding'.encode(), \
++	'allocating'.encode(), \
++	ckf]
++#queued and allocating are unused_enum_for_backwards_compatibility
++#status().state.__int__() vs keys
++#d meta
++#chec fast,checking
++#down,finish,sd
++checki_states=[state_str.index(d_m),state_str.index(ckf),state_str.index(ck)]
++def checki(s):
++	for x in checki_states:
++		if s.state==x:
++			return True
++	return False
++
++@gtk.CALLBACK0i
++def fresh():
++	stats.show(h)
++	return True
++
++def pos(i):
++	global timer
++	if timer>0:
++		k.g_source_remove(timer)
++	timer=k.g_timeout_add(5000, fresh, None)
++	global h
++	h=torrents[i].h
++
++def sel(tree,path):
++	p2=k.gtk_tree_model_sort_convert_path_to_child_path(layout.sort,path)
++	ix=k.gtk_tree_path_get_indices ( p2 )
++	ix=ix[0]
++	k.gtk_tree_path_free(p2)
++	pos(ix)
++
++def open_tor(path,u,w):
++	try:
++		with open(path+".fastresume") as f:
++			b=f.read()
++			c=eval(b)
++			d=lt.bencode(c)
++			td=lt.read_resume_data(d)
++	except Exception:
++		try:
++			info = lt.torrent_info(path)
++			pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
++			td={'ti': info, 'save_path': pv}
++		except Exception:
++			#the path is not existent
++			print("Errors with: "+path)
++			return False
++	th=ses.add_torrent(td)#got no Name right after opening with libtor
++	for x in torrents:
++		if x.h==th:
++			return False
++	t=tor(th,u)
++	torrents.insert(0,t)
++	ratio.gain(w)
++	log.addT(path)
++	return True
++
++def close():
++	if timer>0:
++		k.g_source_remove(timer)
++	i=gtk.GtkTreeIter()
++	it=gtk.byref(i)
++	mod=layout.list
++	item_text=gtk.c_char_p()
++	b=k.gtk_tree_model_get_iter_first(mod,it)
++	j=0
++	while b:
++		gtk.gtk_tree_model_get (mod, it, layout.COLUMNS.PATH, gtk.byref(item_text))
++		th=torrents[j].h
++		with open(item_text.value.decode()+".fastresume", "w") as f:
++			f.write(str(th.write_resume_data()))
++		ses.remove_torrent(th)
++		b=k.gtk_tree_model_iter_next(mod,it)
++		j+=1
++
++def remsel(i):
++	global timer
++	k.g_source_remove(timer)
++	timer=0
++	ses.remove_torrent(h)
++	del torrents[i]
+\ No newline at end of file
+--- /dev/null
++++ torra-1/torra/torra/treesel.py
+@@ -0,0 +1,33 @@
++from . import gtk
++from . import layout
++k=gtk.k
++
++def text(f,tree,data):
++	mod=gtk.c_void_p()
++	it=gtk.GtkTreeIter()
++	i=gtk.byref(it)
++	sl=k.gtk_tree_view_get_selection(tree)
++	k.gtk_tree_selection_get_selected(sl,gtk.byref(mod),i)
++	item_text=gtk.c_char_p()
++	gtk.gtk_tree_model_get (mod, i, layout.COLUMNS.PATH, gtk.byref(item_text))
++	f(item_text.value,data)
++	k.g_free(item_text)
++
++def position__iter(f,tree):
++	mod=gtk.c_void_p()
++	it=gtk.GtkTreeIter()
++	i=gtk.byref(it)
++	sl=k.gtk_tree_view_get_selection(tree)
++	k.gtk_tree_selection_get_selected(sl,gtk.byref(mod),i)
++	path = k.gtk_tree_model_get_path (mod , i)
++	p2=k.gtk_tree_model_sort_convert_path_to_child_path(mod,path)
++	k.gtk_tree_path_free(path)
++	ix=k.gtk_tree_path_get_indices ( p2 )
++	ix=ix[0]
++	k.gtk_tree_path_free(p2)
++	#
++	it2=gtk.GtkTreeIter()
++	i2=gtk.byref(it2)
++	k.gtk_tree_model_sort_convert_iter_to_child_iter(mod,i2,i)
++	#
++	f(ix,i2)
+--- /dev/null
++++ torra-1/v2
+@@ -0,0 +1 @@
++1.0.32
+\ No newline at end of file

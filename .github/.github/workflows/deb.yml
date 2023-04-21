@@ -1,0 +1,41 @@
+
+on:
+ workflow_dispatch:
+
+jobs:
+ dbuild:
+  runs-on: ubuntu-latest #launchpad "Uploading build" longer but is ok without 22.04
+  steps:
+   - uses: actions/checkout@v3
+     with:
+      path: in
+   - uses: actions/checkout@master
+     with:
+      repository: colin-i/test
+      path: in2
+   - name: Run a multi-line script
+     run: |
+      name=`cat in/debian/changelog | head -1 | grep -o ^[^\ ]*`
+      cp -r in2/sync/${name}/debian/patches in/debian
+      cp -r in2/sync/${name}/.pc in
+      if [ -z "`dpkg -s devscripts>/dev/null 2>&1 && echo x`" ]; then
+       sudo apt install -y devscripts debhelper dh-python python3-all
+       #python3-setuptools is already
+      fi
+      origf=${name}-1.tar.gz
+      if [ ! -e "${origf}" ]; then
+       origln=${name}_1.orig.tar.gz
+       wget https://ppa.launchpadcontent.net/colin-i/ppa/ubuntu/pool/main/t/${name}/${origln} -O ${origf}
+       ln -s ${origf} ${origln}
+      fi
+      cd in
+      debuild -S -us -uc
+   - name: unsigned debs
+     uses: actions/upload-artifact@v3
+     with:
+      name: sdebs
+      path: |
+       ./*.dsc
+       ./*.changes
+       ./*.buildinfo
+       ./*.debian.tar.xz
