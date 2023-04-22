@@ -16,8 +16,8 @@ jobs:
    - name: Run a multi-line script
      run: |
       name=`cat in/debian/changelog | head -1 | grep -o ^[^\ ]*`
-      cp -r in2/sync/${name}/debian/patches in/debian
-      cp -r in2/sync/${name}/.pc in
+      ln -sfn in2/sync/${name}/debian/patches in/debian/patches
+      ln -sfn in2/sync/${name}/.pc in/.pc
       if [ -z "`dpkg -s devscripts>/dev/null 2>&1 && echo x`" ]; then
        sudo apt install -y devscripts debhelper dh-python python3-all
        #python3-setuptools is already
