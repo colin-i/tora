@@ -6,7 +6,9 @@ k=gtk.k
 def go(path,window):
 	with open(path,'rb') as f:
 		d=f.read()
+		bencod.is_info=True
 		a=bencod.decode(d)
+		bencod.is_info=False
 		dialog = k.gtk_dialog_new_with_buttons (b"Info",window,
 			gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
 			b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
