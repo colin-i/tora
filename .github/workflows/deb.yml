@@ -25,11 +25,6 @@ jobs:
       #
       mv in2/debian/patches in/debian/patches
       mv in2/.pc in/.pc
-      cd in
-      files=( `cat impish` )
-      for var in "${files[@]}"; do mv ../in3/.pc/${var} .pc; done
-      for var in "${files[@]}"; do mv ../in3/debian/patches/${var} debian/patches; done
-      cd ..
       #
       if [ -z "`dpkg -s devscripts>/dev/null 2>&1 && echo x`" ]; then
        sudo apt install -y devscripts debhelper dh-python python3-all
@@ -42,6 +37,9 @@ jobs:
        ln -s ${origf} ${origln}
       fi
       cd in
+      files=( `cat impish` )
+      for var in "${files[@]}"; do mv ../in3/.pc/${var} .pc; done
+      for var in "${files[@]}"; do mv ../in3/debian/patches/${var} debian/patches; done
       debuild -S -us -uc
    - name: unsigned debs
      uses: actions/upload-artifact@v3
