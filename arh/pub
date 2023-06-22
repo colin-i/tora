@@ -1,0 +1,4 @@
+
+~/test/pyver && \
+~/test/debinit "${1}" && \
+~/test/pub deb
