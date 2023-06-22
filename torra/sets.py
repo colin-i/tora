@@ -29,12 +29,13 @@ def sets(window):
 		gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
 		b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
 
-	width=gtk.c_int()
-	height=gtk.c_int()
-	k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))  #this is not the maximized sizes(when maximized)
-	k.gtk_window_set_default_size(dialog,width,height)     #this is also good when unmaximizing
-	if k.gtk_window_is_maximized(window):
-		k.gtk_window_maximize(dialog) #this was working, now, a dialog has the button but is doing nothing, here
+	#width=gtk.c_int()
+	#height=gtk.c_int()
+	#k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))  #this is not the maximized sizes(when maximized)
+	#k.gtk_window_set_default_size(dialog,width,height)     #this is also good when unmaximizing
+	#if k.gtk_window_is_maximized(window):
+	#	k.gtk_window_maximize(dialog) #this was working, now, a dialog has the button but is doing nothing, here
+	k.gtk_window_set_default_size(dialog,k.gtk_widget_get_width(window),k.gtk_widget_get_height(window))
 
 	k.g_signal_connect_data (dialog,b"response",response,window,None,0)
 	#
