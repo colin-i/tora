@@ -40,7 +40,6 @@ def activate(app):
 	confs.read_opt(window)
 	wd=confs.width
 	if wd<0:
-		k.gtk_test_widget_wait_for_draw(window)
 		confs.width=k.gtk_widget_get_width(window)
 		if wd==-2:
 			k.gtk_window_minimize(window)
