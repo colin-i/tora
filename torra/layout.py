@@ -44,7 +44,7 @@ def columns_add(tree,n,i,w):
 	if(w>0):
 		k.gtk_tree_view_column_set_fixed_width(column,w)
 def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
-	w=int(w/COLUMNS.n)
+	w=int(w/COLUMNS.n)      #to shrink window size, it is required to move them manually, then resize
 	columns_add(tree,b"Name",COLUMNS.NAME,w)
 	columns_add(tree,b"Path",COLUMNS.PATH,w)
 	columns_add(tree,b"Uploaded",COLUMNS.UP,w)

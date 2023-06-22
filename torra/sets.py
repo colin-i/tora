@@ -31,8 +31,8 @@ def sets(window):
 
 	width=gtk.c_int()
 	height=gtk.c_int()
-	k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
-	k.gtk_window_set_default_size(dialog,width,height)
+	k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))  #this is not the maximized sizes(when maximized)
+	k.gtk_window_set_default_size(dialog,width,height)     #this is also good when unmaximizing
 	if k.gtk_window_is_maximized(window):
 		k.gtk_window_maximize(dialog) #this was working, now, a dialog has the button but is doing nothing, here
 
