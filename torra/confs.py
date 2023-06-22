@@ -35,10 +35,10 @@ def read_opt(window):
 	try:
 		with open(configs_filename) as f:
 			dict=json.load(f)
+			k.gtk_window_set_default_size(window,dict['width'],dict['height'])  #to comeback here from maximize
+			k.gtk_test_widget_wait_for_draw(window)  #widget_get_width and maximize without this? no
 			if dict['max']:
 				k.gtk_window_maximize(window)
-			else:
-				k.gtk_window_set_default_size(window,dict['width'],dict['height'])
 			width=-2 if dict['min'] else -1
 			#
 			a=dict['download_folder'].encode()
