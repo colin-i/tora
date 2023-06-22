@@ -172,6 +172,7 @@ k.gtk_tree_view_new_with_model.argtypes = [c_void_p]
 k.gtk_tree_view_set_activate_on_single_click.argtypes = [c_void_p,c_int]
 #WID
 k.gtk_widget_add_controller.argtypes = [c_void_p,c_void_p]
+k.gtk_widget_get_height.argtypes=[c_void_p]
 k.gtk_widget_get_root.restype=c_void_p
 k.gtk_widget_get_root.argtypes=[c_void_p]
 k.gtk_widget_get_width.argtypes=[c_void_p]

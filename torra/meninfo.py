@@ -13,12 +13,8 @@ def go(path,window):
 			gtk.GtkDialogFlags.GTK_DIALOG_DESTROY_WITH_PARENT | gtk.GtkDialogFlags.GTK_DIALOG_MODAL,
 			b"_OK",gtk.GtkResponseType.GTK_RESPONSE_NONE,None)
 
-		width=gtk.c_int()
-		height=gtk.c_int()
-		k.gtk_window_get_default_size (window, gtk.byref(width), gtk.byref(height))
-		k.gtk_window_set_default_size(dialog,width,height)
-		if k.gtk_window_is_maximized(window):
-			k.gtk_window_maximize(dialog)       #same like settings
+		#same like settings
+		k.gtk_window_set_default_size(dialog,k.gtk_widget_get_width(window),k.gtk_widget_get_height(window))
 
 		k.g_signal_connect_data (dialog,b"response",k.gtk_window_destroy,None,None,0)
 		box=k.gtk_dialog_get_content_area(dialog)
