@@ -1,13 +1,13 @@
 import json
 
+from . import confs
 from . import gtk
 from . import layout
 from . import torrent
 from . import torben
-from . import main
 k=gtk.k
 
-config_filename = main.get_root_file('config')
+config_filename = confs.get_root_file('config')
 #in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config
 
 def write(lst):
