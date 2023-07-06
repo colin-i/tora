@@ -1,4 +1,12 @@
 
+import os.path
+import appdirs
+import pathlib
+def get_root_dir():
+	return pathlib.Path(appdirs.user_config_dir('torra'))
+def get_root_file(f):
+	return os.path.join(get_root_dir(),f)
+
 import json
 
 from . import gtk
@@ -7,10 +15,9 @@ from . import ratio
 from . import next
 from . import log
 from . import cons
-from . import main
 k=gtk.k
 
-configs_filename = main.get_root_file('configs')
+configs_filename = get_root_file('configs')
 
 def write_opt(window):
 	dict={}

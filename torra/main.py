@@ -2,19 +2,11 @@
 torrent client
 """
 
-import appdirs
-import os.path
-import pathlib
-def get_root_dir():
-	return pathlib.Path(appdirs.user_config_dir('torra'))
-get_root_dir().mkdir(exist_ok=True)
-def get_root_file(f):
-	return os.path.join(get_root_dir(),f)
 import sys
 
+from . import confs
 from . import gtk
 from . import layout
-from . import confs
 from . import sets
 from . import torrent
 from . import overall
@@ -46,6 +38,8 @@ def activate(app):
 	layout.layout(window)
 
 def main():
+	confs.get_root_dir().mkdir(exist_ok=True)
+
 	if len(sys.argv)>1:
 		listtor.config_filename=sys.argv[1]
 	a=k.gtk_application_new(None,0)
@@ -57,4 +51,4 @@ def main():
 	exit(r)
 
 if __name__ == "__main__":
-    main()
+	main()
