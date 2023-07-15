@@ -21,6 +21,5 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^H
 ~/test/lp && \
 ~/test/lp x && \
 ~/test/keyring && \
-~/test/del x ${last} && \
 ~/test/arh2 ${last} && \
 ~/test/pypi
