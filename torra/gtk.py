@@ -47,8 +47,8 @@ os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
 lib_gtk_name="libgtk-4.so.1"
 k = cdll.LoadLibrary(lib_gtk_name)
 
-#restype default is C int
-#argtypes no default. c_void_p is python int. pointers must be announced
+#By default functions are assumed to return the C int type. Other return types can be specified by setting the restype attribute of the function object.
+#argtypes no default. c_void_p is python int. pointers must be announced on ARM.
 #variadics are troubles
 
 def gtk_tree_model_get(a,b,i1,p1):
@@ -162,11 +162,13 @@ k.gtk_tree_sortable_set_sort_column_id.argtypes=[c_void_p,c_int,c_int]
 k.gtk_tree_view_get_selection.restype=c_void_p
 k.gtk_tree_view_get_selection.argtypes = [c_void_p]
 k.gtk_tree_view_append_column.argtypes = [c_void_p,c_void_p]
+#TVC
 k.gtk_tree_view_column_new_with_attributes.restype=c_void_p
 k.gtk_tree_view_column_new_with_attributes.argtypes = [c_void_p,c_void_p,c_void_p,c_int,c_void_p]
 k.gtk_tree_view_column_set_clickable.argtypes=[c_void_p,c_int]
-k.gtk_tree_view_column_set_fixed_width.argtypes = [c_void_p,c_int]
+k.gtk_tree_view_column_set_expand.argtypes=[c_void_p,c_int]
 k.gtk_tree_view_column_set_resizable.argtypes = [c_void_p,c_int]
+#
 k.gtk_tree_view_new_with_model.restype=c_void_p
 k.gtk_tree_view_new_with_model.argtypes = [c_void_p]
 k.gtk_tree_view_set_activate_on_single_click.argtypes = [c_void_p,c_int]

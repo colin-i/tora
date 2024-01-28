@@ -31,11 +31,13 @@ def activate(app):
 	k.g_signal_connect_data (window, b"close-request", closing, None, None, 0)
 	k.gtk_widget_show (window)
 	confs.read_opt(window)
-	wd=confs.width
-	if wd<0:
-		confs.width=k.gtk_widget_get_width(window)
-		if wd==-2:
-			k.gtk_window_minimize(window)
+
+	#wd=confs.width
+	#if wd<0:
+	#	confs.width=k.gtk_widget_get_width(window)
+	#	if wd==-2:
+	#		k.gtk_window_minimize(window)
+
 	layout.layout(window)
 
 def main():

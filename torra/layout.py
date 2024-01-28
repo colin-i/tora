@@ -34,22 +34,23 @@ def header_click(ix):
 		k.gtk_tree_sortable_set_sort_column_id(sort,ix,gtk.GtkSortType.GTK_SORT_ASCENDING)
 	else:
 		k.gtk_tree_sortable_set_sort_column_id(sort,ix,gtk.GtkSortType.GTK_SORT_DESCENDING)
-def columns_add(tree,n,i,w):
+def columns_add(tree,n,i):
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(n, renderer, b"text", i, None)
 	k.g_signal_connect_data(column,b"clicked",header_click,i,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_tree_view_column_set_clickable(column,True)
-	k.gtk_tree_view_append_column(tree, column)
 	k.gtk_tree_view_column_set_resizable(column,True)
-	if(w>0):
-		k.gtk_tree_view_column_set_fixed_width(column,w)
-def columns(tree,w):#gtk_window_remembered_size is forcing *height=priv->height
-	w=int(w/COLUMNS.n)      #to shrink window size, it is required to move them manually, then resize
-	columns_add(tree,b"Name",COLUMNS.NAME,w)
-	columns_add(tree,b"Path",COLUMNS.PATH,w)
-	columns_add(tree,b"Uploaded",COLUMNS.UP,w)
-	columns_add(tree,b"Downloaded",COLUMNS.DOWN,w)
-	columns_add(tree,b"Ratio",COLUMNS.RATIO,w)
+	k.gtk_tree_view_column_set_expand(column,True)
+	k.gtk_tree_view_append_column(tree, column)
+	#if(w>0):
+	#	k.gtk_tree_view_column_set_fixed_width(column,w)
+def columns(tree):#,w #gtk_window_remembered_size is forcing *height=priv->height
+	#w=int(w/COLUMNS.n)      #to shrink window size, it is required to move them manually, then resize
+	columns_add(tree,b"Name",COLUMNS.NAME)
+	columns_add(tree,b"Path",COLUMNS.PATH)
+	columns_add(tree,b"Uploaded",COLUMNS.UP)
+	columns_add(tree,b"Downloaded",COLUMNS.DOWN)
+	columns_add(tree,b"Ratio",COLUMNS.RATIO)
 
 @gtk.CALLBACK
 def add(window):
@@ -85,7 +86,7 @@ def layout(window):
 	global treeV
 	treeV=k.gtk_tree_view_new_with_model(sort)
 	k.g_object_unref(sort)
-	columns(treeV,confs.width)
+	columns(treeV) #,confs.width
 	listtor.read(list,window)
 	if k.gtk_tree_model_iter_n_children(list,None)>0:
 		next.ini(treeV)
@@ -97,7 +98,7 @@ def layout(window):
 	lst=overall.ini(colsdef())
 	tree=k.gtk_tree_view_new_with_model(lst)
 	k.g_object_unref(lst)
-	columns(tree,confs.width)
+	columns(tree) #,confs.width
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
 	k.gtk_box_append(box,bx)

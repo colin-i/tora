@@ -38,7 +38,7 @@ def write_opt(window):
 		json.dump(dict, write_file)
 
 def read_opt(window):
-	global width#used at columns
+	#global width#used at columns
 	try:
 		with open(configs_filename) as f:
 			dict=json.load(f)
@@ -46,8 +46,11 @@ def read_opt(window):
 			k.gtk_test_widget_wait_for_draw(window)  #widget_get_width and maximize without this? no
 			if dict['max']:
 				k.gtk_window_maximize(window)
-			width=-2 if dict['min'] else -1
-			#
+
+			#width=-2 if dict['min'] else -1
+			if dict['min']:
+				k.gtk_window_minimize(window)
+
 			a=dict['download_folder'].encode()
 			k.gtk_entry_buffer_set_text(sets.fold_bf,a,-1)
 			ratio.restore(dict)
@@ -55,4 +58,5 @@ def read_opt(window):
 			log.restore(dict)
 			cons.restore(dict)
 	except Exception:
-		width=0
+		pass
+	#	width=0

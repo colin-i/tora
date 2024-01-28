@@ -25,7 +25,7 @@ pip3 install torra
 
 ## From source
 Using libtorrent (arvidn) with python bindings (example: python3-libtorrent, or unofficial binaries python package python-libtorrent-bin).\
-libgtk-4.so.1 required.\
+Other requirements are libgtk-4.so.1 and python3-appdirs.\
 With setup.py or the other python setup script.
 
 ## [Info](https://github.com/colin-i/tora/blob/master/info.md)
