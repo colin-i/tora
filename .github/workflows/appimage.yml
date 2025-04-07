@@ -101,7 +101,7 @@ jobs:
        mv ${name} ${sname}
        #PYTHONHOME is also set by AppRun wrong
        cat > ${name} <<EOF
-      #!/bin/bash
+      #!/bin/sh
       cd "\$(dirname "\$0")"
       cd ../
       unset PYTHONHOME
