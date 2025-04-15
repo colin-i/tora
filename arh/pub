@@ -8,12 +8,11 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^H
 ~/test/publp && \
 ~/test/ai && \
 ~/test/rpm && \
-~/test/pub appimage rpm && \
-~/test/rerpm && \
 ~/test/del && \
 ~/test/rel && \
-~/test/pub rel && \
+~/test/pub appimage rpm rel && \
 ~/test/upapp && \
+~/test/rerpm && \
 ~/test/uprpm && \
 ~/test/pub upapp && \
 ~/test/pub2 && \
