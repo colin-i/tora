@@ -15,7 +15,7 @@ On linux distributions, <i>.AppImage</i> file from [releases](https://github.com
 \
 On Fedora, <i>.rpm</i> file from [releases](https://github.com/colin-i/tora/releases).
 ```sh
-yum install torra-*.*.rpm
+dnf install torra-*.*.rpm
 ```
 \
 From pypi:
