@@ -4,7 +4,7 @@ on:
 
 jobs:
  urbuild:
-  runs-on: ubuntu-18.04
+  runs-on: ubuntu-22.04
   steps:
    - name: Run a multi-line script
      run: |
