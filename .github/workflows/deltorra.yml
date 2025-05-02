@@ -13,7 +13,6 @@ jobs:
   steps:
    - name: Remove asset
      uses: mknejp/delete-release-assets@v1
-     env:
      with:
       token: ${{ secrets.PAT }}
       tag: refs/tags/${{ env.tag }}
