@@ -7,13 +7,13 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^H
 ~/test/deb && \
 ~/test/publp && \
 ~/test/ai && \
-~/test/rpm && \
+~/test/rpm/rpm && \
 ~/test/del && \
 ~/test/rel && \
 ~/test/pub appimage rpm rel && \
 ~/test/upapp && \
-~/test/rerpm && \
-~/test/uprpm && \
+~/test/rpm/rerpm && \
+~/test/rpm/uprpm && \
 ~/test/pub upapp && \
 ~/test/pub2 && \
 ~/test/publp2 && \
