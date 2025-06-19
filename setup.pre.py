@@ -1,4 +1,5 @@
 
+#this file will make setup.py after using github colin-i test/pyp/pypre
 #setuptools.setup is looking at one argv parameter; to "build" and "install":
 #python3 setup.py install
 
@@ -10,12 +11,6 @@
 #				that+(libtorrent-rasterbar2.0 on ubuntu) can be a solution
 
 pkname='torra'
-
-import pathlib
-HERE = pathlib.Path(__file__).parent
-#here README is ok, else will be README.md not found for pypi
-README = (HERE / "info.md").read_text()
-ver=(HERE / "v2").read_text()
 
 from setuptools import setup
 setup(name=pkname,
