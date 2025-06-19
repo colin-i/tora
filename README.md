@@ -10,7 +10,7 @@ Install:
 ```sh
 sudo apt-get install torra
 ```
-And having libgtk-4-1.
+And having libgtk-4-1.\
 \
 \
 On Fedora, run the following as __root__:
@@ -18,7 +18,7 @@ On Fedora, run the following as __root__:
 dnf copr enable colin/project
 dnf install python-torra
 ```
-And having gtk4.
+And having gtk4.\
 \
 \
 From [PyPI](https://pypi.org/project/torra):
