@@ -11,12 +11,13 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^H
 ~/test/rel && \
 ~/test/pub appimage rpm rel && \
 ~/test/ai/upapp && \
+~/test/pyp/pypi && \
 py=x ~/test/rpm/copr && \
+py=x ~/test/rpm/suse && \
 ~/test/pub upapp && \
 ~/test/pub2 && \
 ~/test/publp2 && \
 ~/test/lp && \
 ~/test/lp x && \
 ~/test/keyring && \
-~/test/arh2 ${last} && \
-~/test/pyp/pypi
+~/test/arh2 ${last}

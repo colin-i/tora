@@ -10,13 +10,31 @@ Install:
 ```sh
 sudo apt-get install torra
 ```
-And having libgtk-4-1.\
+Will also install libgtk-4-1 if is not already installed.\
+\
+\
+On openSUSE, run the following as __root__:\
+For openSUSE Tumbleweed:
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Tumbleweed/home:costin.repo
+```
+For openSUSE Leap:
+```sh
+zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Leap_15.6/home:costin.repo
+```
+And:
+```sh
+zypper refresh
+zypper install python313-torra
+```
+Replace *python313* with *python312* or *python311* if needed.\
+Will also install libgtk-4-1 if is not already installed.\
 \
 \
 On Fedora, run the following as __root__:
 ```sh
 dnf copr enable colin/project
-dnf install python-torra
+dnf install python3-torra
 ```
 And having gtk4.\
 \
@@ -25,6 +43,8 @@ From [PyPI](https://pypi.org/project/torra):
 ```sh
 pip3 install torra
 ```
+And having gtk4.\
+\
 \
 On other linux distributions, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
 
