@@ -52,7 +52,7 @@ jobs:
        inter=Packages
        fullinter=${inter}${repo}
        if [ ! -e "${fullinter}" ]; then
-        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
+        wget http://${src}/ubuntu/dists/${3}/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
         xz -d ${fullinter}.xz
        fi
        debfilename=`grep "^Filename.*/${pkg}_" ${fullinter}`
@@ -60,12 +60,15 @@ jobs:
        wget_url=http://${src}/ubuntu/${debfilename}
        maindeb=${pkg}.deb
        wget ${wget_url} -O ${maindeb}
-       dpkg -x ${maindeb} AppDir
+       dpkg -x ${maindeb} AppDir${4}
       }
-      downdeb libboost-python1.74.0 main
-      downdeb libtorrent-rasterbar2.0 universe
-      downdeb python3-appdirs main
-      downdeb python3-libtorrent universe
+      downdeb libboost-python1.74.0 main jammy jammy
+      downdeb libboost-python1.83.0 main noble noble
+      downdeb libtorrent-rasterbar2.0 universe jammy
+      downdeb libtorrent-rasterbar2.0t64 universe noble noble
+      downdeb python3-appdirs main jammy
+      downdeb python3-libtorrent universe jammy
+      downdeb python3-libtorrent universe noble
       #
       apd=AppDir
       cd ${apd}
@@ -105,7 +108,21 @@ jobs:
       cd "\$(dirname "\$0")"
       cd ../
       unset PYTHONHOME
-      LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu" \
+      path="\$(pwd)/../noble/usr/lib/x86_64-linux-gnu"
+      LD_LIBRARY_PATH="\${path}" \
+       PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
+       python3 -c "import libtorrent"
+      if [ $? != 0 ]; then
+       path="\$(pwd)/../jammy/usr/lib/x86_64-linux-gnu"
+       LD_LIBRARY_PATH="\${path}" \
+        PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
+        python3 -c "import libtorrent"
+       if [ $? != 0 ]; then
+        echo cannot import libtorrent with this version of python. maybe with python3.12 or python3.10
+        exit 1
+       fi
+      fi
+      LD_LIBRARY_PATH="\${path}" \
        PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
        python3 bin/${sname}
       EOF
