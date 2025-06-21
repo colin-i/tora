@@ -1,3 +1,9 @@
+torra (1-v17) jammy; urgency=medium
+
+  * a mkdir to run pristine
+
+ -- bc <bc@bc-desktop>  Sat, 21 Jun 2025 12:17:44 +0300
+
 torra (1-jammy16) jammy; urgency=medium
 
   * resizable
