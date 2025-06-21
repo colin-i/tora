@@ -9,7 +9,7 @@ jobs:
  build:
   runs-on: ubuntu-22.04
   steps:
-   - uses: actions/checkout@v3
+   - uses: actions/checkout@master
    - name: Run a multi-line script
      run: |
       name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
@@ -157,7 +157,7 @@ jobs:
       #glibc=`readelf -V ${apd}/usr/bin/${name} | grep -Po "(?<= GLIBC_)[^ ]*" | sort -Vr | head -1 | sed "s/\./-/g"`
       #echo -n ${glibc} > version #"glibc" will not be ok for upload-artifact
    - name: artifact
-     uses: actions/upload-artifact@v3
+     uses: actions/upload-artifact@master
      with:
       name: appimage
       path: |

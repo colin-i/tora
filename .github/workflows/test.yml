@@ -1,0 +1,18 @@
+on:
+ workflow_dispatch:
+  inputs:
+   branch:
+    description: "another branch"
+env:
+ #for composite
+ GITHUB_TOKEN: ${{ secrets.PAT }}
+jobs:
+ takescreen:
+  runs-on: ${{ matrix.os }}
+  strategy:
+   matrix:
+    os: [ubuntu-22.04, ubuntu-24.04]
+  steps:
+   - uses: colin-i/test/.github/actions/test@main
+     with:
+      branch: ${{ github.event.inputs.branch }}

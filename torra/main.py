@@ -41,11 +41,18 @@ def activate(app):
 	layout.layout(window)
 
 def main():
+	if os.getenv("ENTRY_DEBUG"):
+		sys.stdout.write("ENTRY_DEBUG marker\n")
 	if len(sys.argv)>1:
 		if sys.argv[1]=="--remove-config":
 			cleanup()
 			return
-		listtor.config_filename=sys.argv[1].replace('\\','') #the same? pdb -m torra.main \\-\\-remove-config
+		fname=sys.argv[1]
+		if len(fname)==1:
+			if len(sys.argv)>2:
+				if fname[0]=='f':
+					fname=sys.argv[2]
+		listtor.config_filename=fname
 	os.makedirs(confs.get_root_dir(),exist_ok=True)
 	a=k.gtk_application_new(None,0)
 	actv=b"activate"
