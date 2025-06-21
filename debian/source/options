@@ -1,1 +1,1 @@
-extend-diff-ignore = "^(\.github\/.*|arh\/.*)$"
+extend-diff-ignore = "^(\.github\/.*|arh\/.*|setup\.py)$"
