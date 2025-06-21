@@ -68,7 +68,10 @@ def cleanup():
 		f2=cleanup_f(listtor.config_filename)
 		print(c)
 		base=os.path.dirname(c)
-		print(base)
+		if (os.path.basename(base))[0]=='.': #.config, on another system can be a premade
+			print(base)
+		else:
+			base=None
 		print("yes ?");
 		str = ""
 		while True:
@@ -87,11 +90,12 @@ def cleanup():
 			if len(os.listdir(path=c))==0:
 				os.rmdir(c) #OSError if not empty
 				print(c.__str__()+r)
-				if len(os.listdir(path=base))==0:
-					os.rmdir(base)
-					print(base.__str__()+r)
-				else:
-					print(base.__str__()+" is not empty.")
+				if base:
+					if len(os.listdir(path=base))==0:
+						os.rmdir(base)
+						print(base.__str__()+r)
+					else:
+						print(base.__str__()+" is not empty.")
 			else:
 				print(c.__str__()+" is not empty.")
 		else:
