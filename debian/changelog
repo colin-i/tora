@@ -1,3 +1,9 @@
+torra (1-v19) jammy; urgency=medium
+
+  * add arg1 f helper
+
+ -- bc <bc@bc-desktop>  Sat, 21 Jun 2025 18:44:56 +0300
+
 torra (1-v18) jammy; urgency=medium
 
   * premade setup.py
