@@ -3,8 +3,6 @@ on:
   inputs:
    branch:
     description: "another branch"
-   testbranch:
-    description: "test branch"
    prepack:
     description: "preinstalled packages"
 env:
@@ -17,13 +15,7 @@ jobs:
    matrix:
     os: [ubuntu-22.04, ubuntu-24.04]
   steps:
-   - if: "${{ github.event.inputs.testbranch == '' }}"
-     uses: colin-i/test/.github/actions/test@main
-     with:
-      branch: ${{ github.event.inputs.branch }}
-      prepack: ${{ github.event.inputs.prepack }}
-   - if: "${{ github.event.inputs.testbranch != '' }}"
-     uses: colin-i/test/.github/actions/test@test
+   - uses: colin-i/test/.github/actions/test@test
      with:
       branch: ${{ github.event.inputs.branch }}
       prepack: ${{ github.event.inputs.prepack }}
