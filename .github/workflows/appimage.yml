@@ -111,15 +111,14 @@ jobs:
       path="\$(pwd)/../noble/usr/lib/x86_64-linux-gnu"
       LD_LIBRARY_PATH="\${path}" \
        PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
-       python3 -c "import libtorrent"
+       python3 -c "import libtorrent" 2>/dev/null
       if [ $? != 0 ]; then
        path="\$(pwd)/../jammy/usr/lib/x86_64-linux-gnu"
        LD_LIBRARY_PATH="\${path}" \
         PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
-        python3 -c "import libtorrent"
+        python3 -c "import libtorrent" 2>/dev/null
        if [ $? != 0 ]; then
-        echo cannot import libtorrent with this version of python. maybe with python3.12 or python3.10
-        exit 1
+        path="\${LD_LIBRARY_PATH}"
        fi
       fi
       LD_LIBRARY_PATH="\${path}" \
