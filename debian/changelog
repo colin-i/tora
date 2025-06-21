@@ -1,3 +1,9 @@
+torra (1-v18) jammy; urgency=medium
+
+  * premade setup.py
+
+ -- bc <bc@bc-desktop>  Sat, 21 Jun 2025 13:33:46 +0300
+
 torra (1-v17) jammy; urgency=medium
 
   * a mkdir to run pristine
