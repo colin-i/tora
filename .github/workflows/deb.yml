@@ -40,7 +40,7 @@ jobs:
       files=( `cat impish` )
       for var in "${files[@]}"; do mv ../in3/.pc/${var} .pc; done
       for var in "${files[@]}"; do mv ../in3/debian/patches/${var} debian/patches; done
-      debuild -S -us -uc
+      debuild -S -us -uc -d
    - name: unsigned debs
      uses: actions/upload-artifact@master
      with:
