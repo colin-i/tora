@@ -46,7 +46,7 @@ def main():
 			cleanup()
 			return
 		listtor.config_filename=sys.argv[1].replace('\\','') #the same? pdb -m torra.main \\-\\-remove-config
-	confs.get_root_dir().mkdir(exist_ok=True)
+	os.makedirs(confs.get_root_dir(),exist_ok=True)
 	a=k.gtk_application_new(None,0)
 	actv=b"activate"
 	k.g_signal_connect_data (a, actv, activate, None, None, 0)
@@ -63,10 +63,12 @@ def cleanup_f(f):
 def cleanup():
 	c=confs.get_root_dir()
 	if os.path.isdir(c):
-		print("Would remove:")
+		print("Would remove(dirs only if empty):")
 		f1=cleanup_f(confs.configs_filename)
 		f2=cleanup_f(listtor.config_filename)
 		print(c)
+		base=os.path.dirname(c)
+		print(base)
 		print("yes ?");
 		str = ""
 		while True:
@@ -85,6 +87,11 @@ def cleanup():
 			if len(os.listdir(path=c))==0:
 				os.rmdir(c) #OSError if not empty
 				print(c.__str__()+r)
+				if len(os.listdir(path=base))==0:
+					os.rmdir(base)
+					print(base.__str__()+r)
+				else:
+					print(base.__str__()+" is not empty.")
 			else:
 				print(c.__str__()+" is not empty.")
 		else:
