@@ -39,6 +39,13 @@ dnf install python3-torra
 And having gtk4.\
 \
 \
+On Arch Linux, <i>.zst</i> file from [releases](https://github.com/colin-i/irc-ssl/releases). Or:
+```sh
+yay -Sy python-torra
+```
+Will also install gtk4 if is not already installed.\
+\
+\
 From [PyPI](https://pypi.org/project/torra):
 ```sh
 pip3 install torra

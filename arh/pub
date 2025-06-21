@@ -9,12 +9,14 @@ py=x afterversion~/test/pyp/pypre ~/test/debinit "${1}" && \
 ~/test/ai/ai && \
 ~/test/del && \
 ~/test/rel && \
-~/test/pub appimage rpm rel && \
+~/test/pub appimage rel && \
 ~/test/ai/upapp && \
 ~/test/pyp/pypi && \
+~/test/pkg/onb && \
+~/test/pub upapp pkg && \
+py=x ~/test/pkg/aur && \
 py=x ~/test/rpm/copr && \
 py=x ~/test/rpm/suse && \
-~/test/pub upapp && \
 ~/test/pub2 && \
 ~/test/publp2 && \
 ~/test/lp && \
