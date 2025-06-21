@@ -6,7 +6,7 @@ jobs:
  dbuild:
   runs-on: ubuntu-latest #launchpad "Uploading build" longer but is ok without 22.04
   steps:
-   - uses: actions/checkout@v3
+   - uses: actions/checkout@master
      with:
       path: in
    - uses: actions/checkout@master
@@ -42,7 +42,7 @@ jobs:
       for var in "${files[@]}"; do mv ../in3/debian/patches/${var} debian/patches; done
       debuild -S -us -uc
    - name: unsigned debs
-     uses: actions/upload-artifact@v3
+     uses: actions/upload-artifact@master
      with:
       name: sdebs
       path: |
