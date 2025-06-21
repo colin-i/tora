@@ -3,6 +3,8 @@ on:
   inputs:
    branch:
     description: "another branch"
+   prepack:
+    description: "preinstalled packages"
 env:
  #for composite
  GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -16,3 +18,4 @@ jobs:
    - uses: colin-i/test/.github/actions/test@main
      with:
       branch: ${{ github.event.inputs.branch }}
+      prepack: ${{ github.event.inputs.prepack }}
