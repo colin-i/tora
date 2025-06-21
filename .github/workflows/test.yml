@@ -3,6 +3,8 @@ on:
   inputs:
    branch:
     description: "another branch"
+   testbranch:
+    description: "test branch"
    prepack:
     description: "preinstalled packages"
 env:
@@ -15,7 +17,7 @@ jobs:
    matrix:
     os: [ubuntu-22.04, ubuntu-24.04]
   steps:
-   - uses: colin-i/test/.github/actions/test@main
+   - uses: colin-i/test/.github/actions/test@`if [ -z "${{ github.event.inputs.testbranch }}" ]; then echo -n main; else echo -n ${{ github.event.inputs.testbranch }}; fi`
      with:
       branch: ${{ github.event.inputs.branch }}
       prepack: ${{ github.event.inputs.prepack }}
