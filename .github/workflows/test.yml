@@ -17,13 +17,13 @@ jobs:
    matrix:
     os: [ubuntu-22.04, ubuntu-24.04]
   steps:
-   - uses: colin-i/test/.github/actions/test@main
-     if: "${{ github.event.inputs.testbranch == '' }}"
+   - if: "${{ github.event.inputs.testbranch == '' }}"
+     uses: colin-i/test/.github/actions/test@main
      with:
       branch: ${{ github.event.inputs.branch }}
       prepack: ${{ github.event.inputs.prepack }}
-   - uses: colin-i/test/.github/actions/test@test
-     if: "${{ github.event.inputs.testbranch != '' }}"
+   - if: "${{ github.event.inputs.testbranch != '' }}"
+     uses: colin-i/test/.github/actions/test@test
      with:
       branch: ${{ github.event.inputs.branch }}
       prepack: ${{ github.event.inputs.prepack }}
