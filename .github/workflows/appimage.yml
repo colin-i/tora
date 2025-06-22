@@ -7,7 +7,7 @@ on:
 
 jobs:
  build:
-  runs-on: ubuntu-22.04
+  runs-on: ubuntu-22.04   #jammy and python3.10
   steps:
    - uses: actions/checkout@master
    - name: Run a multi-line script
@@ -52,7 +52,7 @@ jobs:
        inter=Packages
        fullinter=${inter}${repo}
        if [ ! -e "${fullinter}" ]; then
-        wget http://${src}/ubuntu/dists/${3}/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
+        wget http://${src}/ubuntu/dists/jammy/${repo}/binary-amd64/${inter}.xz -O ${fullinter}.xz
         xz -d ${fullinter}.xz
        fi
        debfilename=`grep "^Filename.*/${pkg}_" ${fullinter}`
@@ -60,15 +60,17 @@ jobs:
        wget_url=http://${src}/ubuntu/${debfilename}
        maindeb=${pkg}.deb
        wget ${wget_url} -O ${maindeb}
-       dpkg -x ${maindeb} AppDir${4}
+       dpkg -x ${maindeb} AppDir
       }
-      downdeb libboost-python1.74.0 main jammy jammy
-      downdeb libboost-python1.83.0 main noble noble
-      downdeb libtorrent-rasterbar2.0 universe jammy
-      downdeb libtorrent-rasterbar2.0t64 universe noble noble
-      downdeb python3-appdirs main jammy
-      downdeb python3-libtorrent universe jammy
-      downdeb python3-libtorrent universe noble
+      #python3-libtorrent has python version dependent so file
+      downdeb libpython3.10-minimal main
+      downdeb libpython3.10-stdlib main
+      downdeb python3.10-minimal main
+      #
+      downdeb libboost-python1.74.0 main
+      downdeb libtorrent-rasterbar2.0 universe
+      downdeb python3-appdirs main
+      downdeb python3-libtorrent universe
       #
       apd=AppDir
       cd ${apd}
@@ -103,27 +105,17 @@ jobs:
        cd usr/bin
        mv ${name} ${sname}
        #PYTHONHOME is also set by AppRun wrong
+      #unset PYTHONHOME
+      #without PYTHONPATH(and PYTHONHOME if not bundling python) is No package metadata was found for torra, but PYTHONHOME is enough, anyway unset is extra
+      #	at usr/lib/python/3.x/.py files are here (not like python3/dist-packages)
        cat > ${name} <<EOF
       #!/bin/sh
       cd "\$(dirname "\$0")"
       cd ../
-      unset PYTHONHOME
-      path="\$(pwd)/../noble/usr/lib/x86_64-linux-gnu"
-      LD_LIBRARY_PATH="\${path}" \
-       PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
-       python3 -c "import libtorrent" 2>/dev/null
-      if [ $? != 0 ]; then
-       path="\$(pwd)/../jammy/usr/lib/x86_64-linux-gnu"
-       LD_LIBRARY_PATH="\${path}" \
-        PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
-        python3 -c "import libtorrent" 2>/dev/null
-       if [ $? != 0 ]; then
-        path="\${LD_LIBRARY_PATH}"
-       fi
-      fi
-      LD_LIBRARY_PATH="\${path}" \
-       PYTHONPATH="\$(pwd)/lib/python3/dist-packages" \
-       python3 bin/${sname}
+      LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu"\
+       PYTHONHOME="\$(pwd)"\
+       PYTHONPATH="\$(pwd)/lib/python3/dist-packages"\
+       ./bin/python3.10 bin/${sname} "$@"
       EOF
        chmod 755 ${name}
        cd ../../
