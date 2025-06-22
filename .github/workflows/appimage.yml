@@ -4,6 +4,10 @@ on:
   inputs:
    ppa:
     description: "ppa sufix"
+   testf:
+    description: "test file"
+   testfd:
+    description: "test file destination"
 
 jobs:
  build:
@@ -73,6 +77,11 @@ jobs:
       downdeb python3-libtorrent universe
       #
       apd=AppDir
+      if [ -n "${{ github.event.inputs.testf }}" ]; then
+       echo ${{ github.event.inputs.testf }} ${{ github.event.inputs.testfd }}
+       mv ${{ github.event.inputs.testf }} ${apd}/${{ github.event.inputs.testfd }}
+      fi
+      #
       cd ${apd}
       file2=AppRun
       if [ ! -e "${file2}" ]; then
@@ -115,7 +124,7 @@ jobs:
       LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu"\
        PYTHONHOME="\$(pwd)"\
        PYTHONPATH="\$(pwd)/lib/python3/dist-packages"\
-       ./bin/python3.10 bin/${sname} "$@"
+       ./bin/python3.10 bin/${sname} "\$@"
       EOF
        chmod 755 ${name}
        cd ../../

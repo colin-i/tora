@@ -41,15 +41,13 @@ def activate(app):
 	layout.layout(window)
 
 def main():
-	#appimage is not passing this on github test, local appimage test is ok
-	#if os.getenv("ENTRY_DEBUG"):
-	#	sys.stdout.write("ENTRY_DEBUG marker\n")
 	if len(sys.argv)>1:
 		if sys.argv[1]=="--remove-config":
 			cleanup()
 			return
 		if sys.argv[1]=="--debug":
 			sys.stdout.write("ENTRY_DEBUG marker\n")
+			sys.stdout.flush()
 		else:
 			fname=sys.argv[1]
 			if len(fname)==1:

@@ -20,3 +20,4 @@ jobs:
       branch: ${{ github.event.inputs.branch }}
       prepack: ${{ github.event.inputs.prepack }}
       pattern: bin/tora
+      gtk: 4
