@@ -1,3 +1,9 @@
+torra (1-v20) jammy; urgency=medium
+
+  * appimage fix
+
+ -- bc <bc@bc-desktop>  Sun, 22 Jun 2025 10:04:53 +0300
+
 torra (1-v19) jammy; urgency=medium
 
   * add arg1 f helper
