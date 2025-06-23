@@ -2,6 +2,7 @@ from . import gtk
 from . import treesel
 from . import bencod
 k=gtk.k
+k3=gtk.k3
 
 def go(path,window):
 	with open(path,'rb') as f:
@@ -16,7 +17,7 @@ def go(path,window):
 		#same like settings
 		k.gtk_window_set_default_size(dialog,k.gtk_widget_get_width(window),k.gtk_widget_get_height(window))
 
-		k.g_signal_connect_data (dialog,b"response",k.gtk_window_destroy,None,None,0)
+		k3.g_signal_connect_data (dialog,b"response",k.gtk_window_destroy,None,None,0)
 		box=k.gtk_dialog_get_content_area(dialog)
 		#
 		text = k.gtk_text_view_new ()

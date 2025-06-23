@@ -7,6 +7,7 @@ from . import layout
 from . import log
 from . import ratio
 k=gtk.k
+k2=gtk.k2
 
 ses = lt.session()
 ses.listen_on(6881, 6891)
@@ -45,8 +46,8 @@ def fresh():
 def pos(i):
 	global timer
 	if timer>0:
-		k.g_source_remove(timer)
-	timer=k.g_timeout_add(5000, fresh, None)
+		k2.g_source_remove(timer)
+	timer=k2.g_timeout_add(5000, fresh, None)
 	global h
 	h=torrents[i].h
 
@@ -85,7 +86,7 @@ def open_tor(path,u,w):
 
 def close():
 	if timer>0:
-		k.g_source_remove(timer)
+		k2.g_source_remove(timer)
 	i=gtk.GtkTreeIter()
 	it=gtk.byref(i)
 	mod=layout.list
@@ -103,7 +104,7 @@ def close():
 
 def remsel(i):
 	global timer
-	k.g_source_remove(timer)
+	k2.g_source_remove(timer)
 	timer=0
 	ses.remove_torrent(h)
 	del torrents[i]

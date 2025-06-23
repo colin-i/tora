@@ -6,6 +6,7 @@ from . import layout
 from . import torrent
 from . import torben
 k=gtk.k
+k2=gtk.k2
 
 config_filename = confs.get_root_file('config')
 #in folder is ... (lib/python3.7/site-packages/) tora/config and ...tora/config
@@ -22,7 +23,7 @@ def write(lst):
 			layout.COLUMNS.PATH, gtk.byref(path),
 			layout.COLUMNS.UP,gtk.byref(val))
 		d={'path':path.value.decode(),'upload':int(val.value)}
-		k.g_free(path)
+		k2.g_free(path)
 		arr.insert(0,d)
 		b=k.gtk_tree_model_iter_next(lst,it)
 	with open(config_filename, "w") as write_file:

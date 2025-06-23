@@ -9,6 +9,7 @@ from . import torrent
 from . import overall
 from . import next
 k=gtk.k
+k3=gtk.k3
 
 from enum import IntEnum
 class COLUMNS(IntEnum):
@@ -22,7 +23,7 @@ class COLUMNS(IntEnum):
 colsdef=lambda:k.gtk_list_store_new(COLUMNS.n, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING, gtk.G_TYPE_STRING)
 list=colsdef()
 sort=k.gtk_tree_model_sort_new_with_model(list)
-k.g_object_unref(list)
+k3.g_object_unref(list)
 
 @gtk.CALLBACK
 def header_click(ix):
@@ -37,7 +38,7 @@ def header_click(ix):
 def columns_add(tree,n,i):
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(n, renderer, b"text", i, None)
-	k.g_signal_connect_data(column,b"clicked",header_click,i,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data(column,b"clicked",header_click,i,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_tree_view_column_set_clickable(column,True)
 	k.gtk_tree_view_column_set_resizable(column,True)
 	k.gtk_tree_view_column_set_expand(column,True)
@@ -72,20 +73,20 @@ def layout(window):
 	global entry_tor
 	entry_tor=k.gtk_entry_new()
 	k.gtk_widget_set_hexpand(entry_tor,True)
-	k.g_signal_connect_data (entry_tor, b"activate", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data (entry_tor, b"activate", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	#
 	k.gtk_box_append(bx,entry_tor)
 	b=k.gtk_button_new_with_label(b"+")
 	k.gtk_box_append(bx,b)
-	k.g_signal_connect_data (b, b"clicked", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data (b, b"clicked", add, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	#
 	b=k.gtk_button_new_with_label(chr(0x2699).encode())
-	k.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data (b, b"clicked", sets.sets, window, None, gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(bx,b)
 	#
 	global treeV
 	treeV=k.gtk_tree_view_new_with_model(sort)
-	k.g_object_unref(sort)
+	k3.g_object_unref(sort)
 	columns(treeV) #,confs.width
 	listtor.read(list,window)
 	if k.gtk_tree_model_iter_n_children(list,None)>0:
@@ -97,7 +98,7 @@ def layout(window):
 	#
 	lst=overall.ini(colsdef())
 	tree=k.gtk_tree_view_new_with_model(lst)
-	k.g_object_unref(lst)
+	k3.g_object_unref(lst)
 	columns(tree) #,confs.width
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)

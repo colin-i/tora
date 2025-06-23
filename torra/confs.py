@@ -2,8 +2,11 @@
 import os.path
 import appdirs
 import pathlib
+
+projname='torra'
+
 def get_root_dir():
-	return pathlib.Path(appdirs.user_config_dir('torra'))
+	return pathlib.Path(appdirs.user_config_dir(projname))
 def get_root_file(f):
 	return os.path.join(get_root_dir(),f)
 

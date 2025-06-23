@@ -6,6 +6,7 @@ from . import torrent
 from . import bencod
 from . import sets
 k=gtk.k
+k2=gtk.k2
 
 i=gtk.GtkTreeIter()
 it=gtk.byref(i)
@@ -15,7 +16,7 @@ def ini(lst):
 	list=lst
 	k.gtk_list_store_append(list,it)
 	global timer
-	timer=k.g_timeout_add(5000,fresh,None)
+	timer=k2.g_timeout_add(5000,fresh,None)
 	return list
 
 def st(a):
@@ -30,7 +31,7 @@ def download_sz(mod,ir):
 	item_text=gtk.c_char_p()
 	gtk.gtk_tree_model_get (mod, ir, layout.COLUMNS.PATH, gtk.byref(item_text))
 	val=item_text.value.decode()
-	k.g_free(item_text)
+	k2.g_free(item_text)
 	size=0
 	try:
 		with open(val,'rb') as f:
@@ -83,4 +84,4 @@ def fresh():
 	return True
 
 def close():
-	k.g_source_remove(timer)
+	k2.g_source_remove(timer)

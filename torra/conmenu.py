@@ -5,6 +5,8 @@ from . import treesel
 from . import layout
 from . import next
 k=gtk.k
+k2=gtk.k2
+k3=gtk.k3
 
 timer=0
 
@@ -19,14 +21,14 @@ def fire():
 def click(tree,path):
 	global timer
 	if timer>0:
-		k.g_source_remove(timer)
+		k2.g_source_remove(timer)
 	k.gtk_widget_show(menu)
 	torrent.sel(tree,path)
-	timer=k.g_timeout_add(10000,fire,None)
+	timer=k2.g_timeout_add(10000,fire,None)
 
 def hide():
 	global timer
-	k.g_source_remove(timer)
+	k2.g_source_remove(timer)
 	timer=0
 	k.gtk_widget_hide(menu)
 
@@ -50,13 +52,13 @@ def ini(parent,tree):
 	menu=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_HORIZONTAL,0)
 	uni=chr(0x24D8).encode()
 	b=k.gtk_button_new_with_label(uni)
-	k.g_signal_connect_data(b,b"clicked",infoclick,tree,None,0)
+	k3.g_signal_connect_data(b,b"clicked",infoclick,tree,None,0)
 	k.gtk_box_append(menu,b)
 	uni=chr(0x1F5D1).encode()
 	b=k.gtk_button_new_with_label(uni)
-	k.g_signal_connect_data(b,b"clicked",remclick,tree,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data(b,b"clicked",remclick,tree,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_box_append(menu,b)
 	k.gtk_box_append(parent,menu)
 	k.gtk_widget_hide(menu)
-	k.g_signal_connect_data(tree,b"row-activated",click,None,None,0)
+	k3.g_signal_connect_data(tree,b"row-activated",click,None,None,0)
 	k.gtk_tree_view_set_activate_on_single_click(tree,True)

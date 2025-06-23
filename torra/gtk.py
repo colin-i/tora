@@ -42,10 +42,18 @@ CALLBACK4i = CFUNCTYPE(c_int,c_void_p,c_int,c_int,c_int)
 class GtkTreeIter(Structure):
 	_fields_=[("stamp",c_int),("user_data",c_void_p),("user_data2",c_void_p),("user_data3",c_void_p)]
 
-path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
-os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
-lib_gtk_name="libgtk-4.so.1"
-k = cdll.LoadLibrary(lib_gtk_name)
+#path_to_deps = "/usr/local/lib/arm-linux-gnueabihf"
+#os.environ['PATH'] = path_to_deps + os.pathsep + os.environ['PATH']
+try:
+	k =cdll.LoadLibrary("libgtk-4.so.1")
+	k2=k
+	k3=k
+	k4=k
+except Exception:
+	k =cdll.LoadLibrary("libgtk-4-1.dll")
+	k2=cdll.LoadLibrary("libglib-2.0-0.dll")
+	k3=cdll.LoadLibrary("libgobject-2.0-0.dll")
+	k4=cdll.LoadLibrary("libgio-2.0-0.dll")
 
 #By default functions are assumed to return the C int type. Other return types can be specified by setting the restype attribute of the function object.
 #argtypes no default. c_void_p is python int. pointers must be announced on ARM.
@@ -67,12 +75,12 @@ def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set.argtypes = [c_void_p,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int,c_void_p,c_int]
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
 
-k.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
-k.g_free.argtypes = [c_void_p]
-k.g_object_unref.argtypes = [c_void_p]
-k.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
-k.g_source_remove.argtypes = [c_void_p]
-k.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
+k2.g_free.argtypes = [c_void_p]
+k2.g_source_remove.argtypes = [c_void_p]
+k2.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
+k3.g_object_unref.argtypes = [c_void_p]
+k3.g_signal_connect_data.argtypes = [c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_int]
+k4.g_application_run.argtypes = [c_void_p,c_int,c_void_p]
 #
 k.gdk_keyval_name.restype=c_char_p
 k.gdk_toplevel_get_state.argtypes = [c_void_p]

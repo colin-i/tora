@@ -14,6 +14,8 @@ from . import overall
 from . import listtor
 from . import ratio
 k=gtk.k
+k3=gtk.k3
+k4=gtk.k4
 
 @gtk.CALLBACKi
 def closing(window):
@@ -28,7 +30,7 @@ def closing(window):
 def activate(app):
 	window = k.gtk_application_window_new (app)
 	k.gtk_window_set_title (window, b"Torrent")
-	k.g_signal_connect_data (window, b"close-request", closing, None, None, 0)
+	k3.g_signal_connect_data (window, b"close-request", closing, None, None, 0)
 	k.gtk_widget_show (window)
 	confs.read_opt(window)
 
@@ -58,10 +60,10 @@ def main():
 	os.makedirs(confs.get_root_dir(),exist_ok=True)
 	a=k.gtk_application_new(None,0)
 	actv=b"activate"
-	k.g_signal_connect_data (a, actv, activate, None, None, 0)
-	r=k.g_application_run (a,0,None)
-	k.g_object_unref(sets.fold_bf)
-	k.g_object_unref(a)
+	k3.g_signal_connect_data (a, actv, activate, None, None, 0)
+	r=k4.g_application_run (a,0,None)
+	k3.g_object_unref(sets.fold_bf)
+	k3.g_object_unref(a)
 	exit(r)
 
 def cleanup_f(f):
@@ -77,7 +79,10 @@ def cleanup():
 		f2=cleanup_f(listtor.config_filename)
 		print(c)
 		base=os.path.dirname(c)
-		if (os.path.basename(base))[0]=='.': #.config, on another system can be a premade
+		bname=os.path.basename(base)
+		if bname[0]=='.': #.config, on another system can be a premade
+			print(base)
+		elif bname==confs.projname: #if is torra/torra is ok
 			print(base)
 		else:
 			base=None

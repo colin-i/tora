@@ -2,6 +2,7 @@ from . import gtk
 from . import torrent
 from . import layout
 k=gtk.k
+k3=gtk.k3
 
 mask=gtk.GdkModifierType.GDK_CONTROL_MASK
 key=gtk.GDK_KEY_n
@@ -27,7 +28,7 @@ def eve(tree, keyval, keycode, state):
 def ini(tree):
 	global controller
 	controller=k.gtk_event_controller_key_new()
-	k.g_signal_connect_data (controller,b"key-pressed",eve,tree,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data (controller,b"key-pressed",eve,tree,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_widget_add_controller (tree, controller)
 
 def unini(tree):
@@ -69,7 +70,7 @@ def is_unfinished(mod,it,it2,sl):
 def sets(e):
 	show(e)
 	control=k.gtk_event_controller_key_new()
-	k.g_signal_connect_data (control,b"key-pressed",reset,e,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
+	k3.g_signal_connect_data (control,b"key-pressed",reset,e,None,gtk.GConnectFlags.G_CONNECT_SWAPPED)
 	k.gtk_widget_add_controller (e, control)
 
 def show(e):

@@ -3,6 +3,7 @@ import libtorrent as lt
 from . import gtk
 from . import torrent
 k=gtk.k
+k3=gtk.k3
 
 from enum import IntEnum
 class COLUMNS(IntEnum):
@@ -40,7 +41,7 @@ k.gtk_list_store_append(list2,ip2)
 
 def ini(box):
 	tree=k.gtk_tree_view_new_with_model(list)
-	k.g_object_unref(list)
+	k3.g_object_unref(list)
 	renderer = k.gtk_cell_renderer_progress_new()
 	column = k.gtk_tree_view_column_new_with_attributes(b"Percentage", renderer, b"value", COLUMNS.progress, None)
 	k.gtk_tree_view_column_set_resizable(column,True)
@@ -69,7 +70,7 @@ def ini(box):
 	k.gtk_box_append(box,tree)
 	#
 	tree2=k.gtk_tree_view_new_with_model(list2)
-	k.g_object_unref(list2)
+	k3.g_object_unref(list2)
 	renderer = k.gtk_cell_renderer_text_new()
 	column = k.gtk_tree_view_column_new_with_attributes(b"Peers list", renderer, b"text", COLUMNS2.list_peers, None)
 	k.gtk_tree_view_column_set_resizable(column,True)

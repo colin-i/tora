@@ -5,6 +5,7 @@ from . import next
 from . import log
 from . import cons
 k=gtk.k
+k3=gtk.k3
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
 
@@ -37,7 +38,7 @@ def sets(window):
 	#	k.gtk_window_maximize(dialog) #this was working, now, a dialog has the button but is doing nothing, here
 	k.gtk_window_set_default_size(dialog,k.gtk_widget_get_width(window),k.gtk_widget_get_height(window))
 
-	k.g_signal_connect_data (dialog,b"response",response,window,None,0)
+	k3.g_signal_connect_data (dialog,b"response",response,window,None,0)
 	#
 	box=k.gtk_box_new(gtk.GtkOrientation.GTK_ORIENTATION_VERTICAL,0)
 	e=k.gtk_entry_new_with_buffer(fold_bf)

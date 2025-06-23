@@ -3,6 +3,7 @@ from . import overall
 from . import layout
 from . import log
 k=gtk.k
+k2=gtk.k2
 
 ratint_bf=k.gtk_entry_buffer_new(b"0",-1)
 ratlim_bf=k.gtk_entry_buffer_new(b"2",-1)
@@ -31,7 +32,7 @@ def ini():
 def freeint():
 	global timer
 	if timer>0:
-		k.g_source_remove(timer)
+		k2.g_source_remove(timer)
 		timer=0
 def setint(window):
 	freeint()
@@ -53,14 +54,14 @@ def gain(w):#when add tor and resets(including log file)
 	if timer==0:
 		n=int(k.gtk_entry_buffer_get_text(ratint_bf))
 		if n>0:
-			timer=k.g_timeout_add(n*60000,fresh,w)
+			timer=k2.g_timeout_add(n*60000,fresh,w)
 	log.likenew()
 
 def getratio():
 	z=gtk.c_char_p()
 	gtk.gtk_tree_model_get(overall.list,overall.it,layout.COLUMNS.RATIO,gtk.byref(z))
 	r=float(z.value)
-	k.g_free(z)
+	k2.g_free(z)
 	return r
 
 def store(d):

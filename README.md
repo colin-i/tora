@@ -51,7 +51,7 @@ From [PyPI](https://pypi.org/project/torra):
 ```sh
 pip3 install torra
 ```
-And having gtk4.\
+And having gtk4 and libtorrent. Also working on Windows MinGW MSys2.\
 \
 \
 On other linux distributions with gtk4, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
