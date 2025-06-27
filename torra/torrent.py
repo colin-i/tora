@@ -60,13 +60,17 @@ def sel(tree,path):
 
 def open_tor(path,u,w):
 	try:
-		with open(path+".fastresume") as f:
+		fresm=path+".fastresume"
+		log.addT("try to fastresume: "+fresm)
+		with open(fresm) as f:
 			b=f.read()
 			c=eval(b)
 			d=lt.bencode(c)
+			log.addT("try to resume data")
 			td=lt.read_resume_data(d)
 	except Exception:
 		try:
+			log.addT("try to add: "+path)
 			info = lt.torrent_info(path)
 			pv=k.gtk_entry_buffer_get_text(sets.fold_bf)
 			td={'ti': info, 'save_path': pv}
@@ -81,7 +85,7 @@ def open_tor(path,u,w):
 	t=tor(th,u)
 	torrents.insert(0,t)
 	ratio.gain(w)
-	log.addT(path)
+	log.addT("added: "+path)
 	return True
 
 def close():
