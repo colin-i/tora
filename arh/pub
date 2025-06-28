@@ -10,10 +10,10 @@ py=x afterversion=~/test/pyp/pypre ~/test/debinit "${1}" && \
 ~/test/del && \
 ~/test/rel && \
 ~/test/pub appimage rel && \
+p=libgtk-4-1 ~/test/ai/upapppic && \
 ~/test/pyp/pypi && \
 ~/test/pkg/onb && \
-p=libgtk-4-1 ~/test/ai/upapppic && \
-~/test/pub pkg upapp && \
+~/test/pub upapp pkg && \
 py=x ~/test/pkg/aur && \
 py=x ~/test/rpm/copr && \
 py=x ~/test/rpm/suse && \
