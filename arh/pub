@@ -6,7 +6,6 @@ py=x afterversion=~/test/pyp/pypre ~/test/debinit "${1}" && \
 ~/test/deb && \
 ~/test/publp && \
 ~/test/ai/ai && \
-~/test/keyring && \
 ~/test/del && \
 ~/test/rel && \
 ~/test/pub appimage rel && \
