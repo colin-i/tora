@@ -4,9 +4,9 @@ last=$(curl https://api.github.com/repos/colin-i/$(cat debian/control | grep "^H
 py=x afterversion=~/test/pyp/pypre ~/test/debinit "${1}" && \
 ~/test/pub deb && \
 ~/test/deb && \
-~/test/keyring2 && \
 ~/test/publp && \
 ~/test/ai/ai && \
+~/test/keyring && \
 ~/test/del && \
 ~/test/rel && \
 ~/test/pub appimage rel && \
