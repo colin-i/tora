@@ -54,7 +54,7 @@ pip3 install torra
 And having gtk4 and, if is not at PyPI, libtorrent with python bindings. Also working on Windows MinGW64 MSys2.\
 \
 \
-On other linux distributions with gtk4, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
+On linux distributions with gtk4, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
 
 ## From source
 Using libtorrent (arvidn) with python bindings.\
