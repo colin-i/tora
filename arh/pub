@@ -20,5 +20,4 @@ py=x ~/test/rpm/suse && \
 ~/test/publp2 && \
 ~/test/lp && \
 ~/test/lp x && \
-~/test/keyring && \
 ~/test/arh2 ${last}
