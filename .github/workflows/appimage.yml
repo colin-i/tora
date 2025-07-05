@@ -19,25 +19,16 @@ jobs:
       name=`cat debian/changelog | head -1 | grep -o ^[^\ ]*`
       name2=Torra
       #
-      mkdir -p AppDir
-      file=runtime
-      arch_ai=-x86_64
-      archfile=${file}${arch_ai}
-      kitpart () {
-       #https://github.com/AppImage/pkg2appimage
-       #in searching for fuse3, was latest
-       #this is not today urlpart=`wget -q https://github.com/AppImage/AppImageKit/releases/continuous -O - | grep "${archfile}" | head -n 1 | cut -d '"' -f 2`
-       #this is at o urlpart=AppImage/AppImageKit/releases/latest/download/${archfile}
-       #this is from a browser, not tested at this comment
-       urlpart=AppImage/AppImageKit/releases/download/continuous/${archfile}
-      }
-      if [ ! -e "${file}" ]; then
-       kitpart
-       #"pkg2appimage-.*-x86_64.AppImage"
-       wget -c https://github.com/${urlpart}
-       mv ${archfile} ${file}
-       chmod a+x ${file}
+      apd=AppDir
+      mkdir -p ${apd}
+
+      run=runtime
+      if [ ! -e "${run}" ]; then
+       archfile=runtime-x86_64
+       wget -c https://github.com/AppImage/type2-runtime/releases/download/continuous/${archfile}
+       mv ${archfile} ${run}
       fi
+
       if [ ! -e "${name}.deb" ]; then
        version=`cat debian/changelog | head -1 | grep -Poe "[^\(]*(?=\))"`
        if [ ! -e "lp2.py" ]; then
@@ -48,6 +39,7 @@ jobs:
        wget ${OUTPUT}/+files/${name}_${version}_all.deb -O ${name}.deb
        dpkg -x ${name}.deb AppDir
       fi
+
       #dependencies
       downdeb () {
        pkg=${1}
@@ -76,24 +68,32 @@ jobs:
       downdeb python3-appdirs main
       downdeb python3-libtorrent universe
       #
-      apd=AppDir
       if [ -n "${{ github.event.inputs.testf }}" ]; then
        echo ${{ github.event.inputs.testf }} ${{ github.event.inputs.testfd }}
        mv ${{ github.event.inputs.testf }} ${apd}/${{ github.event.inputs.testfd }}
       fi
-      #
+
       cd ${apd}
-      file2=AppRun
-      if [ ! -e "${file2}" ]; then
-       if [ -z "${urlpart}" ]; then
-        kitpart
-       fi
-       archfile2=${file2}${arch_ai}
-       urlpart=${urlpart:0:`echo ${urlpart} | grep -ob '[^/]*$' | cut -d ':' -f 1`}${archfile2}
-       wget -c https://github.com/${urlpart}
-       chmod a+x ${archfile2}
-       mv ${archfile2} ${file2}
+      #launcher
+      file=AppRun
+      if [ ! -e "${file}" ]; then
+       echo launcher
+       #PYTHONHOME is also set by AppRun wrong
+      #when from precompiled AppRun: unset PYTHONHOME
+      #without PYTHONPATH(and PYTHONHOME if not bundling python) is No package metadata was found for torra, but PYTHONHOME is enough, anyway unset is extra
+      #	at usr/lib/python/3.x/.py files are here (not like python3/dist-packages)
+      #"${a}"b when a is "a a" will be 1="a ab"
+       cat > ${file} <<EOF
+      #!/bin/sh
+      root_dir="\$(readlink -f "\$(dirname "\$0")"/usr)"
+      LD_LIBRARY_PATH="\${root_dir}"/lib/x86_64-linux-gnu\
+       PYTHONHOME="\${root_dir}"\
+       PYTHONPATH="\${root_dir}"/lib/python3/dist-packages\
+       exec "\${root_dir}"/bin/python3.10 "\${root_dir}"/bin/${name} "\$@"
+      EOF
+       chmod 755 ${file}
       fi
+
       pngfile=${name}.png
       if [ ! -e "${pngfile}" ]; then
        wget https://github.com/colin-i/test/releases/download/1.5/${name}.png -O ${pngfile}
@@ -107,28 +107,7 @@ jobs:
       EOF
        ln -s ${pngfile} .DirIcon
       fi
-      #launcher
-      sname=tora
-      if [ ! -e "usr/bin/${sname}" ]; then
-       echo launcher
-       cd usr/bin
-       mv ${name} ${sname}
-       #PYTHONHOME is also set by AppRun wrong
-      #unset PYTHONHOME
-      #without PYTHONPATH(and PYTHONHOME if not bundling python) is No package metadata was found for torra, but PYTHONHOME is enough, anyway unset is extra
-      #	at usr/lib/python/3.x/.py files are here (not like python3/dist-packages)
-       cat > ${name} <<EOF
-      #!/bin/sh
-      cd "\$(dirname "\$0")"
-      cd ../
-      LD_LIBRARY_PATH="\$(pwd)/lib/x86_64-linux-gnu"\
-       PYTHONHOME="\$(pwd)"\
-       PYTHONPATH="\$(pwd)/lib/python3/dist-packages"\
-       ./bin/python3.10 bin/${sname} "\$@"
-      EOF
-       chmod 755 ${name}
-       cd ../../
-      fi
+
       #metadata file
       mi=usr/share/metainfo
       mif=${mi}/com.colin.${name}.appdata.xml
@@ -162,12 +141,11 @@ jobs:
       </component>
       EOF
       fi
-      #
+
       cd ..
-      #
       if [ ! -e "${name}.AppImage" ]; then
        mksquashfs AppDir ${name}.squashfs -root-owned -noappend
-       cat runtime >> ${name}.AppImage
+       cat ${run} > ${name}.AppImage
        cat ${name}.squashfs >> ${name}.AppImage
        chmod a+x ${name}.AppImage
       fi

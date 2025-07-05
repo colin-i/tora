@@ -19,5 +19,5 @@ jobs:
      with:
       branch: ${{ github.event.inputs.branch }}
       prepack: ${{ github.event.inputs.prepack }}
-      pattern: bin/tora
+      pattern: 1
       gtk: 4
