@@ -6,6 +6,7 @@ from . import sets
 from . import layout
 from . import log
 from . import ratio
+from . import listtor
 k=gtk.k
 k2=gtk.k2
 
@@ -100,7 +101,8 @@ def close():
 	while b:
 		gtk.gtk_tree_model_get (mod, it, layout.COLUMNS.PATH, gtk.byref(item_text))
 		th=torrents[j].h
-		with open(item_text.value.decode()+".fastresume", "w") as f:
+		tpath=listtor.tor_path(item_text.value.decode()+".fastresume")
+		with open(tpath, "w") as f:
 			f.write(str(th.write_resume_data()))
 		ses.remove_torrent(th)
 		b=k.gtk_tree_model_iter_next(mod,it)

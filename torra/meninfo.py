@@ -1,10 +1,12 @@
 from . import gtk
 from . import treesel
 from . import bencod
+from . import listtor
 k=gtk.k
 k3=gtk.k3
 
 def go(path,window):
+	path=listtor.tor_path(path.decode())
 	with open(path,'rb') as f:
 		d=f.read()
 		bencod.is_info=True
