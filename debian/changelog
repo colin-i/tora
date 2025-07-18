@@ -1,3 +1,9 @@
+torra (1-v22) jammy; urgency=medium
+
+  * relative paths
+
+ -- bc <bc@bc-desktop>  Fri, 18 Jul 2025 07:13:32 +0300
+
 torra (1-v21) jammy; urgency=medium
 
   * flush earlier
