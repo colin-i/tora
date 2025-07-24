@@ -1,7 +1,7 @@
 # Torrent client
 
 ## Install
-On Ubuntu from PPA.
+On Ubuntu(jammy noble) from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
@@ -14,7 +14,7 @@ Will also install libgtk-4-1 if is not already installed.\
 \
 \
 On openSUSE, run the following as __root__:\
-For openSUSE Tumbleweed:
+For openSUSE Tumbleweed(x86_64 aarch64 i586):
 ```sh
 zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Tumbleweed/home:costin.repo
 ```
@@ -22,7 +22,7 @@ For openSUSE Leap:
 ```sh
 zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Leap_16.0/home:costin.repo
 ```
-Replace *16.0* with *15.6* if needed.\
+Replace *16.0*(x86_64 aarch64) with *15.6*(x86_64 aarch64 i586) if needed.\
 And:
 ```sh
 zypper refresh
@@ -32,7 +32,7 @@ Replace *python313* with *python312* or *python311* if needed.\
 Will also install libgtk-4-1 if is not already installed.\
 \
 \
-On Fedora, run the following as __root__:
+On Fedora(x86_64 aarch64), run the following as __root__:
 ```sh
 dnf copr enable colin/project
 dnf install python3-torra
@@ -54,7 +54,7 @@ pip3 install torra
 And having gtk4 and, if is not at PyPI, libtorrent with python bindings. Also working on Windows MinGW64 MSys2.\
 \
 \
-On linux distributions with gtk4, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
+On linux distributions(x86_64) with gtk4, <i>.AppImage</i> file from [releases](https://github.com/colin-i/tora/releases).
 
 ## From source
 Using libtorrent (arvidn) with python bindings.\
