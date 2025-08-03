@@ -32,7 +32,7 @@ Replace *python313* with *python312* or *python311* if needed.\
 Will also install libgtk-4-1 if is not already installed.\
 \
 \
-On Fedora(x86_64 aarch64), run the following as __root__:
+On Fedora 42(x86_64 aarch64), run the following as __root__:
 ```sh
 dnf copr enable colin/project
 dnf install python3-torra
