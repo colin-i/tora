@@ -1,11 +1,11 @@
 # Torrent client
 
 ## Install
-On Ubuntu(jammy noble) from PPA.
+On Ubuntu(jammy noble resolute) from PPA.
 ```sh
 sudo add-apt-repository ppa:colin-i/ppa
 ```
-Or the *manual installation step* from this link *https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6* \
+Or the *manual installation step* from this [link](https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6#manual-installation-step).\
 Install:
 ```sh
 sudo apt-get install torra
@@ -63,5 +63,4 @@ More info at setup.pre.py.
 ## [Info](https://github.com/colin-i/tora/blob/master/info.md)
 
 ## Donations
-The *donations* section is here
-*https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6*
+The *donations* section is [here](https://gist.github.com/colin-i/e324e85e0438ed71219673fbcc661da6#donations).
