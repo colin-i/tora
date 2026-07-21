@@ -14,7 +14,7 @@ Will also install libgtk-4-1 if is not already installed.\
 \
 \
 On openSUSE, run the following as __root__:\
-For openSUSE Tumbleweed(x86_64/i586 aarch64):
+For openSUSE Tumbleweed(x86_64/i586 aarch64)(313 314):
 ```sh
 zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Tumbleweed/home:costin.repo
 ```
@@ -22,13 +22,12 @@ For openSUSE Leap:
 ```sh
 zypper addrepo https://download.opensuse.org/repositories/home:costin/openSUSE_Leap_16.0/home:costin.repo
 ```
-Replace *16.0*(x86_64 aarch64) with *15.6*(x86_64/i586 aarch64) if needed.\
-And:
+Replace *16.0*(x86_64 aarch64)(313) with *15.6*(x86_64/i586 aarch64)(3) if needed.\
+And(regarding the above-mentioned versions, replace *313* with *314* or *3* if needed):
 ```sh
 zypper refresh
 zypper install python313-torra
 ```
-Replace *python313* with *python312* or *python311* if needed.\
 Will also install libgtk-4-1 if is not already installed.\
 \
 \
