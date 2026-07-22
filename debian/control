@@ -10,5 +10,5 @@ X-Python3-Version: >= 3.2
 Package: torra
 Architecture: all
 Multi-Arch: foreign
-Depends: python3-libtorrent, libgtk-4-1, ${misc:Depends}, ${python3:Depends}
+Depends: libgtk-4-1, ${misc:Depends}, ${python3:Depends}
 Description: Torrent client
