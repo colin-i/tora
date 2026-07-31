@@ -64,7 +64,11 @@ def main():
 	r=k4.g_application_run (a,0,None)
 	k3.g_object_unref(sets.fold_bf)
 	k3.g_object_unref(a)
-	exit(r)
+
+	#exit(r) #for libtorrent, this wait can take a very long time or effectively never return, because there's nothing forcing a hard deadline.
+	sys.stdout.flush() #os._exit() also skips flushing stdio buffers, which is why I added explicit flush() calls before it
+	sys.stderr.flush()
+	os._exit(r) #This is a "brute force" fix
 
 def cleanup_f(f):
 	if os.path.isfile(f):
