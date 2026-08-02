@@ -13,6 +13,7 @@ from . import torrent
 from . import overall
 from . import listtor
 from . import ratio
+from . import slowban
 k=gtk.k
 k3=gtk.k3
 k4=gtk.k4
@@ -24,6 +25,7 @@ def closing(window):
 	torrent.close()
 	overall.close()
 	ratio.freeint()
+	slowban.stop()
 	return False
 
 @gtk.CALLBACK

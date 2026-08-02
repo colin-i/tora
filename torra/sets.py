@@ -4,6 +4,7 @@ from . import ratio
 from . import next
 from . import log
 from . import cons
+from . import slowban
 k=gtk.k
 k3=gtk.k3
 
@@ -22,6 +23,7 @@ def response(dialog,re,window):
 	log.reset()#before ratio
 	ratio.setint(window)
 	cons.set()
+	slowban.start()
 	k.gtk_window_destroy(dialog)
 
 @gtk.CALLBACK
@@ -49,6 +51,7 @@ def sets(window):
 	k.gtk_box_append(box, labent(b"Go to the next unfinished torrent",e))
 	k.gtk_box_append(box, log.ini())
 	k.gtk_box_append(box, cons.ini())
+	k.gtk_box_append(box, slowban.ini())
 	#
 	scw=k.gtk_scrolled_window_new()
 	k.gtk_scrolled_window_set_child(scw,box)

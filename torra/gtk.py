@@ -98,6 +98,10 @@ k.gtk_button_new_with_label.argtypes = [c_void_p]
 #C
 k.gtk_cell_renderer_progress_new.restype=c_void_p
 k.gtk_cell_renderer_text_new.restype=c_void_p
+k.gtk_check_button_get_active.argtypes = [c_void_p]
+k.gtk_check_button_new_with_label.restype=c_void_p
+k.gtk_check_button_new_with_label.argtypes = [c_void_p]
+k.gtk_check_button_set_active.argtypes = [c_void_p,c_int]
 #D
 k.gtk_dialog_get_content_area.restype=c_void_p
 k.gtk_dialog_get_content_area.argtypes = [c_void_p]

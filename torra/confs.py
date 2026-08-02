@@ -18,6 +18,7 @@ from . import ratio
 from . import next
 from . import log
 from . import cons
+from . import slowban
 k=gtk.k
 
 configs_filename = get_root_file('configs')
@@ -37,6 +38,7 @@ def write_opt(window):
 	next.store(dict)
 	log.store(dict)
 	cons.store(dict)
+	slowban.store(dict)
 	with open(configs_filename, "w") as write_file:
 		json.dump(dict, write_file)
 
@@ -60,6 +62,8 @@ def read_opt(window):
 			next.restore(dict)
 			log.restore(dict)
 			cons.restore(dict)
+			#from here, d.get has also a default in case there is not
+			slowban.restore(dict)
 	except Exception:
 		pass
 	#	width=0
