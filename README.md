@@ -31,7 +31,7 @@ zypper install python313-torra
 Will also install libgtk-4-1 if is not already installed.\
 \
 \
-On Fedora 42/43/44(x86_64 aarch64), run the following as __root__:
+On Fedora 43/44(x86_64 aarch64), run the following as __root__:
 ```sh
 dnf copr enable colin/project
 dnf install python3-torra
