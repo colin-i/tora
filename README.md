@@ -40,8 +40,16 @@ And having gtk4.\
 \
 \
 On Arch Linux, <i>.zst</i> file from [releases](https://github.com/colin-i/tora/releases). Or:
-```sh
+<!-- ```sh
 yay -Sy python-torra
+```
+Or: -->
+```sh
+git clone --filter=blob:none --sparse https://github.com/colin-i/pkgbuilds.git
+cd pkgbuilds
+git sparse-checkout set python-torra
+cd python-torra
+makepkg -si
 ```
 Will also install gtk4 if is not already installed.\
 \
