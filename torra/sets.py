@@ -8,7 +8,15 @@ from . import slowban
 k=gtk.k
 k3=gtk.k3
 
+from pathlib import Path
+
 fold_bf=k.gtk_entry_buffer_new(None,-1)
+download_folder = Path.home() / 'Downloads'
+k.gtk_entry_buffer_set_text(
+	fold_bf,
+	(str(download_folder) if download_folder.is_dir() else '').encode(),
+	-1,
+)
 
 def labent(t,e):
 	t=k.gtk_label_new (t)
