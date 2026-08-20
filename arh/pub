@@ -6,6 +6,7 @@ py=x afterversion=~/test/pyp/pypre ~/test/debinit "${1}" && \
 ~/test/deb && \
 ~/test/publp && \
 ~/test/ai/ai && \
+py=x ~/test/rpm/copr && \
 ~/test/del && \
 ~/test/rel && \
 ~/test/pub appimage rel && \
@@ -14,7 +15,6 @@ p=libgtk-4-1 ~/test/ai/upapppic && \
 ~/test/pkg/onb && \
 ~/test/pub upapp pkg && \
 py=x ~/test/pkg/aur && \
-py=x ~/test/rpm/copr && \
 py=x ~/test/rpm/suse && \
 ~/test/pub2 && \
 ~/test/publp2 && \
