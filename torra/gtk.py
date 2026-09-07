@@ -22,6 +22,8 @@ class GtkSortType(IntEnum):
 	GTK_SORT_DESCENDING=1
 class GtkWrapMode(IntEnum):
 	GTK_WRAP_WORD_CHAR=3
+class GUserDirectory(IntEnum):
+	G_USER_DIRECTORY_DOWNLOAD=2
 
 G_TYPE_FUNDAMENTAL_SHIFT = 2
 G_TYPE_MAKE_FUNDAMENTAL=lambda x: x << G_TYPE_FUNDAMENTAL_SHIFT
@@ -76,6 +78,8 @@ def gtk_list_store_set5(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5):
 	k.gtk_list_store_set(a,b,i1,v1,i2,p2,i3,p3,i4,p4,i5,p5,-1)
 
 k2.g_free.argtypes = [c_void_p]
+k2.g_get_user_special_dir.restype = c_char_p
+#k2.g_get_user_special_dir.argtypes = [c_int]
 k2.g_source_remove.argtypes = [c_void_p]
 k2.g_timeout_add.argtypes = [c_int,c_void_p,c_void_p]
 k3.g_object_unref.argtypes = [c_void_p]

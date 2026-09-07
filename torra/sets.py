@@ -6,16 +6,19 @@ from . import log
 from . import cons
 from . import slowban
 k=gtk.k
+k2=gtk.k2
 k3=gtk.k3
 
-from pathlib import Path
+import os
 
 fold_bf=k.gtk_entry_buffer_new(None,-1)
-download_folder = Path.home() / 'Downloads'
+# Alternatively with external dependency: platformdirs.user_downloads_dir()
+download_folder = k2.g_get_user_special_dir(gtk.GUserDirectory.G_USER_DIRECTORY_DOWNLOAD) #NULL if the logical id was not found
+#only G_USER_DIRECTORY_DESKTOP falls back to $HOME/Desktop, at minimal desktops XDG can be missing
 k.gtk_entry_buffer_set_text(
 	fold_bf,
-	(str(download_folder) if download_folder.is_dir() else '').encode(),
-	-1,
+	download_folder if (download_folder and os.path.isdir(download_folder)) else b'',
+	-1
 )
 
 def labent(t,e):
